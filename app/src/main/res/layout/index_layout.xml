@@ -8,5 +8,8 @@
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:text="开工"/>
-
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="亲子定位系统实现"/>
 </LinearLayout>
