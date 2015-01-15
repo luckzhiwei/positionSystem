@@ -49,6 +49,7 @@ public class LoginActivity extends Activity {
         this.editextLoginactivityPassword = (EditText)
                 findViewById(R.id.edtext_loginactivity_password);
         this.bindListener();
+        Log.i("lzw","test");
 
     }
 
