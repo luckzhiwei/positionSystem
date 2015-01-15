@@ -73,7 +73,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="注册新账号"
-        android:textColor="#46c4b9"
+        android:textColor="@color/loginactivity_txtcolor"
         android:textSize="18sp"
         android:layout_marginRight="5dp"
         android:layout_marginBottom="5dp"

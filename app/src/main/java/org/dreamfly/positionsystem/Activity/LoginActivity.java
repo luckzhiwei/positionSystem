@@ -2,6 +2,7 @@ package org.dreamfly.positionsystem.Activity;
 
 import android.os.Bundle;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
@@ -48,6 +49,7 @@ public class LoginActivity extends Activity {
         this.editextLoginactivityPassword = (EditText)
                 findViewById(R.id.edtext_loginactivity_password);
         this.bindListener();
+
     }
 
     /**
@@ -59,10 +61,12 @@ public class LoginActivity extends Activity {
         this.txtLoginactivityRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Intent registerIntent = new Intent();
+
                 registerIntent.setClass(getApplicationContext(), RegistActivity.class
 
                 );
                 startActivity(registerIntent);
+
 
             }
         });
