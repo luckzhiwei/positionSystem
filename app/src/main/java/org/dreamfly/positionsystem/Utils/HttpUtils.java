@@ -10,6 +10,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -50,7 +51,7 @@ public class HttpUtils {
 
                    params=customClient.getParams();
 
-                   HttpConnectionParams.setConnectionTimeout(params,5*1000);
+                   HttpConnectionParams.setConnectionTimeout(params,5*1000);//设置请求时间
 
                    HttpResponse repsonseServer=customClient.execute(httpPost);
 
@@ -64,6 +65,9 @@ public class HttpUtils {
                }catch(IOException e){
                    e.printStackTrace();
                    return null;
+               }catch(Exception e){//超时的处理
+                   e.printStackTrace();
+                  return null;
                }
 
 
@@ -71,6 +75,11 @@ public class HttpUtils {
                return null;
            }
 
+           private static String switchStreamToString(InputStream inpustream,String encode)
+           {
+
+               return null;
+           }
 
 
 }
