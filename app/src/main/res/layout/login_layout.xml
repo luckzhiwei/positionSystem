@@ -44,6 +44,7 @@
             android:id="@+id/edtext_loginactivity_password"
             android:background="@drawable/loginactivity_edittext_bottom"
             android:layout_below="@+id/edtext_loginactivity_username"
+            android:layout_marginTop="2dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="2dp"
