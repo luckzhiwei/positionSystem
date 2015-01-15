@@ -41,7 +41,7 @@
       </LinearLayout>
       <LinearLayout
           android:layout_marginTop="2dp"
-          android:background="@drawable/registerlayout_inputlayout_drawable"
+          android:background="@drawable/registerlayout_inputlayout_two_drawable"
           android:layout_width="fill_parent"
           android:layout_height="40dp">
           <EditText
@@ -72,6 +72,6 @@
           android:text="注册"
           android:textColor="@color/white_define"
           android:id="@+id/btn_registeractivity_register"
-          android:background="@drawable/registerlayout_btn_state"/>
+          android:background="@drawable/registeractivity_btn_state"/>
       </LinearLayout>
 </LinearLayout>
