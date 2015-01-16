@@ -18,35 +18,34 @@ import android.view.ViewGroup;
  * Created by asus on 2015/1/15.
  */
 
-public class ManagerAdapter  extends BaseAdapter{
-           private ManagerActivity mManagerActivity;
-           private  Context context;
-           private List<Manager> mMangerList;//适配器中应该含有的容器,
+public class ManagerAdapter extends BaseAdapter {
+    private ManagerActivity mManagerActivity;
+    private Context context;
+    private List<Manager> mMangerList;//适配器中应该含有的容器,
 
-          public ManagerAdapter(List <Manager> mMangerList,Context context)
-          {
-               this.mMangerList=mMangerList;
-              this.context=context;
-          }
-          public int getCount()
-          {
-              return(this.mMangerList.size());
-          }
+    public ManagerAdapter(List<Manager> mMangerList, Context context) {
+        this.mMangerList = mMangerList;
+        this.context = context;
+    }
 
-          public Object getItem(int position)
-          {
-              return(this.mMangerList.get(position));
-          }
+    public int getCount() {
+        return (this.mMangerList.size());
+    }
 
-          public long getItemId(int position)
-          {
-              return(position);
-          }
+    public Object getItem(int position) {
+        return (this.mMangerList.get(position));
+    }
 
-           public View getView(int arg0, View arg1, ViewGroup arg2) {//加载XML视图文件
-               View view= LayoutInflater.from(context).inflate(R.layout.manager_items,null);
-               return view;
-            }
+    public long getItemId(int position) {
+        return (position);
+    }
 
+    public View getView(int arg0, View arg1, ViewGroup arg2) {//加载XML视图文件
+        View view = LayoutInflater.from(context).inflate(R.layout.manager_items, null);
+        return view;
+    }
 
+    private class ViewHolder{
+
+    }
 }

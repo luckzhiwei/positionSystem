@@ -41,7 +41,6 @@ public class ManagerActivity extends ActionBarActivity {
         this.txtManagerActivityTitle=(TextView)
         this.findViewById(R.id.txt_manageractivity_title);
         this.mManagerAdapter=new ManagerAdapter(this.getData(),getApplicationContext());
-
         this.managerActivityListView.setAdapter(this.mManagerAdapter);
     }
     public List<Manager> getData(){
