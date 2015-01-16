@@ -42,7 +42,7 @@ public class ManagerActivity extends ActionBarActivity {
         return list;
     }
     public class ManagerAdapter  extends BaseAdapter {
-        private ManagerActivity mManagerActivity;
+       // private ManagerActivity mManagerActivity;
         private List<Manager> mMangerList;//适配器中应该含有的容器,
 
         public ManagerAdapter(List <Manager> mMangerList)
