@@ -4,6 +4,5 @@
         android:drawable="@drawable/manregactivity_imgbtn_position_press"/>
     <item android:state_focused="true"
         android:drawable="@drawable/manregactivity_imgbtn_position_press"/>
-    <item android:state_pressed="true"
-        android:drawable="@drawable/manregactivity_imgbtn_position_stop"/>
+    <item android:drawable="@drawable/manregactivity_imgbtn_position_stop"/>
 </selector>

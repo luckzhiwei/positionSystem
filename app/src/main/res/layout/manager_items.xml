@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:layout_marginRight="75dp"
+            android:layout_marginRight="70dp"
             android:text="我的母亲"
             android:textColor="#000000"
             android:textSize="23sp"/>
@@ -62,18 +62,21 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="2dp"
             android:id="@+id/manageractivity_layout3_1">
-        <ImageButton
-            android:id="@+id/manageractivity_imb1_phone"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/manregactivity_imgbtn_phone_stop"/>
+       <Button
+           android:id="@+id/manageractivity_btn_phone"
+           android:layout_width="45dp"
+           android:layout_height="45dp"
+           android:background="@drawable/manregactivity_imgbtn_phone"
+           />
+       <Button
+           android:id="@+id/manageractivity_btn_position"
+           android:layout_width="45dp"
+           android:layout_height="45dp"
+           android:background="@drawable/manregactivity_imgbtn_position"
+           />
 
-        <ImageButton
-            android:id="@+id/manageractivity_imb1_position"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/manregactivity_imgbtn_position_stop"/>
 
         </LinearLayout>
 

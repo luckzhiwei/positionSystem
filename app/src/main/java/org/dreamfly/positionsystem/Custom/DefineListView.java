@@ -79,9 +79,9 @@ public class DefineListView extends ListView {
               if(deltaY>0 && this.getFirstVisiblePosition()==0)
               {
                     realDistance=(int)deltaY+this.mListViewHeader.getCurrentHeight();
-                    if(realDistance>=600)
+                    if(realDistance>=300)
                     {
-                        realDistance=600;
+                        realDistance=300;
                     }
               }
               return (realDistance);

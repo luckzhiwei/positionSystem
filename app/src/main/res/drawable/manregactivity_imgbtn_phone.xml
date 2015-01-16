@@ -4,6 +4,5 @@
         android:drawable="@drawable/manregactivity_imgbtn_phone_press"/>
     <item android:state_focused="true"
         android:drawable="@drawable/manregactivity_imgbtn_phone_press"/>
-    <item android:state_pressed="true"
-        android:drawable="@drawable/manregactivity_imgbtn_phone_stop"/>
+    <item android:drawable="@drawable/manregactivity_imgbtn_phone_stop"/>
 </selector>
