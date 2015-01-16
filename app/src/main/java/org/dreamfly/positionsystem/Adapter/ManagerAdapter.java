@@ -5,12 +5,11 @@ import android.view.LayoutInflater;
 import android.widget.BaseAdapter;
 
 import java.util.List;
+import java.util.Map;
 
 import org.dreamfly.positionsystem.Activity.ManagerActivity;
 import org.dreamfly.positionsystem.R;
-
 import org.dreamfly.positionsystem.bean.Manager;
-
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -45,7 +44,6 @@ public class ManagerAdapter extends BaseAdapter {
 
     public View getView(int position, View arg1, ViewGroup arg2) {//加载XML视图文件
         View view = LayoutInflater.from(context).inflate(R.layout.manager_items, null);
-        //initila(view);
         TextView managerActivityTxt2Name,managerActivityTxt2Position,managerActivityTxt3Time;
         Button managerActivityBtnPhone,managerActivityBtnPosition;
         ImageView managerImv1;
@@ -66,16 +64,13 @@ public class ManagerAdapter extends BaseAdapter {
             managerImv1.setImageResource(R.drawable.manregactivity_imv_portrait2);
             managerImv1.getResources().getDrawable(R.drawable.manregactivity_imv_portrait2);
         }
+        String [] s=new String[]{"nokia","iphone","htc","mi2","lg","oppo","sumsung"};
+        managerActivityTxt2Name.setText(s[position]);
         return view;
     }
 
     private class ViewHolder{
 
     }
-   /* private void initila(View view){
-        TextView managerActivityTxt2Name,managerActivityTxt2Position,managerActivityTxt3Time;
-        Button managerActivityBtnPhone,managerActivityBtnPosition;
-        ImageView managerImv1;
 
-    }*/
 }

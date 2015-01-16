@@ -15,7 +15,9 @@ import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.bean.Manager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhengyl on 15-1-13.
@@ -44,10 +46,13 @@ public class ManagerActivity extends ActionBarActivity {
         this.managerActivityListView.setAdapter(this.mManagerAdapter);
     }
     public List<Manager> getData(){
-        List<Manager>list=new ArrayList<Manager>();
+        List<Manager> list=new ArrayList<Manager>();
+
         for(int i=0;i<7;i++)
         {
+
             Manager m=new Manager();
+
             list.add(m);
         }
         return list;
