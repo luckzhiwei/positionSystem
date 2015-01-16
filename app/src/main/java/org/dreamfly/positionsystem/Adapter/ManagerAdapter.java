@@ -13,6 +13,9 @@ import org.dreamfly.positionsystem.bean.Manager;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 /**
  * Created by asus on 2015/1/15.
@@ -40,12 +43,39 @@ public class ManagerAdapter extends BaseAdapter {
         return (position);
     }
 
-    public View getView(int arg0, View arg1, ViewGroup arg2) {//加载XML视图文件
+    public View getView(int position, View arg1, ViewGroup arg2) {//加载XML视图文件
         View view = LayoutInflater.from(context).inflate(R.layout.manager_items, null);
+        //initila(view);
+        TextView managerActivityTxt2Name,managerActivityTxt2Position,managerActivityTxt3Time;
+        Button managerActivityBtnPhone,managerActivityBtnPosition;
+        ImageView managerImv1;
+        managerActivityTxt2Name=(TextView)
+                view.findViewById(R.id.manageractivity_txt2_name);
+        managerActivityTxt2Position=(TextView)
+                view.findViewById(R.id.manageractivity_txt2_location);
+        managerActivityTxt3Time=(TextView)
+                view.findViewById(R.id.manageractivity_txt3_time);
+        managerActivityBtnPhone=(Button)
+                view.findViewById(R.id.manageractivity_btn_phone);
+        managerActivityBtnPosition=(Button)
+                view.findViewById(R.id.manageractivity_btn_position);
+        managerImv1=(ImageView)
+                view.findViewById(R.id.manageractivity_imv1);
+
+        if((position%2)==0){
+            managerImv1.setImageResource(R.drawable.manregactivity_imv_portrait2);
+            managerImv1.getResources().getDrawable(R.drawable.manregactivity_imv_portrait2);
+        }
         return view;
     }
 
     private class ViewHolder{
 
     }
+   /* private void initila(View view){
+        TextView managerActivityTxt2Name,managerActivityTxt2Position,managerActivityTxt3Time;
+        Button managerActivityBtnPhone,managerActivityBtnPosition;
+        ImageView managerImv1;
+
+    }*/
 }
