@@ -1,15 +1,20 @@
 package org.dreamfly.positionsystem.Adapter;
 
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.widget.BaseAdapter;
 import java.util.List;
+
+import org.dreamfly.positionsystem.Activity.ManagerActivity;
+import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.bean.Manager;
 import android.view.View;
 import android.view.ViewGroup;
 /**
  * Created by asus on 2015/1/15.
  */
-public class ManagerAdapter  extends BaseAdapter{
-
+/*public class ManagerAdapter  extends BaseAdapter{
+           private ManagerActivity mManagerActivity;
            private List<Manager> mMangerList;//适配器中应该含有的容器,
 
           public ManagerAdapter(List <Manager> mMangerList)
@@ -35,4 +40,4 @@ public class ManagerAdapter  extends BaseAdapter{
                 return null;
             }
 
-}
+}*/
