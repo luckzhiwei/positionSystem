@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 //import org.dreamfly.positionsystem.Adapter.ManagerAdapter;
+import org.dreamfly.positionsystem.Adapter.ManagerAdapter;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.bean.Manager;
 
@@ -30,7 +31,7 @@ public class ManagerActivity extends ActionBarActivity {
     }
     public void initila(){
         managerActivityListView=(ListView)this.findViewById(R.id.manageractivity_listview);
-        mManagerAdapter=new ManagerAdapter(getData());
+        mManagerAdapter=new ManagerAdapter(getData(),ManagerActivity.this);
     }
     public List<Manager> getData(){
         List<Manager>list=new ArrayList<Manager>();
@@ -41,7 +42,7 @@ public class ManagerActivity extends ActionBarActivity {
         }
         return list;
     }
-    public class ManagerAdapter  extends BaseAdapter {
+   /* public class ManagerAdapter  extends BaseAdapter {
        // private ManagerActivity mManagerActivity;
         private List<Manager> mMangerList;//适配器中应该含有的容器,
 
@@ -69,7 +70,7 @@ public class ManagerActivity extends ActionBarActivity {
             return view;
         }
 
-    }
+    }*/
 
 
 }
