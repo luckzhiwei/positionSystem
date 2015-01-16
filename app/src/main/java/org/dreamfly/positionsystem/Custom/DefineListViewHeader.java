@@ -66,7 +66,4 @@ public class DefineListViewHeader  extends LinearLayout{
 
 
 
-
-
-
 }
