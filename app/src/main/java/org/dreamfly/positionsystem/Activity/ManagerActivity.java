@@ -7,8 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 //import org.dreamfly.positionsystem.Adapter.ManagerAdapter;
 import org.dreamfly.positionsystem.Adapter.ManagerAdapter;
+import org.dreamfly.positionsystem.Custom.DefineListView;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.bean.Manager;
 
@@ -20,18 +22,27 @@ import java.util.List;
  * 管理者界面Activity类
  */
 public class ManagerActivity extends ActionBarActivity {
-    private ListView managerActivityListView;
+
+    private DefineListView managerActivityListView;
     private ManagerAdapter mManagerAdapter;
+    private TextView  txtManagerActivityTitle;
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.manager_layout);
         this.initila();
-        managerActivityListView.setAdapter(mManagerAdapter);
 
     }
-    public void initila(){
-        managerActivityListView=(ListView)this.findViewById(R.id.manageractivity_listview);
-        mManagerAdapter=new ManagerAdapter(getData(),ManagerActivity.this);
+    public void initila()
+    {
+        this.managerActivityListView=(DefineListView)
+        this.findViewById(R.id.delistiview_manageractivity_showmanger);
+        this.txtManagerActivityTitle=(TextView)
+        this.findViewById(R.id.txt_manageractivity_title);
+        this.mManagerAdapter=new ManagerAdapter(this.getData(),getApplicationContext());
+
+        this.managerActivityListView.setAdapter(this.mManagerAdapter);
     }
     public List<Manager> getData(){
         List<Manager>list=new ArrayList<Manager>();
@@ -42,35 +53,7 @@ public class ManagerActivity extends ActionBarActivity {
         }
         return list;
     }
-   /* public class ManagerAdapter  extends BaseAdapter {
-       // private ManagerActivity mManagerActivity;
-        private List<Manager> mMangerList;//适配器中应该含有的容器,
 
-        public ManagerAdapter(List <Manager> mMangerList)
-        {
-            this.mMangerList=mMangerList;
-        }
-        public int getCount()
-        {
-            return(this.mMangerList.size());
-        }
-
-        public Object getItem(int position)
-        {
-            return(this.mMangerList.get(position));
-        }
-
-        public long getItemId(int position)
-        {
-            return(position);
-        }
-
-        public View getView(int arg0, View arg1, ViewGroup arg2) {//加载XML视图文件
-            View view= LayoutInflater.from(ManagerActivity.this).inflate(R.layout.manager_items,null);
-            return view;
-        }
-
-    }*/
 
 
 }

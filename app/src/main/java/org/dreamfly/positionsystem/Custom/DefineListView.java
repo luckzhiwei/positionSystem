@@ -58,7 +58,10 @@ public class DefineListView extends ListView {
               }
               else if(event.getAction()==MotionEvent.ACTION_UP)
               {
-                  //
+                    if(this.getFirstVisiblePosition()==0)
+                    {
+                          this.dynSetHeadViewHeight(250);
+                    }
               }
 
               return(super.onTouchEvent(event));
@@ -76,9 +79,9 @@ public class DefineListView extends ListView {
               if(deltaY>0 && this.getFirstVisiblePosition()==0)
               {
                     realDistance=(int)deltaY+this.mListViewHeader.getCurrentHeight();
-                    if(realDistance>=50)
+                    if(realDistance>=600)
                     {
-                        realDistance=50;
+                        realDistance=600;
                     }
               }
               return (realDistance);
