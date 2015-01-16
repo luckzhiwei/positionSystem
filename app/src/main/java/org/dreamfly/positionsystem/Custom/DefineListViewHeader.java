@@ -59,6 +59,11 @@ public class DefineListViewHeader  extends LinearLayout{
                        this.mLinearLayout.setLayoutParams(this.mLaytParams);
                 }
 
+                public int getCurrentHeight()
+                {
+                    return(this.mLaytParams.height);
+                }
+
 
 
 
