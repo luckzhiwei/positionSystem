@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.dreamfly.positionsystem.R;
+import org.dreamfly.positionsystem.bean.Manager;
 
 import android.app.Activity;
 import android.widget.Toast;
@@ -64,6 +65,18 @@ public class LoginActivity extends Activity {
                 Intent registerIntent = new Intent();
 
                 registerIntent.setClass(getApplicationContext(), RegistActivity.class
+
+                );
+                startActivity(registerIntent);
+
+
+            }
+        });
+        this.btnLoginactivityLogin.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view) {
+                Intent registerIntent = new Intent();
+
+                registerIntent.setClass(getApplicationContext(), ManagerActivity.class
 
                 );
                 startActivity(registerIntent);

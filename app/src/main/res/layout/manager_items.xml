@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/manageractivity_layout"
+    android:background="#feefe8">
+    <LinearLayout
+        android:id="@+id/manageractivity_layout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:orientation="vertical">
+        <ImageView
+            android:id="@+id/manageractivity_imv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/manregactivity_imv_portrait1"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/manageractivity_layout2"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/manageractivity_txt2_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="75dp"
+            android:text="我的母亲"
+            android:textColor="#000000"
+            android:textSize="23sp"/>
+        <TextView
+            android:id="@+id/manageractivity_txt2_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="南京路256号"
+            android:layout_marginTop="30dp"
+            android:textSize="17sp"
+            android:textColor="#555555"
+            />
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/manageractivity_layout3"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/manageractivity_txt3_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="2015-01-16"
+            android:textColor="#000000"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:id="@+id/manageractivity_layout3_1">
+        <ImageButton
+            android:id="@+id/manageractivity_imb1_phone"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/manregactivity_imgbtn_phone_stop"/>
+
+        <ImageButton
+            android:id="@+id/manageractivity_imb1_position"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/manregactivity_imgbtn_position_stop"/>
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+</LinearLayout>
