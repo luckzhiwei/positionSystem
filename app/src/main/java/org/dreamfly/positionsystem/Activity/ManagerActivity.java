@@ -11,6 +11,7 @@ import android.widget.TextView;
 //import org.dreamfly.positionsystem.Adapter.ManagerAdapter;
 import org.dreamfly.positionsystem.Adapter.ManagerAdapter;
 import org.dreamfly.positionsystem.Custom.DefineListView;
+import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.bean.Manager;
 
@@ -33,16 +34,17 @@ public class ManagerActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.manager_layout);
-        this.initila();
+        DataBase db=new DataBase(this);
+        this.initila(db);
 
     }
-    public void initila()
+    public void initila(DataBase db)
     {
         this.managerActivityListView=(DefineListView)
         this.findViewById(R.id.delistiview_manageractivity_showmanger);
         this.txtManagerActivityTitle=(TextView)
         this.findViewById(R.id.txt_manageractivity_title);
-        this.mManagerAdapter=new ManagerAdapter(this.getData(),getApplicationContext());
+        this.mManagerAdapter=new ManagerAdapter(this.getData(),this,db);
         this.managerActivityListView.setAdapter(this.mManagerAdapter);
     }
     public List<Manager> getData(){

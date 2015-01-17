@@ -26,7 +26,7 @@ public class IndexActivity extends ActionBarActivity {
     ImageView imv_indexactivity_background;
     TextView txt_indexactivity_textwelcome;
 
-    int alpha=100;//声明控制渐变时间的变量
+    int alpha=10;//声明控制渐变时间的变量
     int b=0;//声明子线程控制标志的变量
     //声明以控制线程通信的handler类的引用
     private Handler mHandler = new Handler();
@@ -39,7 +39,7 @@ public class IndexActivity extends ActionBarActivity {
         //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.setContentView(R.layout.index_layout);
         DataBase db=new DataBase(this);
-       dataBaseStart(this,db);
+        dataBaseStart(this,db);
        imv_indexactivity_background=(ImageView)findViewById(R.id.imv_indexactivity_background);
         /**
          * 设置图片渐变的函数
@@ -88,8 +88,8 @@ public class IndexActivity extends ActionBarActivity {
      * @return
      */
     public void updateApp() {
-        alpha -= 5;
-        if (alpha <= 0) {
+        alpha += 10;
+        if (alpha >= 200) {
             b = 2;
             //LoginActivity启动
             Intent in = new Intent(this,LoginActivity.class);
