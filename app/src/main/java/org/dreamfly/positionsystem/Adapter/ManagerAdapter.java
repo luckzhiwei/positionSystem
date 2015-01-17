@@ -126,6 +126,7 @@ public class ManagerAdapter extends BaseAdapter {
               holder.imgManagerItemUserHead.setImageResource(R.drawable.manregactivity_imv_portrait1);
               holder.imgManagerItemUserHead.getDrawable();
           }
+        cur.close();
     }
 
 

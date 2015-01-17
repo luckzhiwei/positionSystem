@@ -86,5 +86,6 @@ public class ManagerActivity extends ActionBarActivity {
                 db.insert("items",null,cv);
             }
         }
+        cur.close();
     }
 }
