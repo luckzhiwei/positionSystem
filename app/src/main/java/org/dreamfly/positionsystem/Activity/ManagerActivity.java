@@ -42,6 +42,7 @@ public class ManagerActivity extends ActionBarActivity {
 
         this.initila(mDataBase);
 
+
     }
     public void initila(DataBase mDataBase)
     {

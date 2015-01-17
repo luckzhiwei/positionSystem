@@ -12,10 +12,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.dreamfly.positionsystem.R;
+import org.dreamfly.positionsystem.Utils.FileUitls;
+import org.dreamfly.positionsystem.Utils.UserInfoUtils;
 import org.dreamfly.positionsystem.bean.Manager;
 
 import android.app.Activity;
 import android.widget.Toast;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by zhengyl on 15-1-13.
@@ -28,14 +33,15 @@ public class LoginActivity extends Activity {
     private EditText edittextLoginactivityUsername;
     private EditText editextLoginactivityPassword;
 
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.setContentView(R.layout.login_layout);
         this.initila();
-        ;
-    }
 
+    }
     /**
      * @deprecated 初始化函数
      * 对组件进行视图的ID绑定
