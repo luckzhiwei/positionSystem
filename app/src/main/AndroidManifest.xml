@@ -25,7 +25,10 @@
         </activity>
         <activity android:name=".Activity.PositionActivity">
         </activity>
-
+    
     </application>
-
+    <uses-permission android:name="android.permission.MOUNT_FORMAT_FILESYSTEMS">
+    </uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE">
+    </uses-permission>
 </manifest>
