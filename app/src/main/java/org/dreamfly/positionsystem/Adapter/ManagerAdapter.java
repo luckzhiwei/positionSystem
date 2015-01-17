@@ -64,7 +64,7 @@ public class ManagerAdapter extends BaseAdapter {
             managerImv1.setImageResource(R.drawable.manregactivity_imv_portrait2);
             managerImv1.getResources().getDrawable(R.drawable.manregactivity_imv_portrait2);
         }
-        String [] s=new String[]{"nokia","iphone","htc","mi2","lg","oppo","sumsung"};
+        String [] s=new String[]{"nokia","iphone","htc","mi2","lg","oppo","sumsung sageagagea"};
         managerActivityTxt2Name.setText(s[position]);
         db.items_save(managerActivityTxt2Name.getText().toString().trim(),null,
                 managerActivityTxt2Position.getText().toString().trim(),
