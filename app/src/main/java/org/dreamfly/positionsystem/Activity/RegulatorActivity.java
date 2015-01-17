@@ -7,4 +7,7 @@ import android.support.v7.app.ActionBarActivity;
  * 被管理者界面Activity类
  */
 public class RegulatorActivity extends ActionBarActivity {
+
+
+
 }

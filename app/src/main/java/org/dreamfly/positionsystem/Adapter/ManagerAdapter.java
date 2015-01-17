@@ -73,4 +73,6 @@ public class ManagerAdapter extends BaseAdapter {
 
     }
 
+
+
 }
