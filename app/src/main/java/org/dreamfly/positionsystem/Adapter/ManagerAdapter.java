@@ -3,11 +3,9 @@ package org.dreamfly.positionsystem.Adapter;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.widget.BaseAdapter;
-
 import java.util.List;
-import java.util.Map;
-
 import org.dreamfly.positionsystem.Activity.ManagerActivity;
+import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.bean.Manager;
 import android.view.View;
@@ -24,10 +22,12 @@ public class ManagerAdapter extends BaseAdapter {
     private ManagerActivity mManagerActivity;
     private Context context;
     private List<Manager> mMangerList;//适配器中应该含有的容器,
+    DataBase db;
 
-    public ManagerAdapter(List<Manager> mMangerList, Context context) {
+    public ManagerAdapter(List<Manager> mMangerList, Context context, DataBase db) {
         this.mMangerList = mMangerList;
         this.context = context;
+        this.db=db;
     }
 
     public int getCount() {
@@ -66,6 +66,9 @@ public class ManagerAdapter extends BaseAdapter {
         }
         String [] s=new String[]{"nokia","iphone","htc","mi2","lg","oppo","sumsung"};
         managerActivityTxt2Name.setText(s[position]);
+        db.items_save(managerActivityTxt2Name.getText().toString().trim(),null,
+                managerActivityTxt2Position.getText().toString().trim(),
+                managerActivityTxt3Time.getText().toString().trim());
         return view;
     }
 

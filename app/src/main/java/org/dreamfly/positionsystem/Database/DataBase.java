@@ -21,18 +21,19 @@ public class DataBase {
     public void CreateTable_items(){
         try{
             db.execSQL("CREATE TABLE items("+"_id INTEGER primary key autoincrement,"+"name TEXT,"+
-            "position TEXT,"+"time TEXT"+");");
+           "subname TEXT,"+"position TEXT,"+"time TEXT"+");");
             Log.v(TAG,"create table ok");
         }
         catch (Exception e){
             Log.v(TAG,"create table err");
         }
     }
-    public boolean items_save(String name,String position,String time){
+    public boolean items_save(String name,String  subname,String position,String time){
         String sql="";
         try {
-            sql="insert into items values(null,'"+name+"','"+position+"','"+time+"')";
+            sql="insert into items values(null,'"+name+"','"+subname+"','"+position+"','"+time+"')";
             db.execSQL(sql);
+            Log.v("TAG","insert into table items ="+sql);
             return true;
         }
         catch (Exception e){
@@ -42,8 +43,9 @@ public class DataBase {
     }
     public Cursor getItems(){
         Log.v("TAG","get items from database");
-        String[] colums=new String[]{"_id","name","position","time"};
+        String[] colums=new String[]{"_id","name","subname","position","time"};
         return db.query("items",colums,null,null,null,null,null);
     }
+
 
 }
