@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Created by lzw on 2015/1/15.
@@ -60,12 +61,14 @@ public class ManagerAdapter extends BaseAdapter {
              holder=new ViewHolder();
              this.bindID(contentview,holder);
              this.setItemInfo(this.mManager,holder);
+             this.setClickListener(holder,position);
              contentview.setTag(holder);
         }
         else
         {
             holder=(ViewHolder)contentview.getTag();
             this.setItemInfo(this.mManager,holder);
+            this.setClickListener(holder,position);
         }
         return contentview;
     }
@@ -107,7 +110,17 @@ public class ManagerAdapter extends BaseAdapter {
           holder.txtManagerItemMarkName.setText(oneManager.getMangerMarks());
           holder.txtManagertmeLastTouchTime.setText(oneManager.getLastDateTouch());
           holder.txtManagerItemLastLocation.setText(oneManager.getLastLocation());
+    }
 
+
+    private void setClickListener(ViewHolder holder,int pos)
+    {
+           final Manager oneManger=this.mMangerList.get(pos);
+           holder.btnManagerItemPosition.setOnClickListener(new View.OnClickListener() {
+               public void onClick(View view) {
+
+               }
+           });
     }
 
 }
