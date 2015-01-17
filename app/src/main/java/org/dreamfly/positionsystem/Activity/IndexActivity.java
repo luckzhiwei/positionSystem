@@ -2,10 +2,12 @@ package org.dreamfly.positionsystem.Activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -25,6 +27,8 @@ public class IndexActivity extends ActionBarActivity {
     //变量名与View层id一致
     ImageView imv_indexactivity_background;
     TextView txt_indexactivity_textwelcome;
+    SQLiteDatabase db;
+    private String TAG="dataDase";
 
     int alpha=10;//声明控制渐变时间的变量
     int b=0;//声明子线程控制标志的变量
@@ -38,9 +42,9 @@ public class IndexActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.setContentView(R.layout.index_layout);
-        DataBase db=new DataBase(this);
-        dataBaseStart(this,db);
-       imv_indexactivity_background=(ImageView)findViewById(R.id.imv_indexactivity_background);
+        DataBase mDataBase=new DataBase(this);
+        dataBaseStart(this,mDataBase);
+        imv_indexactivity_background=(ImageView)findViewById(R.id.imv_indexactivity_background);
         /**
          * 设置图片渐变的函数
          * @param alpha:
@@ -99,8 +103,12 @@ public class IndexActivity extends ActionBarActivity {
         mHandler.sendMessage(mHandler.obtainMessage());
 
     }
-    public void dataBaseStart(Context context,DataBase db){
-        db.CreateTable_items();
+    public void dataBaseStart(Context context,DataBase mDataBase){
+
+            db = mDataBase.getWritableDatabase();
+            Log.v(TAG, "creat database");
+
+
     }
 
 

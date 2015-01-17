@@ -1,6 +1,7 @@
 package org.dreamfly.positionsystem.Adapter;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
@@ -25,7 +26,6 @@ import android.widget.Toast;
  */
 
 public class ManagerAdapter extends BaseAdapter {
-
 
     private Context mContext;
     private List<Manager> mMangerList;//适配器中应该含有的容器,
@@ -60,15 +60,15 @@ public class ManagerAdapter extends BaseAdapter {
              contentview=LayoutInflater.from(this.mContext).inflate(R.layout.manager_items,null);
              holder=new ViewHolder();
              this.bindID(contentview,holder);
-             this.setItemInfo(this.mManager,holder);
-             this.setClickListener(holder,position);
+             this.setItemInfo(this.mManager, holder);
+             this.setClickListener(holder, position,db);
              contentview.setTag(holder);
         }
         else
         {
             holder=(ViewHolder)contentview.getTag();
             this.setItemInfo(this.mManager,holder);
-            this.setClickListener(holder,position);
+            this.setClickListener(holder, position,db);
         }
         return contentview;
     }
@@ -113,11 +113,16 @@ public class ManagerAdapter extends BaseAdapter {
     }
 
 
-    private void setClickListener(ViewHolder holder,int pos)
+    private void setClickListener(final ViewHolder holder,final int pos,final DataBase db)
     {
            final Manager oneManger=this.mMangerList.get(pos);
+           final String s[]={"南京路234号","上海路278号","北京路123号","河北路456号",
+                   "南山路88号","合肥路87号","河南路768号"};
            holder.btnManagerItemPosition.setOnClickListener(new View.OnClickListener() {
                public void onClick(View view) {
+                   ContentValues cv=new ContentValues();
+                   oneManger.setLastLocation("上次的位置"+s[pos]);
+                   holder.txtManagerItemLastLocation.setText(oneManger.getLastLocation());
 
                }
            });
