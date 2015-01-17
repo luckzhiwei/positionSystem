@@ -1,5 +1,8 @@
 package org.dreamfly.positionsystem.Activity;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
@@ -29,22 +32,24 @@ public class ManagerActivity extends ActionBarActivity {
     private DefineListView managerActivityListView;
     private ManagerAdapter mManagerAdapter;
     private TextView  txtManagerActivityTitle;
+    DataBase mDataBase=new DataBase(this);
+    SQLiteDatabase db;
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.manager_layout);
-        DataBase db=new DataBase(this);
-        this.initila(db);
+
+        this.initila(mDataBase);
 
     }
-    public void initila(DataBase db)
+    public void initila(DataBase mDataBase)
     {
         this.managerActivityListView=(DefineListView)
         this.findViewById(R.id.delistiview_manageractivity_showmanger);
         this.txtManagerActivityTitle=(TextView)
         this.findViewById(R.id.txt_manageractivity_title);
-        this.mManagerAdapter=new ManagerAdapter(this.getData(),this,db);
+        this.mManagerAdapter=new ManagerAdapter(this.getData(),this,mDataBase);
         this.managerActivityListView.setAdapter(this.mManagerAdapter);
     }
 
@@ -61,6 +66,25 @@ public class ManagerActivity extends ActionBarActivity {
             m.setLastLocation("usetc"+i);
             list.add(m);
         }
+        this.setData(mDataBase,list);
         return list;
+    }
+
+    public void setData(DataBase mDataBase,List<Manager> list){
+        ContentValues cv=new ContentValues();
+        db=mDataBase.getWritableDatabase();
+        Cursor cur=db.query("items",new String[]{"id","name","subname","position","time"},
+                "id=?",new String[]{"0"},null,null,null);
+        if(!cur.moveToNext()) {
+            for (int i = 0; i < 7; i++) {
+                Manager manager = list.get(i);
+                cv.put("id",i);
+                cv.put("name",manager.getDeviceName());
+                cv.put("subname",manager.getMangerMarks());
+                cv.put("position",manager.getLastLocation());
+                cv.put("time",manager.getLastDateTouch());
+                db.insert("items",null,cv);
+            }
+        }
     }
 }
