@@ -33,17 +33,15 @@ public class LoginActivity extends Activity {
     private EditText edittextLoginactivityUsername;
     private EditText editextLoginactivityPassword;
 
-    private UserInfoUtils mUserInfoUtils;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.setContentView(R.layout.login_layout);
         this.initila();
-        this.mUserInfoUtils=new UserInfoUtils();
 
     }
-
     /**
      * @deprecated 初始化函数
      * 对组件进行视图的ID绑定

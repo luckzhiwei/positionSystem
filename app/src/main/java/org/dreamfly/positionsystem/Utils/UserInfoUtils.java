@@ -43,11 +43,8 @@ public class UserInfoUtils {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            this.initialUserInfo();//没有文件的时候才写入未登录状态
-        }else{//存在文件就不会改动文件中的内容
-
+            this.initialUserInfo();//没有文件的时候才写入未登录状态,没有就不写
         }
-
     }
 
     /**
@@ -93,6 +90,7 @@ public class UserInfoUtils {
 
     /**
      * 通过传递个HASHMAP来遍历得到MAP的所有键值对，并且写入文件,以“#”区分
+     *
      * @param userInfo
      */
     public void updateUserInfo(Map<String, String> userInfo) {
@@ -117,16 +115,27 @@ public class UserInfoUtils {
 
     /**
      * 验证是否登录的函数,如果并且将文件的字符串切割开来，作为成员空间的字符串数组
+     *
      * @return
      */
     public boolean isLogin() {
+        boolean islogin = false;
         String userinfo = this.getUserInfo();
-        this.userInfoArray = userinfo.split("#");
-        if (this.userInfoArray[0].equals("unlogin")) {
-            return false;
-        } else {
-            return true;
+        this.userInfoArray = userinfo.split("#");//赋值给成员数组变量
+        for (String tmpStr : this.userInfoArray) {
+            Log.i("lzw", tmpStr);
+            if (tmpStr.equals("unlogin")) {
+                islogin = false;
+                break;
+            } else if (tmpStr.equals("login")) {
+                islogin = true;
+                break;
+            } else {
+                continue;
+            }
+
         }
+        return (islogin);
     }
 
     /**
@@ -136,7 +145,7 @@ public class UserInfoUtils {
     public String[] getUserInfoArray() {
         if (this.userInfoArray != null) {
             return (this.userInfoArray);
-        }else{
+        } else {
             return null;
         }
     }
