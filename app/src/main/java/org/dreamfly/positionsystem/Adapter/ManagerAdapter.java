@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.BaseAdapter;
 import java.util.List;
@@ -19,12 +20,13 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 /**
- * Created by asus on 2015/1/15.
+ * Created by lzw on 2015/1/15.
  */
 
 public class ManagerAdapter extends BaseAdapter {
-    private ManagerActivity mManagerActivity;
-    private Context context;
+
+
+    private Context mContext;
     private List<Manager> mMangerList;//适配器中应该含有的容器,
     private DataBase db;
     private Cursor cur;
@@ -32,7 +34,7 @@ public class ManagerAdapter extends BaseAdapter {
 
     public ManagerAdapter(List<Manager> mMangerList, Context context, DataBase db) {
         this.mMangerList = mMangerList;
-        this.context = context;
+        this.mContext=context;
         this.db=db;
     }
 
@@ -48,121 +50,64 @@ public class ManagerAdapter extends BaseAdapter {
         return (position);
     }
 
-    public View getView(int position, View arg1, ViewGroup arg2) {//加载XML视图文件
-        View view = LayoutInflater.from(context).inflate(R.layout.manager_items, null);
-        TextView managerActivityTxt2Name,managerActivityTxt2Position,managerActivityTxt3Time;
-        Button managerActivityBtnPhone,managerActivityBtnPosition;
-        ImageView managerImv1;
-        managerActivityTxt2Name=(TextView)
-                view.findViewById(R.id.manageractivity_txt2_name);
-        managerActivityTxt2Position=(TextView)
-                view.findViewById(R.id.manageractivity_txt2_location);
-        managerActivityTxt3Time=(TextView)
-                view.findViewById(R.id.manageractivity_txt3_time);
-        managerActivityBtnPhone=(Button)
-                view.findViewById(R.id.manageractivity_btn_phone);
-        managerActivityBtnPosition=(Button)
-                view.findViewById(R.id.manageractivity_btn_position);
-        managerImv1=(ImageView)
-                view.findViewById(R.id.manageractivity_imv1);
-        DataBaseInfo(managerActivityTxt2Name,managerActivityTxt2Position,
-                managerActivityTxt3Time,db);
-        ChangeView(managerImv1,managerActivityTxt2Name,managerActivityTxt2Position
-        ,managerActivityTxt3Time,managerActivityBtnPhone,managerActivityBtnPosition,
-                db,position,cur);
-        getPosition(position);
+    public View getView(int position, View contentview, ViewGroup arg2) {//加载XML视图文件
 
-
-
-        return view;
+        ViewHolder holder;
+        this.mManager=this.mMangerList.get(position);
+        if(contentview==null)
+        {
+             contentview=LayoutInflater.from(this.mContext).inflate(R.layout.manager_items,null);
+             holder=new ViewHolder();
+             this.bindID(contentview,holder);
+             this.setItemInfo(this.mManager,holder);
+             contentview.setTag(holder);
+        }
+        else
+        {
+            holder=(ViewHolder)contentview.getTag();
+            this.setItemInfo(this.mManager,holder);
+        }
+        return contentview;
     }
+
 
     private class ViewHolder{
 
+       TextView  txtManagerItemMarkName;
+       TextView  txtManagertmeLastTouchTime;
+       TextView  txtManagerItemLastLocation;
+       ImageView imgManagerItemUserHead;
+       Button    btnManagerItemPhone;
+       Button    btnManagerItemPosition;
+
     }
 
-
     /**
-     * 用户操作引起的视图和数据库的变化
-     * @param imv 头像
-     * @param txt1 设备名字
-     * @param txt2 上一次定位位置
-     * @param txt3 上一次定位时间
-     * @param btn1 电话按钮
-     * @param btn2 定位按钮
-     * @param db 数据库对象
-     * @param position  items的编号
-     * @param cur  游标
+     * 绑定视图ID,holder是组件容器
+     * @param contentview
+     * @param holder
      */
-    private void ChangeView(ImageView imv,TextView txt1,  TextView txt2,TextView txt3
-                            ,Button btn1,Button btn2,DataBase db, int position,Cursor cur)
+    private void bindID(View contentview,ViewHolder holder)
     {
-
-        String [] s1=new String[]{"nokia","iphone","htc","mi2","lg","oppo","sumsung"};
-        txt1.setText(s1[position]);
-        String [] sLocation=new String[]{"南京路256号","南京路257号","南京路258号","南京路259号",
-                "上海路1070号","中山路57号","河北路234号"};
-
-        btn2.setOnClickListener(new View.OnClickListener() {
-            Manager m;
-            String [] sLocation=new String[]{"南京路256号","南京路257号","南京路258号","南京路259号",
-                    "上海路1070号","中山路57号","河北路234号"};
-            String [] s2=new String[]{"河北路256号","中山路257号","福建路258号","北京路259号",
-                    "郑州路1070号","泰山路57号","河北路634号"};
-            @Override
-            public void onClick(View v) {
-
-                AlertDialog.Builder builder=new AlertDialog.Builder(context);
-                builder.setTitle("是否获取地理位置?");
-                builder.setNegativeButton("取消",new CancelDialogListener());
-                builder.setPositiveButton("确定",new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //m.setLastLocation(s2[position]);
-                    }
-                });
-                /*String temp=m.getLastLocation();
-                if (temp!=null){
-                    txt2.setText(temp);
-                }*/
-                builder.show();
-            }
-
-         });
-
-        if((position%2)==0){
-            imv.setImageResource(R.drawable.manregactivity_imv_portrait2);
-            imv.getResources().getDrawable(R.drawable.manregactivity_imv_portrait2);
-        }
-
-        cur=db.getItems();
-
-    }
-
-
-    public int getPosition(int position){
-        return position;
+            holder.imgManagerItemUserHead=(ImageView)contentview.findViewById(R.id.manageractivity_imv1);
+            holder.txtManagerItemLastLocation=(TextView)contentview.findViewById(R.id.manageractivity_txt2_location);
+            holder.txtManagerItemMarkName=(TextView)contentview.findViewById(R.id.manageractivity_txt2_name);
+            holder.txtManagertmeLastTouchTime=(TextView)contentview.findViewById(R.id.manageractivity_txt3_time);
+            holder.btnManagerItemPhone=(Button)contentview.findViewById(R.id.manageractivity_btn_phone);
+            holder.btnManagerItemPosition=(Button)contentview.findViewById(R.id.manageractivity_btn_position);
     }
 
     /**
-     * 本地数据存储操作
-     * @param txt1 设备名字
-     * @param txt2 上一次定位位置
-     * @param txt3 上一次定位时间
-     * @param db
+     * 一个容器的实例填入函数中去
+     * @param oneManager
+     * @param holder
      */
-    public void DataBaseInfo(TextView txt1,TextView txt2,TextView txt3,DataBase db){
-        db.items_save(txt1.getText().toString().trim(),null,
-                txt2.getText().toString().trim(),
-                txt3.getText().toString().trim());
+    private void  setItemInfo(Manager oneManager,ViewHolder holder)
+    {
+          holder.txtManagerItemMarkName.setText(oneManager.getMangerMarks());
+          holder.txtManagertmeLastTouchTime.setText(oneManager.getLastDateTouch());
+          holder.txtManagerItemLastLocation.setText(oneManager.getLastLocation());
+
     }
-    class CancelDialogListener implements DialogInterface.OnClickListener{
-
-        public void onClick(DialogInterface dialog, int which) {
-
-        }
-    }
-
-
 
 }

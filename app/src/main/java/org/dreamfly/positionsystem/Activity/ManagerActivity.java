@@ -47,18 +47,25 @@ public class ManagerActivity extends ActionBarActivity {
         this.mManagerAdapter=new ManagerAdapter(this.getData(),this,db);
         this.managerActivityListView.setAdapter(this.mManagerAdapter);
     }
+
+
+
     public List<Manager> getData(){
         List<Manager> list=new ArrayList<Manager>();
 
         for(int i=0;i<7;i++)
         {
-
             Manager m=new Manager();
-
+            m.setDeviceNma("LG"+i);
+            m.setLastDateTouch("1-16"+i);
+            m.setMangerMarks("mother"+i);
+            m.setLastLocation("usetc"+i);
             list.add(m);
         }
         return list;
     }
+
+
 
 
 
