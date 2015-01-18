@@ -33,14 +33,21 @@ public class LoginActivity extends Activity {
     private EditText edittextLoginactivityUsername;
     private EditText editextLoginactivityPassword;
 
-
+     private UserInfoUtils mUserinfo;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.setContentView(R.layout.login_layout);
         this.initila();
-
+        this.mUserinfo=new UserInfoUtils();
+//        HashMap<String,String> map=new HashMap<String,String>();
+//        map.put("loginstate","login");
+//        map.put("userID","1");
+//        map.put("famliyName","Tree");
+//        map.put("DevName","LG G3");
+//        this.mUserinfo.updateUserInfo(map);
+        this.mUserinfo.isLogin();
     }
     /**
      * @deprecated 初始化函数
