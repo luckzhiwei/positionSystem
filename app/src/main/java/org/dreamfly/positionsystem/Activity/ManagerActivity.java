@@ -83,4 +83,5 @@ public class ManagerActivity extends ActionBarActivity {
         }
         cur.close();
     }
+    
 }
