@@ -17,7 +17,8 @@ public class CurrentInformationUtils {
         day=c.get(Calendar.DAY_OF_MONTH);
         hour=c.get(Calendar.HOUR_OF_DAY);
         minute=c.get(Calendar.MINUTE);
-        getCurrentTime=month+"-"+day+"  "+hour+":"+minute;
+        if(minute<10) {getCurrentTime=month+"-"+day+"  "+hour+":"+"0"+minute;}
+        else {getCurrentTime=month+"-"+day+"  "+hour+":"+minute;}
 
         return getCurrentTime;
 

@@ -11,6 +11,7 @@ import java.util.List;
 import org.dreamfly.positionsystem.Activity.ManagerActivity;
 import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.R;
+import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 import org.dreamfly.positionsystem.bean.Manager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ public class ManagerAdapter extends BaseAdapter {
     private SQLiteDatabase db;
     private Cursor cur;
     private Manager mManager;
+    private CurrentInformationUtils mInformation=new CurrentInformationUtils();
 
     public ManagerAdapter(List<Manager> mMangerList, Context context, DataBase mDataBase) {
         this.mMangerList = mMangerList;
@@ -138,6 +140,8 @@ public class ManagerAdapter extends BaseAdapter {
                public void onClick(View view) {
                    oneManger.setLastLocation("上次的位置:"+s[pos]);
                    mDataBase.items_changeValue("position",oneManger.getLastLocation(),pos);
+                   oneManger.setLastDateTouch(mInformation.getCurrentTime());
+                   mDataBase.items_changeValue("time",oneManger.getLastDateTouch(),pos);
                }
            });
     }
