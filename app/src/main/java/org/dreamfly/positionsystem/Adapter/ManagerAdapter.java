@@ -95,13 +95,13 @@ public class ManagerAdapter extends BaseAdapter {
      */
     private void bindID(View contentview,ViewHolder holder)
     {
-            holder.imgManagerItemUserHead=(ImageView)contentview.findViewById(R.id.manageractivity_imv1);
-            holder.txtManagerItemLastLocation=(TextView)contentview.findViewById(R.id.manageractivity_txt2_location);
-            holder.txtManagerItemMarkName=(TextView)contentview.findViewById(R.id.manageractivity_txt2_name);
-            holder.txtManagertgetDeviceName=(TextView)contentview.findViewById(R.id.manageractivity_txt2_name);
-            holder.txtManagertmeLastTouchTime=(TextView)contentview.findViewById(R.id.manageractivity_txt3_time);
-            holder.btnManagerItemPhone=(Button)contentview.findViewById(R.id.manageractivity_btn_phone);
-            holder.btnManagerItemPosition=(Button)contentview.findViewById(R.id.manageractivity_btn_position);
+           holder.imgManagerItemUserHead=(ImageView)contentview.findViewById(R.id.manageractivity_imv1);
+           holder.txtManagerItemLastLocation=(TextView)contentview.findViewById(R.id.manageractivity_txt2_location);
+           holder.txtManagerItemMarkName=(TextView)contentview.findViewById(R.id.manageractivity_txt2_name);
+           holder.txtManagertgetDeviceName=(TextView)contentview.findViewById(R.id.manageractivity_txt2_name);
+           holder.txtManagertmeLastTouchTime=(TextView)contentview.findViewById(R.id.manageractivity_txt3_time);
+           holder.btnManagerItemPhone=(Button)contentview.findViewById(R.id.manageractivity_btn_phone);
+           holder.btnManagerItemPosition=(Button)contentview.findViewById(R.id.manageractivity_btn_position);
     }
 
     /**

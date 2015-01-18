@@ -29,13 +29,13 @@
         android:background="#DDFFFF"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
+        <org.dreamfly.positionsystem.Custom.DefineListView
+            android:listSelector="@android:color/transparent"
+            android:id="@+id/delistiview_manageractivity_showmanger"
+            android:layout_width="fill_parent"
+            android:divider="@null"
+            android:layout_height="wrap_content">
+        </org.dreamfly.positionsystem.Custom.DefineListView>
 
-    <org.dreamfly.positionsystem.Custom.DefineListView
-         android:listSelector="@android:color/transparent"
-         android:id="@+id/delistiview_manageractivity_showmanger"
-         android:layout_width="fill_parent"
-         android:divider="@null"
-         android:layout_height="wrap_content">
-    </org.dreamfly.positionsystem.Custom.DefineListView>
     </LinearLayout>
 </LinearLayout>
