@@ -137,18 +137,8 @@ public class ManagerAdapter extends BaseAdapter {
                    "南山路88号","合肥路87号","河南路768号"};
            holder.btnManagerItemPosition.setOnClickListener(new View.OnClickListener() {
                public void onClick(View view) {
-                   db=mDataBase.getWritableDatabase();
-                   ContentValues cv=new ContentValues();
                    oneManger.setLastLocation("上次的位置:"+s[pos]);
-                   cv.put("position",oneManger.getLastLocation());
-                   long long1=db.update("items",cv,"id=?",new String[]{pos+""});
-                   if(long1 == -1){
-                       Toast.makeText(mContext,"添加失败",Toast.LENGTH_SHORT).show();
-                   }
-                   else {
-                       Toast.makeText(mContext,"添加成功",Toast.LENGTH_SHORT).show();
-                   }
-
+                   mDataBase.items_changeValue("position",oneManger.getLastLocation(),pos);
                }
            });
     }

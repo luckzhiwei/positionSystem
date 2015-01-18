@@ -74,8 +74,7 @@ public class ManagerActivity extends ActionBarActivity {
     public void setData(DataBase mDataBase,List<Manager> list){
         ContentValues cv=new ContentValues();
         db=mDataBase.getWritableDatabase();
-        Cursor cur=db.query("items",new String[]{"id","name","subname","position","time"},
-                "id=?",new String[]{"0"},null,null,null);
+        Cursor cur=mDataBase.Selector(0);
         if(!cur.moveToNext()) {
             for (int i = 0; i < 7; i++) {
                 Manager manager = list.get(i);
