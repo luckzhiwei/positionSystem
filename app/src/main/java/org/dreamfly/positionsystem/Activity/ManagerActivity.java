@@ -1,27 +1,20 @@
 package org.dreamfly.positionsystem.Activity;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 //import org.dreamfly.positionsystem.Adapter.ManagerAdapter;
 import org.dreamfly.positionsystem.Adapter.ManagerAdapter;
 import org.dreamfly.positionsystem.Custom.DefineListView;
 import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.R;
+import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 import org.dreamfly.positionsystem.bean.Manager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by zhengyl on 15-1-13.
@@ -34,6 +27,7 @@ public class ManagerActivity extends ActionBarActivity {
     private TextView  txtManagerActivityTitle;
     DataBase mDataBase=new DataBase(this);
     SQLiteDatabase db;
+    CurrentInformationUtils mInformation=new CurrentInformationUtils();
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,13 +55,13 @@ public class ManagerActivity extends ActionBarActivity {
         for(int i=0;i<7;i++)
         {
             Manager m=new Manager();
-            m.setDeviceNma("LG"+i);
-            m.setLastDateTouch("1-16");
+            m.setDeviceNma(mInformation.setFirstDeviceName(i));
+            m.setLastDateTouch(mInformation.getCurrentTime());
             m.setMangerMarks("mother"+i);
-            m.setLastLocation("usetc"+i);
+            m.setLastLocation(mInformation.setFirstLocation(i));
             list.add(m);
         }
-        this.setData(mDataBase,list);
+        this.setData(mDataBase, list);
         return list;
     }
 
@@ -83,5 +77,5 @@ public class ManagerActivity extends ActionBarActivity {
         }
         cur.close();
     }
-    
+
 }

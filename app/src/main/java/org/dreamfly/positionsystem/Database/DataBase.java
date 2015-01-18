@@ -98,4 +98,12 @@ public class DataBase extends SQLiteOpenHelper{
         return cur;
     }
 
+    /**
+     * 删除某一行
+     * @param id
+     */
+    public void delItems(int id){
+        db=this.getWritableDatabase();
+        db.execSQL("delete from items where id="+id);
+    }
 }
