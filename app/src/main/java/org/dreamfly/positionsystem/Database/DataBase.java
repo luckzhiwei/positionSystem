@@ -30,7 +30,7 @@ public class DataBase extends SQLiteOpenHelper{
      */
     public void onCreate(SQLiteDatabase db){
         try {
-            db.execSQL("CREATE TABLE items(" + "id INTEGER primary key autoincrement," + "name TEXT," +
+            db.execSQL("CREATE TABLE items(" + "id INTEGER primary key ," + "name TEXT," +
                     "subname TEXT," + "position TEXT," + "time TEXT" + ");");
             Log.v(TAG, "create table ok");
         }
@@ -102,4 +102,12 @@ public class DataBase extends SQLiteOpenHelper{
         return cur;
     }
 
+    /**
+     * 删除某一行
+     * @param id
+     */
+    public void delItems(int id){
+        db=this.getWritableDatabase();
+        db.execSQL("delete from items where id="+id);
+    }
 }
