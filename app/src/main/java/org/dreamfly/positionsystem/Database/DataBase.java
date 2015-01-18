@@ -48,16 +48,20 @@ public class DataBase extends SQLiteOpenHelper{
      * @param position 上次定位位置
      * @param time 上次定位时间
      */
-    public void items_newItem(String name,String subname,String position,String time) {
-
-        String sql = "";
+    public void items_newItem(int id,String name,String subname,String position,String time) {
         try {
-            sql = "insert into items " +
-                    "values(null,'" + name + "','" + subname + "','" + position + "','" + time + "')";
-            db.execSQL(sql);
-            Log.v(TAG, "insert into items ok" + sql);
-        } catch (Exception e) {
-            Log.v(TAG, "insert into items err" + sql);
+                db = this.getWritableDatabase();
+                ContentValues cv = new ContentValues();
+                cv.put("id", id);
+                cv.put("name", name);
+                cv.put("subname", subname);
+                cv.put("position", position);
+                cv.put("time", time);
+                db.insert("items", null, cv);
+                Log.v(TAG,"insert into items ok");
+        }
+        catch (Exception e){
+            Log.v(TAG,"insert into items err");
         }
     }
 
@@ -83,7 +87,7 @@ public class DataBase extends SQLiteOpenHelper{
 
     /**
      * 查询id=指定值的数据
-     * @param id
+     * @param id 行
      * @return cur
      */
     public Cursor Selector(int id){
@@ -93,6 +97,5 @@ public class DataBase extends SQLiteOpenHelper{
                 "id=?",new String[]{id+""},null,null,null);
         return cur;
     }
-
 
 }

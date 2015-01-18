@@ -110,9 +110,8 @@ public class ManagerAdapter extends BaseAdapter {
     private void  setItemInfo(Manager oneManager,ViewHolder holder,int position,DataBase mDataBase)
     {
 
-          db=mDataBase.getReadableDatabase();
-          cur=db.query("items",new String[]{"id","name","subname","position","time"},
-                  "id=?",new String[]{position+""},null,null,null);
+
+          cur=mDataBase.Selector(position);
           while (cur.moveToNext()) {
               holder.txtManagertmeLastTouchTime.setText(cur.getString(cur.getColumnIndex("time")));
               holder.txtManagertgetDeviceName.setText(cur.getString(cur.getColumnIndex("name")));

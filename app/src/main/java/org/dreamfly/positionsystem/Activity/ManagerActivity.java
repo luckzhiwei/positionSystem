@@ -72,18 +72,13 @@ public class ManagerActivity extends ActionBarActivity {
     }
 
     public void setData(DataBase mDataBase,List<Manager> list){
-        ContentValues cv=new ContentValues();
-        db=mDataBase.getWritableDatabase();
         Cursor cur=mDataBase.Selector(0);
         if(!cur.moveToNext()) {
             for (int i = 0; i < 7; i++) {
                 Manager manager = list.get(i);
-                cv.put("id",i);
-                cv.put("name",manager.getDeviceName());
-                cv.put("subname",manager.getMangerMarks());
-                cv.put("position",manager.getLastLocation());
-                cv.put("time",manager.getLastDateTouch());
-                db.insert("items",null,cv);
+                mDataBase.items_newItem(i,manager.getDeviceName(),manager.getMangerMarks()
+                ,manager.getLastLocation(),manager.getLastDateTouch());
+
             }
         }
         cur.close();
