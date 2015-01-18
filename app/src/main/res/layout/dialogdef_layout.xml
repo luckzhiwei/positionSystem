@@ -1,9 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-
+    android:background="@drawable/alert_background"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp">
+        <TextView
+            android:layout_marginTop="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:id="@+id/txt_definedialog_title"
+            android:maxLines="3"
+            android:minLines="1"
+            android:text="是否成为管理者"
+            android:textColor="#000000"/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#c6c6c6"
+        />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="56dp">
+        <Button
+            android:layout_marginLeft="6dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:textColor="@color/blue_define"
+            android:text="是"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:background="@drawable/leftbtn_dialogdef_state"
+            android:textSize="14sp"
+            android:id="@+id/btn_dialogdefine_positive"
+            />
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="wrap_content"
+            android:background="#c6c6c6"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:textColor="@color/blue_define"
+            android:text="否"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:id="@+id/btn_dialogdefine_negetive"
+            android:background="@drawable/rightbtn_dialogdef_state"
+            />
+    </LinearLayout>
 </LinearLayout>
