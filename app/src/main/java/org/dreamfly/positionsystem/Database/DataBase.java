@@ -24,6 +24,10 @@ public class DataBase extends SQLiteOpenHelper{
         this.context = context;
     }
 
+    /**
+     * 建立表格
+     * @param db
+     */
     public void onCreate(SQLiteDatabase db){
         try {
             db.execSQL("CREATE TABLE items(" + "id INTEGER primary key autoincrement," + "name TEXT," +

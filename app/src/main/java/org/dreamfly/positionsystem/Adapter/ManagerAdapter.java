@@ -110,7 +110,6 @@ public class ManagerAdapter extends BaseAdapter {
     private void  setItemInfo(Manager oneManager,ViewHolder holder,int position,DataBase mDataBase)
     {
 
-
           cur=mDataBase.Selector(position);
           while (cur.moveToNext()) {
               holder.txtManagertmeLastTouchTime.setText(cur.getString(cur.getColumnIndex("time")));
