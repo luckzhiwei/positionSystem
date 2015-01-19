@@ -11,12 +11,12 @@ import java.io.File;
  */
 public class FileUitls {
 
-    private static String DIRNAME = "/posSystem/";
+    private static String DIRNAME = "/Android/data/org.dreamfly.positionSystem/";
 
     private File mCacheFileDir;
 
     /**
-     * 建立该APP的缓存文件夹
+     * 建立该APP的缓存文件夹x
      */
     public FileUitls() {
         if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)) {
