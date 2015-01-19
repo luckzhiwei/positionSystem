@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.dreamfly.positionsystem.Custom.DefineDialog;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Utils.FileUitls;
 import org.dreamfly.positionsystem.Utils.UserInfoUtils;
@@ -32,20 +33,21 @@ public class LoginActivity extends Activity {
     private Button btnLoginactivityLogin;
     private EditText edittextLoginactivityUsername;
     private EditText editextLoginactivityPassword;
+    private DefineDialog mIsManagerDialog;
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.setContentView(R.layout.login_layout);
-        this.initila();
-
+        this.initial();
     }
+
     /**
      * @deprecated 初始化函数
      * 对组件进行视图的ID绑定
      */
-    private void initila() {
+    private void initial() {
         this.txtLoginactivityRegister = (TextView)
                 findViewById(R.id.txt_loginactivity_register);
         this.btnLoginactivityLogin = (Button)
@@ -55,12 +57,11 @@ public class LoginActivity extends Activity {
         this.editextLoginactivityPassword = (EditText)
                 findViewById(R.id.edtext_loginactivity_password);
         this.bindListener();
-        Log.i("lzw","test");
 
     }
 
     /**
-     * @deprecated 注册组件的监听器
+     * 注册组件的监听器
      */
     private void bindListener() {
 
@@ -68,28 +69,76 @@ public class LoginActivity extends Activity {
         this.txtLoginactivityRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Intent registerIntent = new Intent();
-
-                registerIntent.setClass(getApplicationContext(), RegistActivity.class
-
+                registerIntent.setClass(getApplicationContext(), ManagerActivity.class
                 );
                 startActivity(registerIntent);
 
 
             }
         });
-        this.btnLoginactivityLogin.setOnClickListener(new View.OnClickListener(){
+        this.btnLoginactivityLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                Intent registerIntent = new Intent();
-
-                registerIntent.setClass(getApplicationContext(), ManagerActivity.class
-
-                );
-                startActivity(registerIntent);
-
-
+                showIsManagerDialog();
             }
         });
     }
 
+    /**
+     * 提示未登录用户的在登录成功的情况下选择管理者和被管理者对话框
+     */
+    private void showIsManagerDialog() {
+        this.mIsManagerDialog = new DefineDialog(LoginActivity.this).buiider().
+                setTitle("是否成为管理者").setPosBtnTxt("是").setNegBtnTxt("否")
+                .setNegBtnClickListenr(regulatorClickListener).setPosBtnClickListener(managerClickListener)
+                .setDefineDialogCanceable(false).show();
+    }
+
+    /**
+     * 成为管理者的话,写入本地文件是管理这身份
+     */
+    private View.OnClickListener managerClickListener = new View.OnClickListener() {
+        public void onClick(View view) {
+            writeUserInfo("manager");
+            mIsManagerDialog.dismiss();
+            Intent in = new Intent(LoginActivity.this, ManagerActivity.class);
+            startActivity(in);
+            finish();
+        }
+    };
+    /**
+     * 成为被管理者的话,写入本地文件是被管理者身份
+     */
+    private View.OnClickListener regulatorClickListener = new View.OnClickListener() {
+        public void onClick(View view) {
+            writeUserInfo("unmanager");
+            mIsManagerDialog.dismiss();
+            Intent in = new Intent(LoginActivity.this, RegulatorActivity.class);
+            startActivity(in);
+            finish();
+        }
+    };
+
+    /**
+     * 这是在登录界面中，按钮所确定的本地信息的缓存,
+     * 如果选择是的话,则写入被身份是管理者
+     * 如果选择否的话，则写入身份是管理者
+     *
+     * @param isManager
+     */
+    private void writeUserInfo(String isManager) {
+        UserInfoUtils mUserInfoUitls = new UserInfoUtils();
+        HashMap<String, String> hashmap = new HashMap<String, String>();
+        hashmap.put("loginstate", "login");
+        //记录登录状态
+        hashmap.put("managerstate", isManager);
+        //记录是否是管理者
+        hashmap.put("userrID", "2");
+        //记录服务器中数据库的主键的数值
+        hashmap.put("famliyName", "Tree");
+        //记录用户登录的帐号名字
+        hashmap.put("devName", "htc");
+        //记录本机的设备名字
+        mUserInfoUitls.updateUserInfo(hashmap);
+    }
 }
 

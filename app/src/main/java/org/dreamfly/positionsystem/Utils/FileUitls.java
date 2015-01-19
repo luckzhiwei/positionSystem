@@ -19,13 +19,10 @@ public class FileUitls {
      * 建立该APP的缓存文件夹
      */
     public FileUitls() {
-        Log.i("lzw", "file");
         if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)) {
-            Log.i("lzw", "sd right");
             this.mCacheFileDir = new File(android.os.Environment.getExternalStorageDirectory(), DIRNAME);
             if (!this.mCacheFileDir.exists()) {
                 this.mCacheFileDir.mkdirs();
-                Log.i("lzw", "create");
             }
         } else {
 

@@ -8,6 +8,8 @@ import android.widget.BaseAdapter;
 
 import java.util.List;
 
+
+import org.dreamfly.positionsystem.Activity.ManagerActivity;
 import org.dreamfly.positionsystem.Custom.DefineDialog;
 import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.R;
@@ -87,26 +89,24 @@ public class ManagerAdapter extends BaseAdapter {
 
     public class PositiveButtonListener implements View.OnClickListener {
 
-        private int pos;
-        private Manager oneManager;
-        private DataBase mDataBase;
-        private DefineDialog mDefineDialog;
+        int pos;
+        Manager oneManager;
+        DataBase mDataBase;
 
-        public PositiveButtonListener(int pos, final Manager oneManager, DataBase mDataBase,
-                                      DefineDialog mDefineDialog) {
+        public PositiveButtonListener(int pos, final Manager oneManager, DataBase mDataBase) {
             this.pos = pos;
             this.oneManager = oneManager;
             this.mDataBase = mDataBase;
-            this.mDefineDialog = mDefineDialog;
         }
 
         public void onClick(View view) {
-
-            oneManager.setLastLocation(mInformation.setLocation(pos,false));
+            final String s[] = {"南京路234号", "上海路278号", "北京路123号", "河北路456号",
+                    "南山路88号", "合肥路87号", "河南路768号"};
+            oneManager.setLastLocation("上次的位置:" + s[pos]);
             mDataBase.items_changeValue("position", oneManager.getLastLocation(), pos);
             oneManager.setLastDateTouch(mInformation.getCurrentTime());
             mDataBase.items_changeValue("time", oneManager.getLastDateTouch(), pos);
-            mDefineDialog.dismiss();
+
         }
     }
 
@@ -165,7 +165,9 @@ public class ManagerAdapter extends BaseAdapter {
         mDefineDialog = new DefineDialog(mContext).buiider().setDefineDialogCanceable(true)
                 .setTitle("是否获取地理位置").show();
         PositiveButtonListener mPositiveButtonListener =
-                new PositiveButtonListener(pos, oneManager, mDataBase, mDefineDialog);
+
+                new PositiveButtonListener(pos, oneManager, mDataBase);
+
         mDefineDialog.setPosBtnClickListener(mPositiveButtonListener);
 
     }
