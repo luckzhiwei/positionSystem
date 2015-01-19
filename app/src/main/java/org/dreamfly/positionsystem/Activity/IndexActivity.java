@@ -15,12 +15,13 @@ import android.widget.TextView;
 
 import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.R;
-
+import org.dreamfly.positionsystem.Utils.UserInfoUtils;
+import org.dreamfly.positionsystem.bean.Manager;
 
 
 /**
  * @author liaozhiwei create 2015/1/12
- * 出场动画的加载Activiy类
+ *         出场动画的加载Activiy类
  */
 public class IndexActivity extends ActionBarActivity {
 
@@ -28,23 +29,26 @@ public class IndexActivity extends ActionBarActivity {
     ImageView imv_indexactivity_background;
     TextView txt_indexactivity_textwelcome;
     SQLiteDatabase db;
-    private String TAG="dataDase";
+    private String TAG = "dataDase";
 
-    int alpha=10;//声明控制渐变时间的变量
-    int b=0;//声明子线程控制标志的变量
+    int alpha = 10;//声明控制渐变时间的变量
+    int b = 0;//声明子线程控制标志的变量
     //声明以控制线程通信的handler类的引用
     private Handler mHandler = new Handler();
+
+
     /**
      * 类初始化的函数
+     *
      * @param savedInstanceState
      */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.setContentView(R.layout.index_layout);
-        DataBase mDataBase=new DataBase(this);
-        dataBaseStart(this,mDataBase);
-        imv_indexactivity_background=(ImageView)findViewById(R.id.imv_indexactivity_background);
+        DataBase mDataBase = new DataBase(this);
+        dataBaseStart(this, mDataBase);
+        imv_indexactivity_background = (ImageView) findViewById(R.id.imv_indexactivity_background);
         /**
          * 设置图片渐变的函数
          * @param alpha:
@@ -87,7 +91,8 @@ public class IndexActivity extends ActionBarActivity {
     }
 
     /**
-     *该方法用于启动LoginActivity,调用Handler类"线程通信"方法,在子线程内被调用
+     * 该方法用于启动LoginActivity,调用Handler类"线程通信"方法,在子线程内被调用
+     *
      * @param
      * @return
      */
@@ -96,40 +101,38 @@ public class IndexActivity extends ActionBarActivity {
         if (alpha >= 200) {
             b = 2;
             //LoginActivity启动
-            Intent in = new Intent(this,LoginActivity.class);
-            startActivity(in);
+            startActivity(this.chooseAcitityGoTo());
             this.finish();
         }
         mHandler.sendMessage(mHandler.obtainMessage());
 
     }
-    public void dataBaseStart(Context context,DataBase mDataBase){
 
-            db = mDataBase.getWritableDatabase();
-            Log.v(TAG, "creat database");
+    public void dataBaseStart(Context context, DataBase mDataBase) {
 
+        db = mDataBase.getWritableDatabase();
+        Log.v(TAG, "creat database");
 
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_index, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    /**
+     * 读取本地缓存的文件,决定是否登录的状态
+     * 如果已经是登录状态的时候,则看下是管理者状态还是被管理着状态
+     */
+    private Intent chooseAcitityGoTo() {
+        Intent in = null;
+        UserInfoUtils mUserInfoUtils = new UserInfoUtils();
+        if (!mUserInfoUtils.isLogin()) {
+            in = new Intent(IndexActivity.this, LoginActivity.class);
+        } else {
+            if (mUserInfoUtils.isManager()) {
+                in = new Intent(IndexActivity.this, ManagerActivity.class);
+            } else {
+                in = new Intent(IndexActivity.this, RegulatorActivity.class);
+            }
         }
-         return super.onOptionsItemSelected(item);
+        return (in);
     }
+
+
 }

@@ -30,7 +30,7 @@ public class UserInfoUtils {
 
     private String userInfoTag = "loginstate:unlogin#";//初始化的个人信息
 
-    private Map<String,String> userInfoMap;
+    private Map<String, String> userInfoMap;
 
     /**
      * 构造函数，如果本地缓存的文件不存在就先创建
@@ -66,6 +66,7 @@ public class UserInfoUtils {
 
     /**
      * 去读本地的文件,返回一个字符串,如果文件不存在,或者读取失误,直接返回空引用
+     *
      * @return
      */
     private String getUserInfo() {
@@ -99,7 +100,7 @@ public class UserInfoUtils {
         Iterator iterator = userInfo.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, String> entry = (Map.Entry<String, String>) iterator.next();
-            strBuf.append(entry.getKey()+":"+entry.getValue() + "#");
+            strBuf.append(entry.getKey() + ":" + entry.getValue() + "#");
         }
         try {
             this.writeUserInfo = new FileOutputStream(this.userInfoFile);
@@ -122,18 +123,14 @@ public class UserInfoUtils {
     public boolean isLogin() {
         boolean islogin = false;
         String userinfo = this.getUserInfo();
-        this.userInfoMap=this.buildUserInfoMap(userinfo);
-        String loginstate=this.userInfoMap.get("loginstate");
-        if(loginstate!=null)
-        {
-             Log.i("lzw",loginstate+"");
-             if(loginstate.equals("login"))
-             {
-                  islogin=true;
-             }else if(loginstate.equals("unlogin"))
-             {
-                  islogin=false;
-             }
+        this.userInfoMap = this.buildUserInfoMap(userinfo);
+        String loginstate = this.userInfoMap.get("loginstate");
+        if (loginstate != null) {
+            if (loginstate.equals("login")) {
+                islogin = true;
+            } else if (loginstate.equals("unlogin")) {
+                islogin = false;
+            }
         }
 
         return (islogin);
@@ -141,9 +138,10 @@ public class UserInfoUtils {
 
     /**
      * 返回类的成员的哈希表数组,如果数组为空，则返回空引用
+     *
      * @return
      */
-    public Map<String,String> getUserInfoArray() {
+    public Map<String, String> getUserInfoArray() {
         if (this.userInfoMap != null) {
             return (this.userInfoMap);
         } else {
@@ -161,20 +159,37 @@ public class UserInfoUtils {
 
     /**
      * 从文件中得到的字符串来构建哈希表
+     *
      * @param fileInfo
      * @return
      */
-    private Map<String,String> buildUserInfoMap(String fileInfo)
-    {
-            String [] strArr=fileInfo.split("#");
-            this.userInfoMap=new HashMap<String,String>();
-            for(String tmpStr:strArr)
-            {
-                   String tmpArr[]=tmpStr.split(":");
-                   this.userInfoMap.put(tmpArr[0],tmpArr[1]);
-                   Log.i("lzw",tmpArr[0]+":"+tmpArr[1]);
-            }
-            return(this.userInfoMap);
+    private Map<String, String> buildUserInfoMap(String fileInfo) {
+        String[] strArr = fileInfo.split("#");
+        this.userInfoMap = new HashMap<String, String>();
+        for (String tmpStr : strArr) {
+            String tmpArr[] = tmpStr.split(":");
+            this.userInfoMap.put(tmpArr[0], tmpArr[1]);
+        }
+        return (this.userInfoMap);
     }
 
+    /**
+     * 判断是否是管理者
+     *
+     * @return
+     */
+    public boolean isManager() {
+        boolean ismanager = true;
+        String userinfo = this.getUserInfo();
+        this.userInfoMap = this.buildUserInfoMap(userinfo);
+        String managerstate = this.userInfoMap.get("managerstate");
+        if (managerstate != null) {
+            if (managerstate.equals("manager")) {
+                ismanager = true;
+            } else if (managerstate.equals("unmanager")) {
+                ismanager = false;
+            }
+        }
+        return (ismanager);
+    }
 }
