@@ -78,7 +78,7 @@ public class ManagerActivity extends ActionBarActivity {
             m.setDeviceNma(mInformation.setFirstDeviceName(i));
             m.setLastDateTouch(mInformation.getCurrentTime());
             m.setMangerMarks("mother"+i);
-            m.setLastLocation(mInformation.setFirstLocation(i));
+            m.setLastLocation(mInformation.setLocation(i,true));
             list.add(m);
         }
         this.setData(mDataBase, list);

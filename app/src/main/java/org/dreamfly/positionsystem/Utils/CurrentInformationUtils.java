@@ -23,12 +23,18 @@ public class CurrentInformationUtils {
         return getCurrentTime;
 
     }
-    public String setFirstLocation(int i){
-
-        String []position=new String[]{"上次的位置:北京天安门","上次的位置:长江三峡大坝",
-                "上次的位置:电子科技大学","上次的位置:西安长安街","上次的位置:山东青岛","上次的位置:天津廊坊",
-                "上次的位置:夏威夷群岛"};
-        return position[i];
+    public String setLocation(int i,boolean isFirstLoad){
+        if(isFirstLoad) {
+            String[] position1 = new String[]{"上次的位置:北京天安门", "上次的位置:长江三峡大坝",
+                    "上次的位置:电子科技大学", "上次的位置:西安长安街", "上次的位置:山东青岛", "上次的位置:天津廊坊",
+                    "上次的位置:夏威夷群岛"};
+            return position1[i];
+        }
+        else {
+           String position2[] = {"上次的位置:南京路234号", "上次的位置:上海路278号", "上次的位置:北京路123号",
+                   "上次的位置:河北路456号", "上次的位置:南山路88号", "上次的位置:合肥路87号", "上次的位置:河南路768号"};
+           return position2[i];
+        }
     }
 
     public String setFirstDeviceName(int i){
