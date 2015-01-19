@@ -2,7 +2,7 @@ package org.dreamfly.positionsystem.Utils;
 
 import java.util.Calendar;
 
-/**
+/**该类用于加载一些初始化信息
  * Created by zhengyl on 15-1-18.
  */
 public class CurrentInformationUtils {

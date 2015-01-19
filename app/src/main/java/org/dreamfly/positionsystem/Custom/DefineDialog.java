@@ -2,7 +2,6 @@ package org.dreamfly.positionsystem.Custom;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
