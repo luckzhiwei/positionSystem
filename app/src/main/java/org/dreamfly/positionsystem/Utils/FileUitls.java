@@ -1,7 +1,9 @@
 package org.dreamfly.positionsystem.Utils;
 
+import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.File;
 
@@ -18,14 +20,15 @@ public class FileUitls {
     /**
      * 建立该APP的缓存文件夹
      */
-    public FileUitls() {
+    public FileUitls(Context mContext) {
         if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)) {
             this.mCacheFileDir = new File(android.os.Environment.getExternalStorageDirectory(), DIRNAME);
             if (!this.mCacheFileDir.exists()) {
                 this.mCacheFileDir.mkdirs();
             }
         } else {
-
+            this.mCacheFileDir=null;
+            Toast.makeText(mContext,"您的存储设备不正常",Toast.LENGTH_SHORT).show();
         }
     }
 
