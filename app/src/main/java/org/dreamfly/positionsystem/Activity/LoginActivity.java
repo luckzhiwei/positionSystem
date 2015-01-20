@@ -35,7 +35,7 @@ public class LoginActivity extends Activity {
     private EditText edittextLoginactivityUsername;
     private EditText editextLoginactivityPassword;
     private DefineDialog mIsManagerDialog;
-    private CurrentInformationUtils mInformation = new CurrentInformationUtils();
+    private CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +43,7 @@ public class LoginActivity extends Activity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.setContentView(R.layout.login_layout);
         this.initial();
+        //mInformation.getUserLocation();
     }
 
     /**
@@ -59,6 +60,7 @@ public class LoginActivity extends Activity {
         this.editextLoginactivityPassword = (EditText)
                 findViewById(R.id.edtext_loginactivity_password);
         this.bindListener();
+
 
     }
 

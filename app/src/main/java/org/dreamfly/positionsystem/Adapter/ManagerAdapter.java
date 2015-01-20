@@ -8,8 +8,6 @@ import android.widget.BaseAdapter;
 
 import java.util.List;
 
-
-import org.dreamfly.positionsystem.Activity.ManagerActivity;
 import org.dreamfly.positionsystem.Custom.DefineDialog;
 import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.R;
@@ -35,7 +33,7 @@ public class ManagerAdapter extends BaseAdapter {
     private Cursor cur;
     private Manager mManager;
     private DefineDialog mDefineDialog = null;
-    private CurrentInformationUtils mInformation = new CurrentInformationUtils();
+    private CurrentInformationUtils mInformation = new CurrentInformationUtils(mContext);
 
     public ManagerAdapter(List<Manager> mMangerList, Context context, DataBase mDataBase) {
         this.mMangerList = mMangerList;
@@ -55,6 +53,13 @@ public class ManagerAdapter extends BaseAdapter {
         return (position);
     }
 
+    /**
+     * 加载xml的条目,实现数据的初始化,为自己的控件设置监听事件
+     * @param position
+     * @param contentview
+     * @param arg2
+     * @return
+     */
     public View getView(int position, View contentview, ViewGroup arg2) {//加载XML视图文件
 
         ViewHolder holder;
@@ -63,18 +68,20 @@ public class ManagerAdapter extends BaseAdapter {
             contentview = LayoutInflater.from(this.mContext).inflate(R.layout.manager_items, null);
             holder = new ViewHolder();
             this.bindID(contentview, holder);
-            this.setItemInfo(this.mManager, holder, position, mDataBase);
+            this.setItemInfo(holder, position, mDataBase);
             this.setClickListener(holder, position, mDataBase);
             contentview.setTag(holder);
         } else {
             holder = (ViewHolder) contentview.getTag();
-            this.setItemInfo(this.mManager, holder, position, mDataBase);
+            this.setItemInfo( holder, position, mDataBase);
             this.setClickListener(holder, position, mDataBase);
         }
         return contentview;
     }
 
-
+    /**
+     * 设置一个容器用于存放控件
+     */
     private class ViewHolder {
 
         TextView txtManagerItemMarkName;
@@ -87,11 +94,16 @@ public class ManagerAdapter extends BaseAdapter {
 
     }
 
+    /**
+     * 自定义确定按钮监听类
+     */
     public class PositiveButtonListener implements View.OnClickListener {
 
-        int pos;
-        Manager oneManager;
-        DataBase mDataBase;
+        private int pos;
+        private Manager oneManager;
+        private DataBase mDataBase;
+        final String s[] = {"南京路234号", "上海路278号", "北京路123号", "河北路456号",
+                "南山路88号", "合肥路87号", "河南路768号"};
 
         public PositiveButtonListener(int pos, final Manager oneManager, DataBase mDataBase) {
             this.pos = pos;
@@ -100,8 +112,7 @@ public class ManagerAdapter extends BaseAdapter {
         }
 
         public void onClick(View view) {
-            final String s[] = {"南京路234号", "上海路278号", "北京路123号", "河北路456号",
-                    "南山路88号", "合肥路87号", "河南路768号"};
+
             oneManager.setLastLocation("上次的位置:" + s[pos]);
             mDataBase.items_changeValue("position", oneManager.getLastLocation(), pos);
             oneManager.setLastDateTouch(mInformation.getCurrentTime());
@@ -128,29 +139,23 @@ public class ManagerAdapter extends BaseAdapter {
 
     /**
      * 一个容器的实例填入函数中去
-     *
-     * @param oneManager
+     * 传递必要的参数,调用items初始化方法和变换头像方法
+     * @param
      * @param holder
      */
-    private void setItemInfo(Manager oneManager, ViewHolder holder, int position, DataBase mDataBase) {
+    private void setItemInfo(ViewHolder holder, int position, DataBase mDataBase) {
 
-        cur = mDataBase.Selector(position);
-        while (cur.moveToNext()) {
-            holder.txtManagertmeLastTouchTime.setText(cur.getString(cur.getColumnIndex("time")));
-            holder.txtManagertgetDeviceName.setText(cur.getString(cur.getColumnIndex("name")));
-            holder.txtManagerItemLastLocation.setText(cur.getString(cur.getColumnIndex("position")));
-        }
-        if ((position % 2) == 0) {
-            holder.imgManagerItemUserHead.setImageResource(R.drawable.manregactivity_imv_portrait2);
-            holder.imgManagerItemUserHead.getDrawable();
-        } else {
-            holder.imgManagerItemUserHead.setImageResource(R.drawable.manregactivity_imv_portrait1);
-            holder.imgManagerItemUserHead.getDrawable();
-        }
-        cur.close();
+        this.initItems(holder,mDataBase,position);
+        this.changePortrait(holder,position);
+
     }
 
-
+    /**
+     * 设置监听事件
+     * @param holder
+     * @param pos
+     * @param mDataBase
+     */
     private void setClickListener(final ViewHolder holder, final int pos, final DataBase mDataBase) {
         final Manager oneManger = this.mMangerList.get(pos);
 
@@ -161,6 +166,12 @@ public class ManagerAdapter extends BaseAdapter {
         });
     }
 
+    /**
+     * 调用自定义dialog,实现弹出对话框
+     * @param pos
+     * @param oneManager
+     * @param mDataBase
+     */
     private void setListDialog(int pos, Manager oneManager, DataBase mDataBase) {
         mDefineDialog = new DefineDialog(mContext).buiider().setDefineDialogCanceable(true)
                 .setTitle("是否获取地理位置").show();
@@ -170,6 +181,38 @@ public class ManagerAdapter extends BaseAdapter {
 
         mDefineDialog.setPosBtnClickListener(mPositiveButtonListener);
 
+    }
+
+    /**
+     * 该方法用于实现头像交替变换
+     * @param holder
+     * @param position
+     */
+    private void changePortrait(ViewHolder holder,int position){
+
+        if ((position % 2) == 0) {
+            holder.imgManagerItemUserHead.setImageResource(R.drawable.manregactivity_imv_portrait2);
+            holder.imgManagerItemUserHead.getDrawable();
+        } else {
+            holder.imgManagerItemUserHead.setImageResource(R.drawable.manregactivity_imv_portrait1);
+            holder.imgManagerItemUserHead.getDrawable();
+        }
+    }
+
+    /**
+     * 从本地数据库中读取相应的数据,初始化条目
+     * @param holder
+     * @param mDataBase
+     * @param position
+     */
+    private void initItems( ViewHolder holder,DataBase mDataBase,int position){
+        cur = mDataBase.Selector(position);
+        while (cur.moveToNext()) {
+            holder.txtManagertmeLastTouchTime.setText(cur.getString(cur.getColumnIndex("time")));
+            holder.txtManagertgetDeviceName.setText(cur.getString(cur.getColumnIndex("name")));
+            holder.txtManagerItemLastLocation.setText(cur.getString(cur.getColumnIndex("position")));
+        }
+        cur.close();
     }
 
 
