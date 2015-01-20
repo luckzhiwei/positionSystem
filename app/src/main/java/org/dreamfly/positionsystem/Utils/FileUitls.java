@@ -28,7 +28,7 @@ public class FileUitls {
             }
         } else {
             this.mCacheFileDir=null;
-            Toast.makeText(mContext,"您的存储设备不正常",Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext,"您的存储设备不正常,自动登录功能不可用",Toast.LENGTH_SHORT).show();
         }
     }
 
