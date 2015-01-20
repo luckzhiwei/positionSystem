@@ -31,4 +31,6 @@
     </uses-permission>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"><!--SD卡写入和删除的权限-->
     </uses-permission>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"><!--获取设备状态的权限-->
+    </uses-permission>
 </manifest>

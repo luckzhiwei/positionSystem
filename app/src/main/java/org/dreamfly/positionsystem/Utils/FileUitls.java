@@ -13,10 +13,10 @@ public class FileUitls {
 
     private static String DIRNAME = "/Android/data/org.dreamfly.positionsystem/";
 
-    private File mCacheFileDir;
+    private File mCacheFileDir=null;
 
     /**
-     * 建立该APP的缓存文件夹x
+     * 建立该APP的缓存文件夹
      */
     public FileUitls() {
         if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)) {
@@ -30,7 +30,13 @@ public class FileUitls {
     }
 
     public File getCacheFileDir() {
-        return (this.mCacheFileDir);
+        if(this.mCacheFileDir!=null)
+        {
+            return (this.mCacheFileDir);
+        }else{
+           return null;
+        }
+
     }
 
     public void createFoler(String folerName) {
