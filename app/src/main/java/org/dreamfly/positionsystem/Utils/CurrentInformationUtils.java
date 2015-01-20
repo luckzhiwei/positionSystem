@@ -1,6 +1,7 @@
 package org.dreamfly.positionsystem.Utils;
 
 import android.os.Build;
+import android.util.Log;
 
 import java.util.Calendar;
 
@@ -47,7 +48,6 @@ public class CurrentInformationUtils {
     }
 
     public String getCurrentDeviceName(){
-
         Build bd=new Build();
         String model=bd.MODEL;
         return  model;

@@ -1,6 +1,8 @@
 package org.dreamfly.positionsystem.Utils;
 
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -74,6 +76,7 @@ public class UserInfoUtils {
         try {
             this.readUserInfo = new FileInputStream(this.userInfoFile);
             BufferedReader bufReader = new BufferedReader(new InputStreamReader(this.readUserInfo));
+            //字节流传化为字符流
             while ((tmpStr = bufReader.readLine()) != null) {
                 mStrBuf.append(tmpStr);
             }
@@ -123,15 +126,16 @@ public class UserInfoUtils {
         boolean islogin = false;
         String userinfo = this.getUserInfo();
         this.userInfoMap = this.buildUserInfoMap(userinfo);
-        String loginstate = this.userInfoMap.get("loginstate");
-        if (loginstate != null) {
-            if (loginstate.equals("login")) {
-                islogin = true;
-            } else if (loginstate.equals("unlogin")) {
-                islogin = false;
-            }
-        }
-
+        if(this.userInfoMap!=null) {
+           String loginstate = this.userInfoMap.get("loginstate");
+           if (loginstate != null) {
+               if (loginstate.equals("login")) {
+                   islogin = true;
+               } else if (loginstate.equals("unlogin")) {
+                   islogin = false;
+               }
+           }
+       }
         return (islogin);
     }
 
@@ -168,6 +172,8 @@ public class UserInfoUtils {
         for (String tmpStr : strArr) {
             String tmpArr[] = tmpStr.split(":");
             this.userInfoMap.put(tmpArr[0], tmpArr[1]);
+            Log.i("lzw_today",tmpArr[0]);
+            Log.i("lzw_today",tmpArr[1]);
         }
         return (this.userInfoMap);
     }
@@ -181,12 +187,14 @@ public class UserInfoUtils {
         boolean ismanager = true;
         String userinfo = this.getUserInfo();
         this.userInfoMap = this.buildUserInfoMap(userinfo);
-        String managerstate = this.userInfoMap.get("managerstate");
-        if (managerstate != null) {
-            if (managerstate.equals("manager")) {
-                ismanager = true;
-            } else if (managerstate.equals("unmanager")) {
-                ismanager = false;
+        if(this.userInfoMap!=null) {
+            String managerstate = this.userInfoMap.get("managerstate");
+            if (managerstate != null) {
+                if (managerstate.equals("manager")) {
+                    ismanager = true;
+                } else if (managerstate.equals("unmanager")) {
+                    ismanager = false;
+                }
             }
         }
         return (ismanager);
