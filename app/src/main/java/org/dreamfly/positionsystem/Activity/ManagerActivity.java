@@ -75,9 +75,7 @@ public class ManagerActivity extends ActionBarActivity {
             Manager m = new Manager();
             m.setDeviceNma(mInformation.setFirstDeviceName(i));
             m.setLastDateTouch(mInformation.getCurrentTime());
-            m.setMangerMarks("mother"+i);
-            m.setLastLocation(mInformation.setFirstLocation(i));
-            m.setMangerMarks("mother" + i);
+            m.setMangerMarks("mother");
             m.setLastLocation(mInformation.setFirstLocation(i));
             list.add(m);
         }
@@ -85,6 +83,11 @@ public class ManagerActivity extends ActionBarActivity {
         return list;
     }
 
+    /**
+     * 向数据库中存储数据
+     * @param mDataBase
+     * @param list
+     */
     public void setData(DataBase mDataBase, List<Manager> list) {
         Cursor cur = mDataBase.Selector(0);
         if (!cur.moveToNext()) {

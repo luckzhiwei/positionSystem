@@ -60,6 +60,7 @@ public class LoginActivity extends Activity {
                 findViewById(R.id.edtext_loginactivity_password);
         this.bindListener();
 
+
     }
 
     /**

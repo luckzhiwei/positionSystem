@@ -17,7 +17,6 @@ public class DataBase extends SQLiteOpenHelper{
     private final static int DATABASE_VERSION = 1;
     private final static String TABLE_NAME = "items";
     SQLiteDatabase db;
-    private Cursor cursor;
     Context context;
     public DataBase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -28,6 +27,7 @@ public class DataBase extends SQLiteOpenHelper{
      * 建立表格
      * @param db
      */
+    @Override
     public void onCreate(SQLiteDatabase db){
         try {
             db.execSQL("CREATE TABLE items(" + "id INTEGER primary key ," + "name TEXT," +
@@ -38,6 +38,8 @@ public class DataBase extends SQLiteOpenHelper{
             Log.v(TAG,"create table err");
         }
     }
+
+    @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
         String sql = "DROP TABLE IF EXISTS " + TABLE_NAME;

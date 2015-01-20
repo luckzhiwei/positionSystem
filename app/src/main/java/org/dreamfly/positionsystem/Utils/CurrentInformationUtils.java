@@ -15,6 +15,10 @@ public class CurrentInformationUtils {
     private int month, day, hour, minute;
     Calendar c = Calendar.getInstance();
 
+    /**
+     * 获取系统时间
+     * @return
+     */
     public String getCurrentTime() {
 
         month = c.get(Calendar.MONTH) + 1;
@@ -31,6 +35,11 @@ public class CurrentInformationUtils {
 
     }
 
+    /**
+     * 用于初始化地理位置的字符串数组
+     * @param i 位于listview的条目位置
+     * @return
+     */
     public String setFirstLocation(int i) {
 
         String[] position = new String[]{"上次的位置:北京天安门", "上次的位置:长江三峡大坝",
@@ -40,6 +49,11 @@ public class CurrentInformationUtils {
 
     }
 
+    /**
+     * 得到用于初始化设备名称的字符串数组
+     * @param i 位于listview的条目位置
+     * @return
+     */
     public String setFirstDeviceName(int i) {
 
         String[] device = new String[]{"Samsung i9260", "Samsung s4",
@@ -50,6 +64,7 @@ public class CurrentInformationUtils {
     public String getCurrentDeviceName(){
         Build bd=new Build();
         String model=bd.MODEL;
+        Log.i("position",model);
         return  model;
     }
 
