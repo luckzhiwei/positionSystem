@@ -35,12 +35,11 @@ public class UserInfoUtils {
 
     private Map<String, String> userInfoMap;
 
-    private Context mContext;
     /**
      * 构造函数，如果本地缓存的文件不存在就先创建
      */
     public UserInfoUtils(Context mContext) {
-        this.mFileUitls = new FileUitls();
+        this.mFileUitls = new FileUitls(mContext);
         File cachedir=this.mFileUitls.getCacheFileDir();
         if(cachedir!=null)
         {
@@ -55,8 +54,6 @@ public class UserInfoUtils {
             }
         }else{
              this.userInfoFile=null;
-             this.mContext=mContext;
-             Toast.makeText(this.mContext,"你的SD卡挂载不正常",Toast.LENGTH_SHORT).show();
         }
     }
 
