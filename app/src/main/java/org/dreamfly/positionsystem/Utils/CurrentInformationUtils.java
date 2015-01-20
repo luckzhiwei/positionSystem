@@ -1,6 +1,11 @@
 package org.dreamfly.positionsystem.Utils;
 
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 
 import java.util.Calendar;
@@ -14,7 +19,13 @@ public class CurrentInformationUtils {
     private String getCurrentTime;
     private int month, day, hour, minute;
     Calendar c = Calendar.getInstance();
+    private Context context;
 
+
+
+    public CurrentInformationUtils(Context context){
+        this.context=context;
+    }
     /**
      * 获取系统时间
      * @return
@@ -67,6 +78,51 @@ public class CurrentInformationUtils {
         Log.i("position",model);
         return  model;
     }
+
+    /**
+     * 获取地理位置信息方法
+     * @return
+     */
+    public void getUserLocation(){
+
+        //Location location=locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+        MLocationListener locationListener=new MLocationListener();
+        LocationManager locationManager=(LocationManager)context.
+                getSystemService(Context.LOCATION_SERVICE);
+
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
+
+    }
+
+    /**
+     * 自定义地理位置改变的监听事件
+     */
+    private class MLocationListener implements LocationListener {
+
+        @Override
+        public void onLocationChanged(Location location) {
+            //当坐标改变时触发此函数，如果Provider传进相同的坐标，它就不会被触发
+            // log it when the location changes
+           Log.v("myposition",""+location.getLatitude());
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+            // Provider被disable时触发此函数，比如GPS被关闭
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            //  Provider被enable时触发此函数，比如GPS被打开
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            // Provider的转态在可用、暂时不可用和无服务三个状态直接切换时触发此函数
+        }
+
+    }
+
 
 
 }

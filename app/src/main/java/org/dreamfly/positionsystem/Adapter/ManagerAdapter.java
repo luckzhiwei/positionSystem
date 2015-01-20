@@ -33,7 +33,7 @@ public class ManagerAdapter extends BaseAdapter {
     private Cursor cur;
     private Manager mManager;
     private DefineDialog mDefineDialog = null;
-    private CurrentInformationUtils mInformation = new CurrentInformationUtils();
+    private CurrentInformationUtils mInformation = new CurrentInformationUtils(mContext);
 
     public ManagerAdapter(List<Manager> mMangerList, Context context, DataBase mDataBase) {
         this.mMangerList = mMangerList;

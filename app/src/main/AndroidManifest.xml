@@ -33,4 +33,5 @@
     </uses-permission>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"><!--获取设备状态的权限-->
     </uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/><!--获取地理位置权限-->
 </manifest>

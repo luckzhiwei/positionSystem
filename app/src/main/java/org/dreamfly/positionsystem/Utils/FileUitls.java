@@ -1,6 +1,7 @@
 package org.dreamfly.positionsystem.Utils;
 
 import android.content.Context;
+import android.location.LocationManager;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;

@@ -34,7 +34,7 @@ public class ManagerActivity extends ActionBarActivity {
     private TextView txtManagerActivityTitle;
     private DataBase mDataBase = new DataBase(this);
     private SQLiteDatabase db;
-    private CurrentInformationUtils mInformation = new CurrentInformationUtils();
+    private CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
     private DefineDialog mDefineDialog;
 
 
