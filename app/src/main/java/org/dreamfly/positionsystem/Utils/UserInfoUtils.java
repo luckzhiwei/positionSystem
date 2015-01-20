@@ -1,7 +1,9 @@
 package org.dreamfly.positionsystem.Utils;
 
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,7 +23,7 @@ import java.util.Map;
 public class UserInfoUtils {
 
 
-    private File userInfoFile;
+    private File userInfoFile=null;
 
     private FileUitls mFileUitls;
 
@@ -33,19 +35,28 @@ public class UserInfoUtils {
 
     private Map<String, String> userInfoMap;
 
+    private Context mContext;
     /**
      * 构造函数，如果本地缓存的文件不存在就先创建
      */
-    public UserInfoUtils() {
+    public UserInfoUtils(Context mContext) {
         this.mFileUitls = new FileUitls();
-        this.userInfoFile = new File(this.mFileUitls.getCacheFileDir(), "userinfo.txt");
-        if (!this.userInfoFile.exists()) {
-            try {
-                this.userInfoFile.createNewFile();
-            } catch (Exception e) {
-                e.printStackTrace();
+        File cachedir=this.mFileUitls.getCacheFileDir();
+        if(cachedir!=null)
+        {
+            this.userInfoFile = new File(cachedir, "userinfo.txt");
+            if (!this.userInfoFile.exists()) {
+                try {
+                    this.userInfoFile.createNewFile();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                this.initialUserInfo();//没有文件的时候才写入未登录状态,没有就不写
             }
-            this.initialUserInfo();//没有文件的时候才写入未登录状态,没有就不写
+        }else{
+             this.userInfoFile=null;
+             this.mContext=mContext;
+             Toast.makeText(this.mContext,"你的SD卡挂载不正常",Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -74,14 +85,18 @@ public class UserInfoUtils {
         StringBuffer mStrBuf = new StringBuffer();
         String tmpStr;
         try {
-            this.readUserInfo = new FileInputStream(this.userInfoFile);
-            BufferedReader bufReader = new BufferedReader(new InputStreamReader(this.readUserInfo));
-            //字节流传化为字符流
-            while ((tmpStr = bufReader.readLine()) != null) {
-                mStrBuf.append(tmpStr);
-            }
-            this.readUserInfo.close();
-            bufReader.close();
+           if(this.userInfoFile!=null) {//针对文件建立不成功的情况
+               this.readUserInfo = new FileInputStream(this.userInfoFile);
+               BufferedReader bufReader = new BufferedReader(new InputStreamReader(this.readUserInfo));
+               //字节流传化为字符流
+               while ((tmpStr = bufReader.readLine()) != null) {
+                   mStrBuf.append(tmpStr);
+               }
+               this.readUserInfo.close();
+               bufReader.close();
+           }else{
+               return null;
+           }
             return (mStrBuf.toString());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -125,17 +140,19 @@ public class UserInfoUtils {
     public boolean isLogin() {
         boolean islogin = false;
         String userinfo = this.getUserInfo();
-        this.userInfoMap = this.buildUserInfoMap(userinfo);
-        if(this.userInfoMap!=null) {
-           String loginstate = this.userInfoMap.get("loginstate");
-           if (loginstate != null) {
-               if (loginstate.equals("login")) {
-                   islogin = true;
-               } else if (loginstate.equals("unlogin")) {
-                   islogin = false;
-               }
-           }
-       }
+        if(userinfo!=null) {
+            this.userInfoMap = this.buildUserInfoMap(userinfo);
+            if (this.userInfoMap != null) {
+                String loginstate = this.userInfoMap.get("loginstate");
+                if (loginstate != null) {
+                    if (loginstate.equals("login")) {
+                        islogin = true;
+                    } else if (loginstate.equals("unlogin")) {
+                        islogin = false;
+                    }
+                }
+            }
+        }
         return (islogin);
     }
 
@@ -186,14 +203,16 @@ public class UserInfoUtils {
     public boolean isManager() {
         boolean ismanager = true;
         String userinfo = this.getUserInfo();
-        this.userInfoMap = this.buildUserInfoMap(userinfo);
-        if(this.userInfoMap!=null) {
-            String managerstate = this.userInfoMap.get("managerstate");
-            if (managerstate != null) {
-                if (managerstate.equals("manager")) {
-                    ismanager = true;
-                } else if (managerstate.equals("unmanager")) {
-                    ismanager = false;
+        if(userinfo!=null) {
+            this.userInfoMap = this.buildUserInfoMap(userinfo);
+            if (this.userInfoMap != null) {
+                String managerstate = this.userInfoMap.get("managerstate");
+                if (managerstate != null) {
+                    if (managerstate.equals("manager")) {
+                        ismanager = true;
+                    } else if (managerstate.equals("unmanager")) {
+                        ismanager = false;
+                    }
                 }
             }
         }

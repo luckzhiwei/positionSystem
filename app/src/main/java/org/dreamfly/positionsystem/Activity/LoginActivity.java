@@ -130,7 +130,7 @@ public class LoginActivity extends Activity {
      * @param mInformation 得到的本机信息
      */
     private void writeUserInfo(String isManager,CurrentInformationUtils mInformation) {
-        UserInfoUtils mUserInfoUitls = new UserInfoUtils();
+        UserInfoUtils mUserInfoUitls = new UserInfoUtils(LoginActivity.this);
         HashMap<String, String> hashmap = new HashMap<String, String>();
         hashmap.put("loginstate", "login");
         //记录登录状态

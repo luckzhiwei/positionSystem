@@ -121,7 +121,7 @@ public class IndexActivity extends ActionBarActivity {
      */
     private Intent chooseAcitityGoTo() {
         Intent in = null;
-        UserInfoUtils mUserInfoUtils = new UserInfoUtils();
+        UserInfoUtils mUserInfoUtils = new UserInfoUtils(IndexActivity.this);
         if (!mUserInfoUtils.isLogin()) {
             in = new Intent(IndexActivity.this, LoginActivity.class);
         } else {
