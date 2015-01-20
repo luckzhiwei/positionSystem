@@ -11,7 +11,7 @@ import java.io.File;
  */
 public class FileUitls {
 
-    private static String DIRNAME = "/Android/data/org.dreamfly.positionSystem/";
+    private static String DIRNAME = "/Android/data/org.dreamfly.positionsystem/";
 
     private File mCacheFileDir;
 

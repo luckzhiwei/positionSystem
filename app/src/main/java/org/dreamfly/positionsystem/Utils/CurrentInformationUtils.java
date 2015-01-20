@@ -1,5 +1,7 @@
 package org.dreamfly.positionsystem.Utils;
 
+import android.os.Build;
+
 import java.util.Calendar;
 
 /**
@@ -42,6 +44,13 @@ public class CurrentInformationUtils {
         String[] device = new String[]{"Samsung i9260", "Samsung s4",
                 "iPhone6 plus", "Mi2S_note", "LG G3 D859", "Lenovo S2", "Meizu MX4"};
         return device[i];
+    }
+
+    public String getCurrentDeviceName(){
+
+        Build bd=new Build();
+        String model=bd.MODEL;
+        return  model;
     }
 
 

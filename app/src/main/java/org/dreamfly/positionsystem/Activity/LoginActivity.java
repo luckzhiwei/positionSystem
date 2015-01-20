@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import org.dreamfly.positionsystem.Custom.DefineDialog;
 import org.dreamfly.positionsystem.R;
+import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 import org.dreamfly.positionsystem.Utils.FileUitls;
 import org.dreamfly.positionsystem.Utils.UserInfoUtils;
 import org.dreamfly.positionsystem.bean.Manager;
@@ -34,6 +35,7 @@ public class LoginActivity extends Activity {
     private EditText edittextLoginactivityUsername;
     private EditText editextLoginactivityPassword;
     private DefineDialog mIsManagerDialog;
+    private CurrentInformationUtils mInformation = new CurrentInformationUtils();
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +71,7 @@ public class LoginActivity extends Activity {
         this.txtLoginactivityRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Intent registerIntent = new Intent();
-                registerIntent.setClass(getApplicationContext(), ManagerActivity.class
+                registerIntent.setClass(getApplicationContext(), RegistActivity.class
                 );
                 startActivity(registerIntent);
 
@@ -98,7 +100,7 @@ public class LoginActivity extends Activity {
      */
     private View.OnClickListener managerClickListener = new View.OnClickListener() {
         public void onClick(View view) {
-            writeUserInfo("manager");
+            writeUserInfo("manager",mInformation);
             mIsManagerDialog.dismiss();
             Intent in = new Intent(LoginActivity.this, ManagerActivity.class);
             startActivity(in);
@@ -110,7 +112,7 @@ public class LoginActivity extends Activity {
      */
     private View.OnClickListener regulatorClickListener = new View.OnClickListener() {
         public void onClick(View view) {
-            writeUserInfo("unmanager");
+            writeUserInfo("unmanager",mInformation);
             mIsManagerDialog.dismiss();
             Intent in = new Intent(LoginActivity.this, RegulatorActivity.class);
             startActivity(in);
@@ -124,8 +126,9 @@ public class LoginActivity extends Activity {
      * 如果选择否的话，则写入身份是管理者
      *
      * @param isManager
+     * @param mInformation 得到的本机信息
      */
-    private void writeUserInfo(String isManager) {
+    private void writeUserInfo(String isManager,CurrentInformationUtils mInformation) {
         UserInfoUtils mUserInfoUitls = new UserInfoUtils();
         HashMap<String, String> hashmap = new HashMap<String, String>();
         hashmap.put("loginstate", "login");
@@ -136,7 +139,7 @@ public class LoginActivity extends Activity {
         //记录服务器中数据库的主键的数值
         hashmap.put("famliyName", "Tree");
         //记录用户登录的帐号名字
-        hashmap.put("devName", "htc");
+        hashmap.put("devName", mInformation.getCurrentDeviceName());
         //记录本机的设备名字
         mUserInfoUitls.updateUserInfo(hashmap);
     }

@@ -70,7 +70,7 @@ public class UserInfoUtils {
      */
     private String getUserInfo() {
         StringBuffer mStrBuf = new StringBuffer();
-        String tmpStr = new String();
+        String tmpStr;
         try {
             this.readUserInfo = new FileInputStream(this.userInfoFile);
             BufferedReader bufReader = new BufferedReader(new InputStreamReader(this.readUserInfo));
