@@ -12,6 +12,7 @@ import java.util.Calendar;
 
 /**
  * 该类用于加载一些初始化信息
+ * 系统时间，地理位置
  * Created by zhengyl on 15-1-18.
  */
 public class CurrentInformationUtils {
@@ -72,6 +73,10 @@ public class CurrentInformationUtils {
         return device[i];
     }
 
+    /**
+     *获取本机的设备名称
+     * @return
+     */
     public String getCurrentDeviceName(){
         Build bd=new Build();
         String model=bd.MODEL;

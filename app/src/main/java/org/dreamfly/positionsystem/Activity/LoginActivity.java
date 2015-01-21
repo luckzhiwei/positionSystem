@@ -43,7 +43,7 @@ public class LoginActivity extends Activity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.setContentView(R.layout.login_layout);
         this.initial();
-        //mInformation.getUserLocation();
+        mInformation.getUserLocation();
     }
 
     /**
