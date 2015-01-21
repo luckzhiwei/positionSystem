@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import org.dreamfly.positionsystem.R;
@@ -27,6 +28,7 @@ public class DefineDialog {
     private TextView txtDefineDialogTitile;
     private Button btnDefineDialogPositive;
     private Button btnDefineDialogNegetive;
+    private EditText defineDialogEditText;
 
     /**
      * 自定义对话框的构造方法：这里一定要把activity.this传入作为上下文参数,
@@ -44,11 +46,19 @@ public class DefineDialog {
 
     /**
      * 初始化dialog的视图,加载自定义的layout文件
-     *
+     * 如有需要,加载含有edittext的layout文件
+     * @param isAddEdittext 是否加载含有edittext的对话框layout文件
      * @return (返回自身, 链式调用)
      */
-    public DefineDialog buiider() {
-        View dialogView = LayoutInflater.from(this.mContext).inflate(R.layout.dialogdef_layout, null);
+    public DefineDialog buiider(boolean isAddEdittext) {
+        View dialogView;
+        if(!isAddEdittext) {
+             dialogView = LayoutInflater.from(this.mContext).inflate(R.layout.dialogdef_layout, null);
+        }
+        else {
+            dialogView = LayoutInflater.from(this.mContext).inflate
+                    (R.layout.dialogdef_edittext_layout, null);
+        }
         this.bindID(dialogView);
         dialogView.setMinimumWidth(this.mDisplay.getWidth());
         this.mDefDialog = new Dialog(this.mContext, R.style.ActionSheetDialogStyle);
@@ -68,12 +78,15 @@ public class DefineDialog {
         this.txtDefineDialogTitile = (TextView) contentView.findViewById(R.id.txt_definedialog_title);
         this.btnDefineDialogPositive = (Button) contentView.findViewById(R.id.btn_dialogdefine_positive);
         this.btnDefineDialogNegetive = (Button) contentView.findViewById(R.id.btn_dialogdefine_negetive);
+        this.defineDialogEditText=(EditText)contentView.findViewById(R.id.definedialog_edittext);
+
     }
 
     public DefineDialog setTitle(String dialgTitle) {
         this.txtDefineDialogTitile.setText(dialgTitle);
         return (this);
     }
+
 
     public DefineDialog setPosBtnTxt(String posBtnTxt) {
         this.btnDefineDialogPositive.setText(posBtnTxt);
@@ -135,5 +148,9 @@ public class DefineDialog {
      */
     public void dismiss() {
         this.mDefDialog.dismiss();
+    }
+
+    public EditText getEditText(){
+        return this.defineDialogEditText;
     }
 }

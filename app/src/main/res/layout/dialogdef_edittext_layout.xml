@@ -8,18 +8,28 @@
     <LinearLayout
         android:gravity="center"
         android:layout_width="fill_parent"
-        android:layout_height="100dp">
+        android:orientation="vertical"
+        android:layout_height="130dp">
         <TextView
             android:layout_marginTop="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
-            android:gravity="center"
             android:id="@+id/txt_definedialog_title"
             android:maxLines="3"
             android:minLines="1"
             android:text="是否成为管理者"
             android:textColor="#000000"/>
+
+        <EditText
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:id="@+id/definedialog_edittext"
+            android:textColor="#000000"
+            android:cursorVisible="true"
+            android:background="@drawable/definedialog_edittext_background" />
     </LinearLayout>
     <View
         android:layout_width="match_parent"
@@ -36,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.0"
             android:textColor="@color/blue_define"
-            android:text="修改"
+            android:text="是"
             android:layout_marginBottom="8dp"
             android:gravity="center"
             android:background="@drawable/leftbtn_dialogdef_state"
@@ -52,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.0"
             android:textColor="@color/blue_define"
-            android:text="取消"
+            android:text="否"
             android:textSize="14sp"
             android:gravity="center"
             android:id="@+id/btn_dialogdefine_negetive"

@@ -91,7 +91,7 @@ public class LoginActivity extends Activity {
      * 提示未登录用户的在登录成功的情况下选择管理者和被管理者对话框
      */
     private void showIsManagerDialog() {
-        this.mIsManagerDialog = new DefineDialog(LoginActivity.this).buiider().
+        this.mIsManagerDialog = new DefineDialog(LoginActivity.this).buiider(false).
                 setTitle("是否成为管理者").setPosBtnTxt("是").setNegBtnTxt("否")
                 .setNegBtnClickListenr(regulatorClickListener).setPosBtnClickListener(managerClickListener)
                 .setDefineDialogCanceable(false).show();

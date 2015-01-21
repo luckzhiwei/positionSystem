@@ -1,5 +1,6 @@
 package org.dreamfly.positionsystem.Activity;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,10 +33,10 @@ public class ManagerActivity extends ActionBarActivity {
 
     private DefineListView managerActivityListView;
     private ManagerAdapter mManagerAdapter;
-    private TextView txtManagerActivityTitle;
+    private TextView txtManagerActivityTitle,txtManagertgetDeviceName;
     private DataBase mDataBase = new DataBase(this);
-    private SQLiteDatabase db;
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
+    private Manager oneManager=new Manager();
     private DefineDialog mDefineDialog;
 
 
@@ -58,24 +60,31 @@ public class ManagerActivity extends ActionBarActivity {
                 this.findViewById(R.id.delistiview_manageractivity_showmanger);
         this.txtManagerActivityTitle = (TextView)
                 this.findViewById(R.id.txt_manageractivity_title);
+        this.txtManagertgetDeviceName=(TextView)
+                this.findViewById(R.id.manageractivity_txt2_name);
+
     }
 
     private void setListViewListener() {
         this.managerActivityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                setDialogShow();
+                setDialogShow(position);
             }
         });
 
     }
 
+    /**
+     * 向adapter中加载初始数据
+     * @return
+     */
     private List<Manager> getData() {
         List<Manager> list = new ArrayList<Manager>();
         for (int i = 0; i < 7; i++) {
             Manager m = new Manager();
             m.setDeviceNma(mInformation.setFirstDeviceName(i));
             m.setLastDateTouch(mInformation.getCurrentTime());
-            m.setMangerMarks("mother");
+            m.setMangerMarks("null");
             m.setLastLocation(mInformation.setFirstLocation(i));
             list.add(m);
         }
@@ -101,9 +110,54 @@ public class ManagerActivity extends ActionBarActivity {
         cur.close();
     }
 
-    private void setDialogShow() {
-        this.mDefineDialog = new DefineDialog(ManagerActivity.this).buiider().
-                setTitle("是否修改备注").setDefineDialogCanceable(true).show();
+    /**
+     * 实现点击由用户修改备注名的效果
+     * @param position
+     */
+    private void setDialogShow(int position) {
+        this.mDefineDialog = new DefineDialog(ManagerActivity.this).buiider(true).
+                setTitle("修改备注名:").setDefineDialogCanceable(true).setPosBtnTxt("修改").
+                setNegBtnTxt("取消").show();
+        PositiveButtonListener mPositiveButtonListener =
+
+                new PositiveButtonListener(position, oneManager, mDataBase,
+                        this.mDefineDialog.getEditText(),this.mDefineDialog);
+        mDefineDialog.setPosBtnClickListener(mPositiveButtonListener);
+
+    }
+
+    /**
+     * 自定义对话框按钮监听类
+     */
+    public class PositiveButtonListener implements View.OnClickListener{
+        private EditText mEditText;
+        private Manager oneManager;
+        private DataBase mDataBase;
+        private Context mcontext;
+        private int pos;
+        private DefineDialog mDialog;
+
+        public PositiveButtonListener (int pos, final Manager oneManager,
+                                       DataBase mDataBase,EditText mEdittext,DefineDialog mDialog){
+            this.pos=pos;
+            this.oneManager=oneManager;
+            this.mDataBase=mDataBase;
+            this.mEditText=mEdittext;
+            this.mDialog=mDialog;
+        }
+
+        /**
+         * 将用户修改的备注名保存到数据库中
+         * @param view
+         */
+        public void onClick(View view){
+            oneManager.setMangerMarks(mEditText.getText().toString());
+            Log.v("textstring",oneManager.getMangerMarks());
+            mDataBase.items_changeValue("subname",oneManager.getMangerMarks(),(pos-1));
+            mDialog.dismiss();
+
+
+        }
     }
 
 }

@@ -111,6 +111,10 @@ public class ManagerAdapter extends BaseAdapter {
             this.mDataBase = mDataBase;
         }
 
+        /**
+         * 按下按钮后将地理位置信息和定位实现信息保存在数据库中
+         * @param view
+         */
         public void onClick(View view) {
 
             oneManager.setLastLocation("上次的位置:" + s[pos]);
@@ -173,7 +177,7 @@ public class ManagerAdapter extends BaseAdapter {
      * @param mDataBase
      */
     private void setListDialog(int pos, Manager oneManager, DataBase mDataBase) {
-        mDefineDialog = new DefineDialog(mContext).buiider().setDefineDialogCanceable(true)
+        mDefineDialog = new DefineDialog(mContext).buiider(false).setDefineDialogCanceable(true)
                 .setTitle("是否获取地理位置").show();
         PositiveButtonListener mPositiveButtonListener =
 
@@ -209,8 +213,14 @@ public class ManagerAdapter extends BaseAdapter {
         cur = mDataBase.Selector(position);
         while (cur.moveToNext()) {
             holder.txtManagertmeLastTouchTime.setText(cur.getString(cur.getColumnIndex("time")));
-            holder.txtManagertgetDeviceName.setText(cur.getString(cur.getColumnIndex("name")));
             holder.txtManagerItemLastLocation.setText(cur.getString(cur.getColumnIndex("position")));
+            //如果用户已经修改了备注名,就显示备注名,否则显示设备名
+            if(cur.getString(cur.getColumnIndex("subname")).equals("null")){
+                holder.txtManagertgetDeviceName.setText(cur.getString(cur.getColumnIndex("name")));
+            }
+            else {
+                holder.txtManagertgetDeviceName.setText(cur.getString(cur.getColumnIndex("subname")));
+            }
         }
         cur.close();
     }
