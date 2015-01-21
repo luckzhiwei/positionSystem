@@ -150,7 +150,7 @@ public class ManagerAdapter extends BaseAdapter {
     private void setItemInfo(ViewHolder holder, int position, DataBase mDataBase) {
 
         this.initItems(holder,mDataBase,position);
-        this.changePortrait(holder,position);
+        this.changePortrait(holder,position,mDataBase);
 
     }
 
@@ -188,20 +188,36 @@ public class ManagerAdapter extends BaseAdapter {
     }
 
     /**
-     * 该方法用于实现头像交替变换
+     * 该方法用于实现头像交替变换,如果网络未连接,显示灰色头像
      * @param holder
      * @param position
      */
-    private void changePortrait(ViewHolder holder,int position){
-
-        if ((position % 2) == 0) {
-            holder.imgManagerItemUserHead.setImageResource(R.drawable.manregactivity_imv_portrait2);
-            holder.imgManagerItemUserHead.getDrawable();
-        } else {
-            holder.imgManagerItemUserHead.setImageResource(R.drawable.manregactivity_imv_portrait1);
-            holder.imgManagerItemUserHead.getDrawable();
+    private void changePortrait(ViewHolder holder,int position,DataBase mDataBase) {
+        cur=mDataBase.Selector(position);
+        while (cur.moveToNext()) {
+            String connection = cur.getString(cur.getColumnIndex("isconnect"));
+            if (connection.equals("false")) {
+                if ((position % 2) == 0) {
+                    holder.imgManagerItemUserHead.setImageResource(R.drawable.manager_protrait2_unconected);
+                    holder.imgManagerItemUserHead.getDrawable();
+                } else {
+                    holder.imgManagerItemUserHead.setImageResource(R.drawable.manager_protrait1_unconected);
+                    holder.imgManagerItemUserHead.getDrawable();
+                }
+            } else {
+                if ((position % 2) == 0) {
+                    holder.imgManagerItemUserHead.setImageResource(R.drawable.manregactivity_imv_portrait2);
+                    holder.imgManagerItemUserHead.getDrawable();
+                } else {
+                    holder.imgManagerItemUserHead.setImageResource(R.drawable.manregactivity_imv_portrait1);
+                    holder.imgManagerItemUserHead.getDrawable();
+                }
+            }
         }
+        cur.close();
     }
+
+
 
     /**
      * 从本地数据库中读取相应的数据,初始化条目

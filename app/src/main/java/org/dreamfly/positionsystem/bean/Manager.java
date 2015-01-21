@@ -14,7 +14,7 @@ public class Manager {
 
             private String   mangerMarks;//备注
 
-            private boolean  isOnLine;//是否在线
+            private String  isOnLine;//是否在线(Sqlite 没有布尔类型,用true false String代替 )
 
             private String  lastLocation;//最近一次定位信息
 
@@ -68,11 +68,11 @@ public class Manager {
                 return(this.lastLocation);
             }
 
-            public void setIsOnLine(boolean isOnLine)
+            public void setIsOnLine(String isOnLine)
             {
                 this.isOnLine=isOnLine;
             }
-            public boolean getOnLine()
+            public String getOnLine()
             {
                 return(this.isOnLine);
             }

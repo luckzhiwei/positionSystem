@@ -86,6 +86,7 @@ public class ManagerActivity extends ActionBarActivity {
             m.setLastDateTouch(mInformation.getCurrentTime());
             m.setMangerMarks("null");
             m.setLastLocation(mInformation.setFirstLocation(i));
+            m.setIsOnLine("false");
             list.add(m);
         }
         this.setData(mDataBase, list);
@@ -103,7 +104,7 @@ public class ManagerActivity extends ActionBarActivity {
             for (int i = 0; i < 7; i++) {
                 Manager manager = list.get(i);
                 mDataBase.items_newItem(i, manager.getDeviceName(), manager.getMangerMarks()
-                        , manager.getLastLocation(), manager.getLastDateTouch());
+                        , manager.getLastLocation(), manager.getLastDateTouch(),manager.getOnLine());
 
             }
         }
@@ -155,8 +156,6 @@ public class ManagerActivity extends ActionBarActivity {
             Log.v("textstring",oneManager.getMangerMarks());
             mDataBase.items_changeValue("subname",oneManager.getMangerMarks(),(pos-1));
             mDialog.dismiss();
-
-
         }
     }
 

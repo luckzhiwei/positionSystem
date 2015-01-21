@@ -31,7 +31,7 @@ public class DataBase extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db){
         try {
             db.execSQL("CREATE TABLE items(" + "id INTEGER primary key ," + "name TEXT," +
-                    "subname TEXT," + "position TEXT," + "time TEXT" + ");");
+                    "subname TEXT," + "position TEXT," + "time TEXT," +"isconnect  TEXT"+ ");");
             Log.v(TAG, "create table ok");
         }
         catch (Exception e){
@@ -54,7 +54,8 @@ public class DataBase extends SQLiteOpenHelper{
      * @param position 上次定位位置
      * @param time 上次定位时间
      */
-    public void items_newItem(int id,String name,String subname,String position,String time) {
+    public void items_newItem(int id,String name,String subname,String position,
+                              String time,String isconnect) {
         try {
                 db = this.getWritableDatabase();
                 ContentValues cv = new ContentValues();
@@ -63,6 +64,7 @@ public class DataBase extends SQLiteOpenHelper{
                 cv.put("subname", subname);
                 cv.put("position", position);
                 cv.put("time", time);
+                cv.put("isconnect",isconnect);
                 db.insert("items", null, cv);
                 Log.v(TAG,"insert into items ok");
         }
@@ -91,6 +93,7 @@ public class DataBase extends SQLiteOpenHelper{
 
     }
 
+
     /**
      * 查询id=指定值的数据
      * @param id 行
@@ -99,7 +102,7 @@ public class DataBase extends SQLiteOpenHelper{
     public Cursor Selector(int id){
         Cursor cur;
         db=this.getReadableDatabase();
-        cur=db.query("items",new String[]{"id","name","subname","position","time"},
+        cur=db.query("items",new String[]{"id","name","subname","position","time","isconnect"},
                 "id=?",new String[]{id+""},null,null,null);
         return cur;
     }
