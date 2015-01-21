@@ -186,8 +186,6 @@ public class UserInfoUtils {
         for (String tmpStr : strArr) {
             String tmpArr[] = tmpStr.split(":");
             this.userInfoMap.put(tmpArr[0], tmpArr[1]);
-            Log.i("lzw_today",tmpArr[0]);
-            Log.i("lzw_today",tmpArr[1]);
         }
         return (this.userInfoMap);
     }
