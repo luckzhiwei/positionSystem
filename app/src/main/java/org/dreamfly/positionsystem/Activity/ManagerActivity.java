@@ -117,7 +117,7 @@ public class ManagerActivity extends ActionBarActivity {
      */
     private void setDialogShow(int position) {
         this.mDefineDialog = new DefineDialog(ManagerActivity.this).buiider(true).
-                setTitle("修改备注名:").setDefineDialogCanceable(true).setPosBtnTxt("修改").
+                setTitle("修改备注名:").setDefineDialogCanceable(true).setPosBtnTxt("确定").
                 setNegBtnTxt("取消").show();
         PositiveButtonListener mPositiveButtonListener =
 

@@ -4,23 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-             <LinearLayout
-                 android:gravity="center"
-                 android:background="#f04800"
-                 android:layout_width="match_parent"
-                 android:layout_height="50dp">
-                     <TextView
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         android:textSize="22sp"
-                         android:textColor="#ffffff"
-                         android:text="被管理者界面"/>
-             </LinearLayout>
-             <org.dreamfly.positionsystem.Custom.DefineListView
-                 android:listSelector="@android:color/transparent"
-                 android:divider="@null"
-                 android:layout_width="match_parent"
-                 android:id="@+id/listivew_regulatoractivity_regulatorlist"
-                 android:layout_height="wrap_content">
-             </org.dreamfly.positionsystem.Custom.DefineListView>
+    <LinearLayout
+        android:gravity="center"
+        android:background="#f04800"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:id="@+id/txt_regulatoractivity_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:textColor="#ffffff"
+            android:text="被管理者界面" />
+    </LinearLayout>
+
+    <org.dreamfly.positionsystem.Custom.DefineListView
+        android:listSelector="@android:color/transparent"
+        android:divider="@null"
+        android:layout_width="match_parent"
+        android:id="@+id/listivew_regulatoractivity_regulatorlist"
+        android:layout_height="wrap_content">
+
+    </org.dreamfly.positionsystem.Custom.DefineListView>
 </LinearLayout>

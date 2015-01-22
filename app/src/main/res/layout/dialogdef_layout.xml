@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.0"
             android:textColor="@color/blue_define"
-            android:text="修改"
+            android:text="确定"
             android:layout_marginBottom="8dp"
             android:gravity="center"
             android:background="@drawable/leftbtn_dialogdef_state"

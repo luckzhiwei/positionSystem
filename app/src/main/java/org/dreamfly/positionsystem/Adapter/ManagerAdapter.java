@@ -102,13 +102,16 @@ public class ManagerAdapter extends BaseAdapter {
         private int pos;
         private Manager oneManager;
         private DataBase mDataBase;
+        private DefineDialog mDefineDialog;
         final String s[] = {"南京路234号", "上海路278号", "北京路123号", "河北路456号",
                 "南山路88号", "合肥路87号", "河南路768号"};
 
-        public PositiveButtonListener(int pos, final Manager oneManager, DataBase mDataBase) {
+        public PositiveButtonListener(int pos, final Manager oneManager, DataBase mDataBase,
+                                      DefineDialog mDefineDialog) {
             this.pos = pos;
             this.oneManager = oneManager;
             this.mDataBase = mDataBase;
+            this.mDefineDialog=mDefineDialog;
         }
 
         /**
@@ -121,6 +124,7 @@ public class ManagerAdapter extends BaseAdapter {
             mDataBase.items_changeValue("position", oneManager.getLastLocation(), pos);
             oneManager.setLastDateTouch(mInformation.getCurrentTime());
             mDataBase.items_changeValue("time", oneManager.getLastDateTouch(), pos);
+            mDefineDialog.dismiss();
 
         }
     }
@@ -181,7 +185,7 @@ public class ManagerAdapter extends BaseAdapter {
                 .setTitle("是否获取地理位置").show();
         PositiveButtonListener mPositiveButtonListener =
 
-                new PositiveButtonListener(pos, oneManager, mDataBase);
+                new PositiveButtonListener(pos, oneManager, mDataBase,mDefineDialog);
 
         mDefineDialog.setPosBtnClickListener(mPositiveButtonListener);
 
