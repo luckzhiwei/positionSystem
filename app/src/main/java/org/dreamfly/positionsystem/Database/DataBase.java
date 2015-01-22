@@ -15,7 +15,7 @@ public class DataBase extends SQLiteOpenHelper{
     private static final String TAG="Position_System";
     private static final String DATABASE_NAME="positionsystem.db";
     private final static int DATABASE_VERSION = 1;
-    private final static String TABLE_NAME = "items";
+    private final static String TABLE_NAME = "regulatoritems";
     SQLiteDatabase db;
     Context context;
     public DataBase(Context context) {
@@ -30,7 +30,9 @@ public class DataBase extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db){
         try {
-            db.execSQL("CREATE TABLE items(" + "id INTEGER primary key ," + "name TEXT," +
+            db.execSQL("CREATE TABLE regulatoritems(" + "id INTEGER primary key ," + "name TEXT," +
+                    "subname TEXT," + "position TEXT," + "time TEXT," +"isconnect  TEXT"+ ");");
+            db.execSQL("CREATE TABLE manageritems(" + "id INTEGER primary key ," + "name TEXT," +
                     "subname TEXT," + "position TEXT," + "time TEXT," +"isconnect  TEXT"+ ");");
             Log.v(TAG, "create table ok");
         }
@@ -43,47 +45,55 @@ public class DataBase extends SQLiteOpenHelper{
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
         String sql = "DROP TABLE IF EXISTS " + TABLE_NAME;
+        String sql1="DROP TABLE IF EXISTS " + "manageritems";
         db.execSQL(sql);
+        db.execSQL(sql1);
         onCreate(db);
     }
 
+
+
     /**
-     * 向数据库中插入一行
-     * @param name 设备名
-     * @param subname   备注名
-     * @param position 上次定位位置
-     * @param time 上次定位时间
+     * 向数据表manageritems插入一行
+     * @param id
+     * @param name
+     * @param subname
+     * @param position
+     * @param time
+     * @param isconnect
      */
-    public void items_newItem(int id,String name,String subname,String position,
-                              String time,String isconnect) {
+    public void itemsInsert(String tableName,int id,String name,String subname,String position,
+                                     String time,String isconnect) {
         try {
-                db = this.getWritableDatabase();
-                ContentValues cv = new ContentValues();
-                cv.put("id", id);
-                cv.put("name", name);
-                cv.put("subname", subname);
-                cv.put("position", position);
-                cv.put("time", time);
-                cv.put("isconnect",isconnect);
-                db.insert("items", null, cv);
-                Log.v(TAG,"insert into items ok");
+            db = this.getWritableDatabase();
+            ContentValues cv = new ContentValues();
+            cv.put("id", id);
+            cv.put("name", name);
+            cv.put("subname", subname);
+            cv.put("position", position);
+            cv.put("time", time);
+            cv.put("isconnect",isconnect);
+            db.insert(tableName, null, cv);
+            Log.v(TAG,"insert into"+tableName+ "ok");
         }
         catch (Exception e){
-            Log.v(TAG,"insert into items err");
+            Log.v(TAG,"insert into "+tableName+" err");
         }
     }
 
+
     /**
-     * 修改数据库某一行中的某列
+     * 修改数据表regulatoritems中的某一行中的某列
+     * @param tableName 表名
      * @param columName 列名
      * @param Values 想要修改的值
      * @param id  行名
      */
-    public void items_changeValue(String columName,String Values,int id){
+    public void items_changeValue(String tableName,String columName,String Values,int id){
         db=this.getWritableDatabase();
         ContentValues cv=new ContentValues();
         cv.put(columName,Values);
-        long l=db.update("items",cv,"id=?",new String[]{id+""});
+        long l=db.update(tableName,cv,"id=?",new String[]{id+""});
         if(l==-1){
             Toast.makeText(context, "修改失败", Toast.LENGTH_SHORT).show();
         }
@@ -99,20 +109,21 @@ public class DataBase extends SQLiteOpenHelper{
      * @param id 行
      * @return cur
      */
-    public Cursor Selector(int id){
+    public Cursor Selector(int id,String tableName){
         Cursor cur;
         db=this.getReadableDatabase();
-        cur=db.query("items",new String[]{"id","name","subname","position","time","isconnect"},
+        cur=db.query(tableName,new String[]{"id","name","subname","position","time","isconnect"},
                 "id=?",new String[]{id+""},null,null,null);
         return cur;
     }
+
 
     /**
      * 删除某一行
      * @param id
      */
-    public void delItems(int id){
+    public void delitems(int id,String tableName){
         db=this.getWritableDatabase();
-        db.execSQL("delete from items where id="+id);
+        db.execSQL("delete from"+tableName+"where id="+id);
     }
 }

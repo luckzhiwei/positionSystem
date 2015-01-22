@@ -8,15 +8,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Utils.UserInfoUtils;
-import org.dreamfly.positionsystem.bean.Manager;
 
 
 /**

@@ -3,21 +3,16 @@ package org.dreamfly.positionsystem.Activity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
-import org.dreamfly.positionsystem.Adapter.ManagerAdapter;
 import org.dreamfly.positionsystem.Adapter.RegulatorAdapter;
 import org.dreamfly.positionsystem.Custom.DefineDialog;
 import org.dreamfly.positionsystem.Custom.DefineListView;
 import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
-import org.dreamfly.positionsystem.bean.Manager;
-import org.dreamfly.positionsystem.bean.Regulator;
-import org.w3c.dom.Text;
-
+import org.dreamfly.positionsystem.bean.User;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,10 +24,11 @@ public class RegulatorActivity extends ActionBarActivity {
 
     private DefineListView listViewRegulatorActivityReglutorList;
     private TextView txtRegulatorActivityTitle;
-    private RegulatorAdapter mRegulatordapter;
     private DefineDialog mDefineDialog;
+    private RegulatorAdapter mRegulatordapter;
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
-    private Regulator oneRegulator=new Regulator();
+    private User oneRegulator=new User();
+    private ManagerActivity manager=new ManagerActivity();
     private DataBase mDataBase=new DataBase(this);
 
 
@@ -44,7 +40,7 @@ public class RegulatorActivity extends ActionBarActivity {
 
     private void initial(DataBase mDataBase) {
         this.bindID();
-        this.mRegulatordapter=new RegulatorAdapter(this.getData(), this, mDataBase);
+        this.mRegulatordapter=new RegulatorAdapter(this.getData(),this,manager.getData(),this, mDataBase);
         this.listViewRegulatorActivityReglutorList.setAdapter(mRegulatordapter);
         this.setCLickListener();
     }
@@ -65,10 +61,10 @@ public class RegulatorActivity extends ActionBarActivity {
         });
     }
 
-    private List<Regulator> getData() {
-        List<Regulator> list = new ArrayList<Regulator>();
+    private List<User> getData() {
+        List<User> list = new ArrayList<User>();
         for (int i = 0; i < 7; i++) {
-            Regulator r = new Regulator();
+            User r = new User();
             r.setDeviceNma("HTC " + i);
             r.setLastDateTouch("1-19");
             r.setMangerMarks("mother" + i);

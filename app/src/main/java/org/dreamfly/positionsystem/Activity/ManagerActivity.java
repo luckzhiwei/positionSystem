@@ -2,16 +2,13 @@ package org.dreamfly.positionsystem.Activity;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 //import org.dreamfly.positionsystem.Adapter.ManagerAdapter;
 import org.dreamfly.positionsystem.Adapter.ManagerAdapter;
 import org.dreamfly.positionsystem.Custom.DefineDialog;
@@ -19,7 +16,8 @@ import org.dreamfly.positionsystem.Custom.DefineListView;
 import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
-import org.dreamfly.positionsystem.bean.Manager;
+
+import org.dreamfly.positionsystem.bean.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +34,10 @@ public class ManagerActivity extends ActionBarActivity {
     private TextView txtManagerActivityTitle,txtManagertgetDeviceName;
     private DataBase mDataBase = new DataBase(this);
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
-    private Manager oneManager=new Manager();
+    private User oneManager=new User();
+    private User oneRegulator=new User();
     private DefineDialog mDefineDialog;
+    private final static String TABLENAME="regulatoritems";
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,16 +78,16 @@ public class ManagerActivity extends ActionBarActivity {
      * 向adapter中加载初始数据
      * @return
      */
-    private List<Manager> getData() {
-        List<Manager> list = new ArrayList<Manager>();
+    public List<User> getData() {
+        List<User> list = new ArrayList<User>();
         for (int i = 0; i < 7; i++) {
-            Manager m = new Manager();
-            m.setDeviceNma(mInformation.setFirstDeviceName(i));
-            m.setLastDateTouch(mInformation.getCurrentTime());
-            m.setMangerMarks("null");
-            m.setLastLocation(mInformation.setFirstLocation(i));
-            m.setIsOnLine("false");
-            list.add(m);
+            User r = new User();
+            r.setDeviceNma(mInformation.setFirstDeviceName(i));
+            r.setLastDateTouch(mInformation.getCurrentTime());
+            r.setMangerMarks("null");
+            r.setLastLocation(mInformation.setFirstLocation(i));
+            r.setIsOnLine("false");
+            list.add(r);
         }
         this.setData(mDataBase, list);
         return list;
@@ -98,13 +98,13 @@ public class ManagerActivity extends ActionBarActivity {
      * @param mDataBase
      * @param list
      */
-    public void setData(DataBase mDataBase, List<Manager> list) {
-        Cursor cur = mDataBase.Selector(0);
+    public void setData(DataBase mDataBase, List<User> list) {
+        Cursor cur = mDataBase.Selector(0,TABLENAME);
         if (!cur.moveToNext()) {
             for (int i = 0; i < 7; i++) {
-                Manager manager = list.get(i);
-                mDataBase.items_newItem(i, manager.getDeviceName(), manager.getMangerMarks()
-                        , manager.getLastLocation(), manager.getLastDateTouch(),manager.getOnLine());
+                User regulator = list.get(i);
+                mDataBase.itemsInsert(TABLENAME,i, regulator.getDeviceName(), regulator.getMangerMarks()
+                        , regulator.getLastLocation(), regulator.getLastDateTouch(), regulator.getOnLine());
 
             }
         }
@@ -121,7 +121,7 @@ public class ManagerActivity extends ActionBarActivity {
                 setNegBtnTxt("取消").show();
         PositiveButtonListener mPositiveButtonListener =
 
-                new PositiveButtonListener(position, oneManager, mDataBase,
+                new PositiveButtonListener(position, oneRegulator, mDataBase,
                         this.mDefineDialog.getEditText(),this.mDefineDialog);
         mDefineDialog.setPosBtnClickListener(mPositiveButtonListener);
 
@@ -132,16 +132,16 @@ public class ManagerActivity extends ActionBarActivity {
      */
     public class PositiveButtonListener implements View.OnClickListener{
         private EditText mEditText;
-        private Manager oneManager;
+        private User regulator;
         private DataBase mDataBase;
         private Context mcontext;
         private int pos;
         private DefineDialog mDialog;
 
-        public PositiveButtonListener (int pos, final Manager oneManager,
+        public PositiveButtonListener (int pos, final User regulator,
                                        DataBase mDataBase,EditText mEdittext,DefineDialog mDialog){
             this.pos=pos;
-            this.oneManager=oneManager;
+            this.regulator=regulator;
             this.mDataBase=mDataBase;
             this.mEditText=mEdittext;
             this.mDialog=mDialog;
@@ -152,9 +152,9 @@ public class ManagerActivity extends ActionBarActivity {
          * @param view
          */
         public void onClick(View view){
-            oneManager.setMangerMarks(mEditText.getText().toString());
-            Log.v("textstring",oneManager.getMangerMarks());
-            mDataBase.items_changeValue("subname",oneManager.getMangerMarks(),(pos-1));
+            regulator.setMangerMarks(mEditText.getText().toString());
+            Log.v("textstring",regulator.getMangerMarks());
+            mDataBase.items_changeValue(TABLENAME,"subname", regulator.getMangerMarks(), (pos - 1));
             mDialog.dismiss();
         }
     }

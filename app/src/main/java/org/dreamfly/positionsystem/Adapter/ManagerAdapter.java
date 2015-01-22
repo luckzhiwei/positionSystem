@@ -12,7 +12,8 @@ import org.dreamfly.positionsystem.Custom.DefineDialog;
 import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
-import org.dreamfly.positionsystem.bean.Manager;
+
+import org.dreamfly.positionsystem.bean.User;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,25 +29,26 @@ import android.widget.TextView;
 public class ManagerAdapter extends BaseAdapter {
 
     private Context mContext;
-    private List<Manager> mMangerList;//适配器中应该含有的容器,
+    private List<User> mRegulatorList;//适配器中应该含有的容器,
     private DataBase mDataBase;
     private Cursor cur;
-    private Manager mManager;
+    private User regulator;
     private DefineDialog mDefineDialog = null;
+    private final static String TABLENAME="regulatoritems";
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(mContext);
 
-    public ManagerAdapter(List<Manager> mMangerList, Context context, DataBase mDataBase) {
-        this.mMangerList = mMangerList;
+    public ManagerAdapter(List<User> mRegulatorList, Context context, DataBase mDataBase) {
+        this.mRegulatorList = mRegulatorList;
         this.mContext = context;
         this.mDataBase = mDataBase;
     }
 
     public int getCount() {
-        return (this.mMangerList.size());
+        return (this.mRegulatorList.size());
     }
 
     public Object getItem(int position) {
-        return (this.mMangerList.get(position));
+        return (this.mRegulatorList.get(position));
     }
 
     public long getItemId(int position) {
@@ -63,7 +65,7 @@ public class ManagerAdapter extends BaseAdapter {
     public View getView(int position, View contentview, ViewGroup arg2) {//加载XML视图文件
 
         ViewHolder holder;
-        this.mManager = this.mMangerList.get(position);
+        this.regulator = this.mRegulatorList.get(position);
         if (contentview == null) {
             contentview = LayoutInflater.from(this.mContext).inflate(R.layout.manager_items, null);
             holder = new ViewHolder();
@@ -100,16 +102,16 @@ public class ManagerAdapter extends BaseAdapter {
     public class PositiveButtonListener implements View.OnClickListener {
 
         private int pos;
-        private Manager oneManager;
+        private User oneRegulator;
         private DataBase mDataBase;
         private DefineDialog mDefineDialog;
         final String s[] = {"南京路234号", "上海路278号", "北京路123号", "河北路456号",
                 "南山路88号", "合肥路87号", "河南路768号"};
 
-        public PositiveButtonListener(int pos, final Manager oneManager, DataBase mDataBase,
+        public PositiveButtonListener(int pos, final User oneRegulator, DataBase mDataBase,
                                       DefineDialog mDefineDialog) {
             this.pos = pos;
-            this.oneManager = oneManager;
+            this.oneRegulator = oneRegulator;
             this.mDataBase = mDataBase;
             this.mDefineDialog=mDefineDialog;
         }
@@ -120,10 +122,10 @@ public class ManagerAdapter extends BaseAdapter {
          */
         public void onClick(View view) {
 
-            oneManager.setLastLocation("上次的位置:" + s[pos]);
-            mDataBase.items_changeValue("position", oneManager.getLastLocation(), pos);
-            oneManager.setLastDateTouch(mInformation.getCurrentTime());
-            mDataBase.items_changeValue("time", oneManager.getLastDateTouch(), pos);
+            oneRegulator.setLastLocation("上次的位置:" + s[pos]);
+            mDataBase.items_changeValue(TABLENAME,"position", oneRegulator.getLastLocation(), pos);
+            oneRegulator.setLastDateTouch(mInformation.getCurrentTime());
+            mDataBase.items_changeValue(TABLENAME,"time", oneRegulator.getLastDateTouch(), pos);
             mDefineDialog.dismiss();
 
         }
@@ -151,7 +153,7 @@ public class ManagerAdapter extends BaseAdapter {
      * @param
      * @param holder
      */
-    private void setItemInfo(ViewHolder holder, int position, DataBase mDataBase) {
+    public void setItemInfo(ViewHolder holder, int position, DataBase mDataBase) {
 
         this.initItems(holder,mDataBase,position);
         this.changePortrait(holder,position,mDataBase);
@@ -165,11 +167,11 @@ public class ManagerAdapter extends BaseAdapter {
      * @param mDataBase
      */
     private void setClickListener(final ViewHolder holder, final int pos, final DataBase mDataBase) {
-        final Manager oneManger = this.mMangerList.get(pos);
+        final User oneRegulator = this.mRegulatorList.get(pos);
 
         holder.btnManagerItemPosition.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                setListDialog(pos, oneManger, mDataBase);
+                setListDialog(pos, oneRegulator, mDataBase);
             }
         });
     }
@@ -177,15 +179,15 @@ public class ManagerAdapter extends BaseAdapter {
     /**
      * 调用自定义dialog,实现弹出对话框
      * @param pos
-     * @param oneManager
+     * @param oneRegulator
      * @param mDataBase
      */
-    private void setListDialog(int pos, Manager oneManager, DataBase mDataBase) {
+    private void setListDialog(int pos, User oneRegulator, DataBase mDataBase) {
         mDefineDialog = new DefineDialog(mContext).buiider(false).setDefineDialogCanceable(true)
                 .setTitle("是否获取地理位置").show();
         PositiveButtonListener mPositiveButtonListener =
 
-                new PositiveButtonListener(pos, oneManager, mDataBase,mDefineDialog);
+                new PositiveButtonListener(pos, oneRegulator, mDataBase,mDefineDialog);
 
         mDefineDialog.setPosBtnClickListener(mPositiveButtonListener);
 
@@ -196,8 +198,8 @@ public class ManagerAdapter extends BaseAdapter {
      * @param holder
      * @param position
      */
-    private void changePortrait(ViewHolder holder,int position,DataBase mDataBase) {
-        cur=mDataBase.Selector(position);
+    public void changePortrait(ViewHolder holder,int position,DataBase mDataBase) {
+        cur=mDataBase.Selector(position,TABLENAME);
         while (cur.moveToNext()) {
             String connection = cur.getString(cur.getColumnIndex("isconnect"));
             if (connection.equals("false")) {
@@ -229,8 +231,8 @@ public class ManagerAdapter extends BaseAdapter {
      * @param mDataBase
      * @param position
      */
-    private void initItems( ViewHolder holder,DataBase mDataBase,int position){
-        cur = mDataBase.Selector(position);
+    public void initItems( ViewHolder holder,DataBase mDataBase,int position){
+        cur = mDataBase.Selector(position,TABLENAME);
         while (cur.moveToNext()) {
             holder.txtManagertmeLastTouchTime.setText(cur.getString(cur.getColumnIndex("time")));
             holder.txtManagerItemLastLocation.setText(cur.getString(cur.getColumnIndex("position")));

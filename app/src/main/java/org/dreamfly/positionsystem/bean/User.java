@@ -3,7 +3,7 @@ package org.dreamfly.positionsystem.bean;
 /**
  * Created by zhengyl on 15-1-22.
  */
-public class Regulator {
+public class User {
     private int dataBaseID;//数据库中的主键
 
     private String  deviceName;//设备名

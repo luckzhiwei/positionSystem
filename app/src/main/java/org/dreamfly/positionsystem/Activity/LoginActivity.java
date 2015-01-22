@@ -16,7 +16,7 @@ import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 import org.dreamfly.positionsystem.Utils.FileUitls;
 import org.dreamfly.positionsystem.Utils.UserInfoUtils;
-import org.dreamfly.positionsystem.bean.Manager;
+
 
 import android.app.Activity;
 import android.widget.Toast;
