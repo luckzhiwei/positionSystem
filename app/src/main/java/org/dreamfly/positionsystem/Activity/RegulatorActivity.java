@@ -29,18 +29,19 @@ public class RegulatorActivity extends ActionBarActivity {
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
     private User oneRegulator=new User();
     private ManagerActivity manager=new ManagerActivity();
-    private DataBase mDataBase=new DataBase(this);
+    private DataBase mdataBase=new DataBase(this);
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.regulator_layout);
-        this.initial(mDataBase);
+        this.initial(mdataBase);
     }
 
     private void initial(DataBase mDataBase) {
         this.bindID();
-        this.mRegulatordapter=new RegulatorAdapter(this.getData(),this,manager.getData(),this, mDataBase);
+        this.mRegulatordapter=new RegulatorAdapter(this.getData(),this,
+                 mdataBase,manager.getData(),manager,manager.getDataBase());
         this.listViewRegulatorActivityReglutorList.setAdapter(mRegulatordapter);
         this.setCLickListener();
     }

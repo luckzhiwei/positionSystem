@@ -159,4 +159,8 @@ public class ManagerActivity extends ActionBarActivity {
         }
     }
 
+    public DataBase getDataBase(){
+        return mDataBase;
+    }
+
 }
