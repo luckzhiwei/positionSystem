@@ -74,7 +74,7 @@ public class DataBase extends SQLiteOpenHelper{
             cv.put("time", time);
             cv.put("isconnect",isconnect);
             db.insert(tableName, null, cv);
-            Log.v(TAG,"insert into"+tableName+ "ok");
+            Log.v(TAG,"insert into"+tableName+" ok");
         }
         catch (Exception e){
             Log.v(TAG,"insert into "+tableName+" err");
@@ -124,6 +124,6 @@ public class DataBase extends SQLiteOpenHelper{
      */
     public void delitems(int id,String tableName){
         db=this.getWritableDatabase();
-        db.execSQL("delete from"+tableName+"where id="+id);
+        db.execSQL("delete from "+tableName+" where id="+id);
     }
 }

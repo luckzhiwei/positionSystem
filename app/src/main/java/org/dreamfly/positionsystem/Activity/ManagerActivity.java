@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.TextView;
-//import org.dreamfly.positionsystem.Adapter.ManagerAdapter;
 import org.dreamfly.positionsystem.Adapter.ManagerAdapter;
 import org.dreamfly.positionsystem.Custom.DefineDialog;
 import org.dreamfly.positionsystem.Custom.DefineListView;
@@ -134,12 +133,12 @@ public class ManagerActivity extends ActionBarActivity {
      * 自定义对话框按钮监听类
      */
     public class PositiveButtonListener implements View.OnClickListener{
-        private EditText mEditText;
-        private User regulator;
-        private DataBase mDataBase;
-        private Context mcontext;
-        private int pos;
-        private DefineDialog mDialog;
+        protected EditText mEditText;
+        protected User regulator;
+        protected DataBase mDataBase;
+        protected Context mcontext;
+        protected int pos;
+        protected DefineDialog mDialog;
 
         public PositiveButtonListener (int pos, final User regulator,
                                        DataBase mDataBase,EditText mEdittext,DefineDialog mDialog){

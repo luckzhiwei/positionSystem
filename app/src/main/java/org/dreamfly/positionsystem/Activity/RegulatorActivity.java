@@ -2,7 +2,6 @@ package org.dreamfly.positionsystem.Activity;
 
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,7 +14,6 @@ import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 import org.dreamfly.positionsystem.bean.User;
-import org.dreamfly.positionsystem.Activity.ManagerActivity;
 import org.dreamfly.positionsystem.CommonParameter.ComParameter;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +22,7 @@ import java.util.List;
  * Created by zhengyl on 15-1-13.
  * 被管理者界面Activity类
  */
-public class RegulatorActivity extends ActionBarActivity {
+public class RegulatorActivity extends ManagerActivity {
 
     private DefineListView listViewRegulatorActivityReglutorList;
     private TextView txtRegulatorActivityTitle;
@@ -61,19 +59,19 @@ public class RegulatorActivity extends ActionBarActivity {
     private void setCLickListener() {
         this.listViewRegulatorActivityReglutorList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
+                setDialogShow(position);
             }
         });
     }
 
-    private List<User> getData() {
+    public List<User> getData() {
         List<User> list = new ArrayList<User>();
         for (int i = 0; i < 7; i++) {
             User r = new User();
-            r.setDeviceNma("HTC " + i);
-            r.setLastDateTouch("1-19");
+            r.setDeviceNma(mInformation.setFirstDeviceName(i));
+            r.setLastDateTouch(mInformation.getCurrentTime());
             r.setMangerMarks("null");
-            r.setLastLocation("usetc" + i);
+            r.setLastLocation(mInformation.setFirstLocation(i));
             r.setIsOnLine("false");
             list.add(r);
 
@@ -104,24 +102,34 @@ public class RegulatorActivity extends ActionBarActivity {
      * 实现点击由用户修改备注名的效果
      * @param position
      */
-    /*
+
     private void setDialogShow(int position) {
         this.mDefineDialog = new DefineDialog(RegulatorActivity.this).buiider(true).
                 setTitle("修改备注名:").setDefineDialogCanceable(true).setPosBtnTxt("确定").
                 setNegBtnTxt("取消").show();
 
-        PositiveButtonListener mPositiveButtonListener =
+        RegPositiveButtonListener mPositiveButtonListener =
 
-                new PositiveButtonListener(position, oneRegulator, mDataBase,
+                new RegPositiveButtonListener(position, oneRegulator, mDataBase,
                         this.mDefineDialog.getEditText(),this.mDefineDialog);
         mDefineDialog.setPosBtnClickListener(mPositiveButtonListener);
 
     }
-    public class RegPositiveButtonListener extends ManagerActivity.PositiveButtonListener  {
-        RegPositiveButtonListener(int pos, final User regulator,
-                          DataBase mDataBase,EditText mEdittext,DefineDialog mDialog){
-            super(pos,regulator,mDataBase,mEdittext,mDialog);
-        }
-    }*/
 
+    public class RegPositiveButtonListener extends ManagerActivity.PositiveButtonListener {
+        RegPositiveButtonListener(int pos, final User regulator,
+                                  DataBase mDataBase, EditText mEdittext, DefineDialog mDialog) {
+            super(pos, regulator, mDataBase, mEdittext, mDialog);
+        }
+
+        @Override
+        public void onClick(View view) {
+            regulator.setMangerMarks(mEditText.getText().toString());
+            Log.v("textstring",regulator.getMangerMarks());
+            mDataBase.items_changeValue(com.MANTABLENAME,"subname", regulator.getMangerMarks(), (pos - 1));
+            mDialog.dismiss();
+        }
+    }
 }
+
+
