@@ -74,10 +74,10 @@ public class DataBase extends SQLiteOpenHelper{
             cv.put("time", time);
             cv.put("isconnect",isconnect);
             db.insert(tableName, null, cv);
-            Log.v(TAG,"insert into"+tableName+" ok");
+            Log.v(TAG,"insert into"+" "+tableName+" "+"ok");
         }
         catch (Exception e){
-            Log.v(TAG,"insert into "+tableName+" err");
+            Log.v(TAG,"insert into "+" "+tableName+" "+"err");
         }
     }
 

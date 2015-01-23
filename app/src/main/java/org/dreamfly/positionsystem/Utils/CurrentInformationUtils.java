@@ -7,6 +7,7 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -88,16 +89,28 @@ public class CurrentInformationUtils {
      * 获取地理位置信息方法
      * @return
      */
-    public void getUserLocation(){
+    public Location getUserLocation(Context context){
 
-        //Location location=locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+
         MLocationListener locationListener=new MLocationListener();
         LocationManager locationManager=(LocationManager)context.
                 getSystemService(Context.LOCATION_SERVICE);
 
+         Location  location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+            if (location == null) {
+                location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+            }
+
+        //Log.v("mposition",""+location.getLongitude());
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
+        if(location == null) {
+            locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+        }
+        return location;
 
     }
+
+
 
     /**
      * 自定义地理位置改变的监听事件
@@ -108,6 +121,7 @@ public class CurrentInformationUtils {
         public void onLocationChanged(Location location) {
             //当坐标改变时触发此函数，如果Provider传进相同的坐标，它就不会被触发
             // log it when the location changes
+
            Log.v("myposition",""+location.getLatitude());
         }
 
@@ -119,6 +133,7 @@ public class CurrentInformationUtils {
         @Override
         public void onProviderEnabled(String provider) {
             //  Provider被enable时触发此函数，比如GPS被打开
+
         }
 
         @Override

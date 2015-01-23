@@ -1,5 +1,6 @@
 package org.dreamfly.positionsystem.Activity;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.content.Intent;
 import android.os.Handler;
@@ -43,7 +44,8 @@ public class LoginActivity extends Activity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.setContentView(R.layout.login_layout);
         this.initial();
-        mInformation.getUserLocation();
+        Location mLocation=mInformation.getUserLocation(this);
+        if(mLocation!=null){Log.v("textlocation",""+mLocation.getLatitude());}
     }
 
     /**
