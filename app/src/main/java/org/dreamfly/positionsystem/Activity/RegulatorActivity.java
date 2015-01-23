@@ -1,11 +1,13 @@
 package org.dreamfly.positionsystem.Activity;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
-
+import android.widget.EditText;
 import org.dreamfly.positionsystem.Adapter.RegulatorAdapter;
 import org.dreamfly.positionsystem.Custom.DefineDialog;
 import org.dreamfly.positionsystem.Custom.DefineListView;
@@ -13,6 +15,8 @@ import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 import org.dreamfly.positionsystem.bean.User;
+import org.dreamfly.positionsystem.Activity.ManagerActivity;
+import org.dreamfly.positionsystem.CommonParameter.ComParameter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +33,7 @@ public class RegulatorActivity extends ActionBarActivity {
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
     private User oneRegulator=new User();
     private ManagerActivity manager=new ManagerActivity();
+    private ComParameter com=new ComParameter();
     private DataBase mDataBase=new DataBase(this);
 
 
@@ -67,11 +72,56 @@ public class RegulatorActivity extends ActionBarActivity {
             User r = new User();
             r.setDeviceNma("HTC " + i);
             r.setLastDateTouch("1-19");
-            r.setMangerMarks("mother" + i);
+            r.setMangerMarks("null");
             r.setLastLocation("usetc" + i);
+            r.setIsOnLine("false");
             list.add(r);
+
         }
-        return (list);
+        this.setData(mDataBase, list);
+        Log.v("textlist", "" + list.size());
+        return list;
     }
+
+    /**
+     * 向数据库中存储数据
+     * @param mDataBase
+     * @param list
+     */
+    public void setData(DataBase mDataBase, List<User> list) {
+        Cursor cur = mDataBase.Selector(0,com.MANTABLENAME);
+        if (!cur.moveToNext()) {
+            for (int i = 0; i < 7; i++) {
+                User regulator = list.get(i);
+                mDataBase.itemsInsert(com.MANTABLENAME,i, regulator.getDeviceName(), regulator.getMangerMarks()
+                        , regulator.getLastLocation(), regulator.getLastDateTouch(), regulator.getOnLine());
+
+            }
+        }
+        cur.close();
+    }
+    /**
+     * 实现点击由用户修改备注名的效果
+     * @param position
+     */
+    /*
+    private void setDialogShow(int position) {
+        this.mDefineDialog = new DefineDialog(RegulatorActivity.this).buiider(true).
+                setTitle("修改备注名:").setDefineDialogCanceable(true).setPosBtnTxt("确定").
+                setNegBtnTxt("取消").show();
+
+        PositiveButtonListener mPositiveButtonListener =
+
+                new PositiveButtonListener(position, oneRegulator, mDataBase,
+                        this.mDefineDialog.getEditText(),this.mDefineDialog);
+        mDefineDialog.setPosBtnClickListener(mPositiveButtonListener);
+
+    }
+    public class RegPositiveButtonListener extends ManagerActivity.PositiveButtonListener  {
+        RegPositiveButtonListener(int pos, final User regulator,
+                          DataBase mDataBase,EditText mEdittext,DefineDialog mDialog){
+            super(pos,regulator,mDataBase,mEdittext,mDialog);
+        }
+    }*/
 
 }

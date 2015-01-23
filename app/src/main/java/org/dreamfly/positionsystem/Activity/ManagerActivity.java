@@ -65,6 +65,9 @@ public class ManagerActivity extends ActionBarActivity {
 
     }
 
+    /**
+     * 为每个条目增加监听事件
+     */
     private void setListViewListener() {
         this.managerActivityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {

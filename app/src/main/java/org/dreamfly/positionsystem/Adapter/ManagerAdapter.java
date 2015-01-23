@@ -28,11 +28,11 @@ import android.widget.TextView;
 
 public class ManagerAdapter extends BaseAdapter {
 
-    private Context mContext;
-    private List<User> mRegulatorList;//适配器中应该含有的容器,
-    private DataBase mDataBase;
+    Context mContext;
+    List<User> mRegulatorList;//适配器中应该含有的容器,
+    DataBase mDataBase;
+    User regulator;
     private Cursor cur;
-    private User regulator;
     private DefineDialog mDefineDialog = null;
     private final static String TABLENAME="regulatoritems";
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(mContext);
@@ -84,7 +84,7 @@ public class ManagerAdapter extends BaseAdapter {
     /**
      * 设置一个容器用于存放控件
      */
-    private class ViewHolder {
+    public class ViewHolder {
 
         TextView txtManagerItemMarkName;
         TextView txtManagertmeLastTouchTime;
@@ -101,10 +101,10 @@ public class ManagerAdapter extends BaseAdapter {
      */
     public class PositiveButtonListener implements View.OnClickListener {
 
-        private int pos;
-        private User oneRegulator;
-        private DataBase mDataBase;
-        private DefineDialog mDefineDialog;
+        protected int pos;
+        protected User oneRegulator;
+        protected DataBase mDataBase;
+        protected DefineDialog mDefineDialog;
         final String s[] = {"南京路234号", "上海路278号", "北京路123号", "河北路456号",
                 "南山路88号", "合肥路87号", "河南路768号"};
 

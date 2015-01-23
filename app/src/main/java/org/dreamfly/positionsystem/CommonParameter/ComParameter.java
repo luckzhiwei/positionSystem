@@ -6,5 +6,7 @@ package org.dreamfly.positionsystem.CommonParameter;
 public class ComParameter {
 
           public final static int STATE_RIGHT=1;
+          public final static String TABLENAME="regulatoritems";
+          public final static String MANTABLENAME="manageritems";
 
 }
