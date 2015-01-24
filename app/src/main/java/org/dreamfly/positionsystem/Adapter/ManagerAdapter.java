@@ -266,6 +266,4 @@ public class ManagerAdapter extends BaseAdapter {
         mContext.startActivity(in);
 
     }
-
-
 }

@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.baidu.mapapi.map.BaiduMap;
+
 import org.dreamfly.positionsystem.Adapter.ManagerAdapter;
 import org.dreamfly.positionsystem.Custom.DefineDialog;
 import org.dreamfly.positionsystem.Custom.DefineListView;
@@ -36,6 +39,7 @@ public class ManagerActivity extends ActionBarActivity {
     private User oneManager=new User();
     private User oneRegulator=new User();
     private DefineDialog mDefineDialog;
+    BaiduMap baiduMap;
     private final static String TABLENAME="regulatoritems";
 
 
