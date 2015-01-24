@@ -108,6 +108,7 @@ public class RegulatorAdapter extends ManagerAdapter {
             oneRegulator.setLastDateTouch(mInformation.getCurrentTime());
             mDataBase.items_changeValue(MANTABLENAME,"time", oneRegulator.getLastDateTouch(), pos);
             mDefineDialog.dismiss();
+            sendposition();
         }
     }
 

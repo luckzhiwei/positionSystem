@@ -2,12 +2,17 @@ package org.dreamfly.positionsystem.Adapter;
 
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.location.Location;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.BaseAdapter;
 
 import java.util.List;
 
+import org.dreamfly.positionsystem.Activity.PositionActivity;
 import org.dreamfly.positionsystem.Custom.DefineDialog;
 import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.R;
@@ -127,7 +132,7 @@ public class ManagerAdapter extends BaseAdapter {
             oneRegulator.setLastDateTouch(mInformation.getCurrentTime());
             mDataBase.items_changeValue(TABLENAME,"time", oneRegulator.getLastDateTouch(), pos);
             mDefineDialog.dismiss();
-
+            sendposition();
         }
     }
 
@@ -245,6 +250,21 @@ public class ManagerAdapter extends BaseAdapter {
             }
         }
         cur.close();
+    }
+
+    /**
+     * 得到位置信息的数据,并存储,启动positionactivity
+     */
+    protected void sendposition(){
+        Location mLocation=mInformation.getUserLocation(mContext);
+        if(mLocation!=null){Log.v("textlocation", "" + mLocation.getLatitude());}
+        SharedPreferences sp=mContext.getSharedPreferences("position",0);
+        SharedPreferences.Editor se=sp.edit();
+        se.putString("location",""+mLocation.getLatitude());
+        se.commit();
+        Intent in=new Intent(mContext, PositionActivity.class);
+        mContext.startActivity(in);
+
     }
 
 
