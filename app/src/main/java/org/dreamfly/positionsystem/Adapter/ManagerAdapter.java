@@ -258,7 +258,7 @@ public class ManagerAdapter extends BaseAdapter {
      * 得到位置信息的数据,并存储,启动positionactivity
      */
     protected void sendposition() {
-        Location mLocation = mLocationUtils.getLocation(mContext);
+        /*Location mLocation = mLocationUtils.getLocation(mContext);
 
         if (mLocation != null) {
 
@@ -267,7 +267,7 @@ public class ManagerAdapter extends BaseAdapter {
             se.putString("location", "" + mLocation.getLatitude());
             se.putString("location1", "" + mLocation.getLongitude());
             se.commit();
-        }
+        }*/
 
         Intent in = new Intent(mContext, PositionActivity.class);
         mContext.startActivity(in);

@@ -26,4 +26,5 @@ dependencies {
     compile files('/home/zhengyl/learngit/posiition-system/positionSystem/libs/baidumapapi_v3_2_0.jar')
     compile files('libs/baidumapapi_v3_2_0.jar')
     compile files('libs/armeabi.jar')
+    compile files('libs/locSDK_3.1.jar')
 }

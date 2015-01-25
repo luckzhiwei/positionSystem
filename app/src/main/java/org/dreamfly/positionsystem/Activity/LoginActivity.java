@@ -16,7 +16,6 @@ import org.dreamfly.positionsystem.Custom.DefineDialog;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 import org.dreamfly.positionsystem.Utils.FileUitls;
-import org.dreamfly.positionsystem.Utils.LocationUtils;
 import org.dreamfly.positionsystem.Utils.UserInfoUtils;
 
 
@@ -38,7 +37,7 @@ public class LoginActivity extends Activity {
     private EditText editextLoginactivityPassword;
     private DefineDialog mIsManagerDialog;
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
-    private LocationUtils mLocationUtils=new LocationUtils(this);
+
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +45,7 @@ public class LoginActivity extends Activity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.setContentView(R.layout.login_layout);
         this.initial();
-        Location mLocation=mLocationUtils.getLocation(this);
-        if(mLocation!=null){
-            Log.v("textlocation",""+mLocation.getLatitude());
-            Log.v("textlocation",""+mLocation.getLongitude());
-        }
+
     }
 
     /**
