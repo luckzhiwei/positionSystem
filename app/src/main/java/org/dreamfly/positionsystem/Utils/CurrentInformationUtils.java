@@ -1,6 +1,7 @@
 package org.dreamfly.positionsystem.Utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -123,6 +124,12 @@ public class CurrentInformationUtils {
             // log it when the location changes
 
            Log.v("myposition",""+location.getLatitude());
+            SharedPreferences sp = context.getSharedPreferences("listener", 0);
+            SharedPreferences.Editor se = sp.edit();
+            se.putString("location", "" + location.getLatitude());
+            se.putString("location1", "" + location.getLongitude());
+           sendLocation(location);
+
         }
 
         @Override
@@ -143,6 +150,8 @@ public class CurrentInformationUtils {
 
     }
 
-
+    public Location sendLocation(Location location){
+        return location;
+    }
 
 }

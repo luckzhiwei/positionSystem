@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 /**
@@ -255,16 +256,32 @@ public class ManagerAdapter extends BaseAdapter {
     /**
      * 得到位置信息的数据,并存储,启动positionactivity
      */
-    protected void sendposition(){
-        Location mLocation=mInformation.getUserLocation(mContext);
-        if(mLocation!=null){Log.v("textlocation", "" + mLocation.getLatitude());}
-        SharedPreferences sp=mContext.getSharedPreferences("position",0);
-        SharedPreferences.Editor se=sp.edit();
-        se.putString("location",""+mLocation.getLatitude());
-        se.putString("location1",""+mLocation.getLongitude());
-        se.commit();
-        Intent in=new Intent(mContext, PositionActivity.class);
+    protected void sendposition() {
+        Location mLocation = mInformation.getUserLocation(mContext);
+
+        if (mLocation == null) {
+            SharedPreferences sp = mContext.getSharedPreferences("listener", 0);
+            String location = sp.getString("location", "");
+            String location1 = sp.getString("location1", "");
+            Log.v("textlocation", "" + mLocation.getLatitude());
+            SharedPreferences sp1 = mContext.getSharedPreferences("position", 0);
+            SharedPreferences.Editor se = sp1.edit();
+            se.putString("location", "" + location);
+            se.putString("location1", "" + location1);
+            se.commit();
+        }
+        else {
+            SharedPreferences sp1 = mContext.getSharedPreferences("position", 0);
+            SharedPreferences.Editor se = sp1.edit();
+            se.putString("location", "" + mLocation.getLatitude());
+            se.putString("location1", "" + mLocation.getLongitude());
+            se.commit();
+        }
+        Intent in = new Intent(mContext, PositionActivity.class);
         mContext.startActivity(in);
 
     }
+
+
+
 }
