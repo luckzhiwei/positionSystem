@@ -18,6 +18,7 @@ import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 
+import org.dreamfly.positionsystem.Utils.LocationUtils;
 import org.dreamfly.positionsystem.bean.User;
 
 import android.view.View;
@@ -42,7 +43,7 @@ public class ManagerAdapter extends BaseAdapter {
     private DefineDialog mDefineDialog = null;
     private final static String TABLENAME="regulatoritems";
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(mContext);
-
+    private LocationUtils mLocationUtils=new LocationUtils(mContext);
     public ManagerAdapter(List<User> mRegulatorList, Context context, DataBase mDataBase) {
         this.mRegulatorList = mRegulatorList;
         this.mContext = context;
@@ -257,26 +258,17 @@ public class ManagerAdapter extends BaseAdapter {
      * 得到位置信息的数据,并存储,启动positionactivity
      */
     protected void sendposition() {
-        Location mLocation = mInformation.getUserLocation(mContext);
+        Location mLocation = mLocationUtils.getLocation(mContext);
 
-        if (mLocation == null) {
-            SharedPreferences sp = mContext.getSharedPreferences("listener", 0);
-            String location = sp.getString("location", "");
-            String location1 = sp.getString("location1", "");
-            Log.v("textlocation", "" + mLocation.getLatitude());
-            SharedPreferences sp1 = mContext.getSharedPreferences("position", 0);
-            SharedPreferences.Editor se = sp1.edit();
-            se.putString("location", "" + location);
-            se.putString("location1", "" + location1);
-            se.commit();
-        }
-        else {
+        if (mLocation != null) {
+
             SharedPreferences sp1 = mContext.getSharedPreferences("position", 0);
             SharedPreferences.Editor se = sp1.edit();
             se.putString("location", "" + mLocation.getLatitude());
             se.putString("location1", "" + mLocation.getLongitude());
             se.commit();
         }
+
         Intent in = new Intent(mContext, PositionActivity.class);
         mContext.startActivity(in);
 
