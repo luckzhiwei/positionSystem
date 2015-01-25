@@ -122,7 +122,8 @@ public class CurrentInformationUtils {
             //当坐标改变时触发此函数，如果Provider传进相同的坐标，它就不会被触发
             // log it when the location changes
 
-           Log.v("myposition",""+location.getLatitude());
+           Log.v("lzw",""+location.getLatitude());
+           Log.v("lzw",""+location.getLongitude());
         }
 
         @Override

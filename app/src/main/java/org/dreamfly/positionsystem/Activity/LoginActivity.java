@@ -45,7 +45,9 @@ public class LoginActivity extends Activity {
         this.setContentView(R.layout.login_layout);
         this.initial();
         Location mLocation=mInformation.getUserLocation(this);
-        if(mLocation!=null){Log.v("textlocation",""+mLocation.getLatitude());}
+        if(mLocation!=null){
+            Log.v("lzw",""+mLocation.getLatitude());
+        }
     }
 
     /**
