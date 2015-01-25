@@ -7,6 +7,9 @@
         android:icon="@drawable/positionsystemlogo"
         android:label="@string/app_name"
         android:theme="@style/Theme.AppCompat.NoActionBar">
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="7D95O73sTBvjWYbfyqYOqXuQ" />
         <activity
             android:name=".Activity.IndexActivity">
             <intent-filter>
@@ -34,4 +37,18 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE"><!--获取设备状态的权限-->
     </uses-permission>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/><!--获取地理位置权限-->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 </manifest>

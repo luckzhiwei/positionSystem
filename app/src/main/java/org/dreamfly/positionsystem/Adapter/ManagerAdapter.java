@@ -261,6 +261,7 @@ public class ManagerAdapter extends BaseAdapter {
         SharedPreferences sp=mContext.getSharedPreferences("position",0);
         SharedPreferences.Editor se=sp.edit();
         se.putString("location",""+mLocation.getLatitude());
+        se.putString("location1",""+mLocation.getLongitude());
         se.commit();
         Intent in=new Intent(mContext, PositionActivity.class);
         mContext.startActivity(in);
