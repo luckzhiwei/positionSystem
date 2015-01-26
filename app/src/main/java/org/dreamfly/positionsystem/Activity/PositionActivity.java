@@ -74,13 +74,6 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
      * @param txt1
      * @param txt2
      */
-    /*private void positionInfo(TextView txt,TextView txt1,TextView txt2){
-        SharedPreferences sp=this.getSharedPreferences("position",0);
-        String location=sp.getString("location","");
-        String location1=sp.getString("location1",""packa);
-        txt.setText(location+"");
-        txt1.setText(location1+"");
-    }*/
 
     /**
      * 绑定控件ID
