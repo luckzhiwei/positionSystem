@@ -58,38 +58,12 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SDKInitializer.initialize(getApplicationContext() /*
-        //定义坐标点
-        LatLng point=new LatLng
-                (Float.valueOf(txt1.getText().toString()),Float.valueOf(txt2.getText().toString()));
-
-        //构建Marker图标
-        BitmapDescriptor bitmap = BitmapDescriptorFactory
-                .fromResource(R.drawable.icon_marka);
-
-        OverlayOptions option = new MarkerOptions()
-                .position(point)
-                .icon(bitmap);
-        //在地图上添加Marker，并显示
-        mBaiduMap.addOverlay(option);*/);
+        SDKInitializer.initialize(getApplicationContext());
         String libName="BaiduMapSDK_v3_2_0_11";
         System.loadLibrary(libName);
 
         this.setContentView(R.layout.position_layout);
-        this.initial(); /*
-        //定义坐标点
-        LatLng point=new LatLng
-                (Float.valueOf(txt1.getText().toString()),Float.valueOf(txt2.getText().toString()));
-
-        //构建Marker图标
-        BitmapDescriptor bitmap = BitmapDescriptorFactory
-                .fromResource(R.drawable.icon_marka);
-
-        OverlayOptions option = new MarkerOptions()
-                .position(point)
-                .icon(bitmap);
-        //在地图上添加Marker，并显示
-        mBaiduMap.addOverlay(option);*/
+        this.initial();
         this.bindListener();
       }
     @Override
