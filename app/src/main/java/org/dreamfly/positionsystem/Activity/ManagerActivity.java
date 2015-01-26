@@ -1,6 +1,7 @@
 package org.dreamfly.positionsystem.Activity;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -9,8 +10,19 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.LocationClient;
+import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.core.SearchResult;
+import com.baidu.mapapi.search.geocode.GeoCodeResult;
+import com.baidu.mapapi.search.geocode.GeoCoder;
+import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 
 import org.dreamfly.positionsystem.Adapter.ManagerAdapter;
 import org.dreamfly.positionsystem.Custom.DefineDialog;
@@ -19,6 +31,7 @@ import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 
+import org.dreamfly.positionsystem.Utils.LocationUtils;
 import org.dreamfly.positionsystem.bean.User;
 
 import java.util.ArrayList;
@@ -28,7 +41,7 @@ import java.util.List;
  * Created by zhengyl on 15-1-13.
  * 管理者界面Activity类
  */
-public class ManagerActivity extends ActionBarActivity {
+public class ManagerActivity extends ActionBarActivity implements OnGetGeoCoderResultListener {
 
 
     private DefineListView managerActivityListView;
@@ -39,12 +52,19 @@ public class ManagerActivity extends ActionBarActivity {
     private User oneManager=new User();
     private User oneRegulator=new User();
     private DefineDialog mDefineDialog;
-    BaiduMap baiduMap;
+    private LocationUtils mLocationUtils;
+    protected LocationClient locationClient;
+    protected String lat;
+    protected String lon;
+    com.baidu.mapapi.search.geocode.GeoCoder mcoder;
     private final static String TABLENAME="regulatoritems";
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SDKInitializer.initialize(getApplicationContext());
+        String libName="BaiduMapSDK_v3_2_0_11";
+        System.loadLibrary(libName);
         this.setContentView(R.layout.manager_layout);
         this.initial(mDataBase);
 
@@ -53,8 +73,13 @@ public class ManagerActivity extends ActionBarActivity {
 
     public void initial(DataBase mDataBase) {
         this.bindID();
+        mLocationUtils=new LocationUtils(this);
+        mLocationUtils.LocationInfo();
+        mcoder= GeoCoder.newInstance();
+        mcoder.setOnGetGeoCodeResultListener(this);
         this.mManagerAdapter = new ManagerAdapter(this.getData(), this, mDataBase);
         this.managerActivityListView.setAdapter(this.mManagerAdapter);
+        this.locationSave();
         this.setListViewListener();
     }
 
@@ -164,9 +189,77 @@ public class ManagerActivity extends ActionBarActivity {
             mDialog.dismiss();
         }
     }
+    public class BDListener implements com.baidu.location.BDLocationListener{
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+            if(location == null){
+                return;
+            }
+
+            lat=location.getLatitude()+"";
+
+            lon=location.getLongitude()+"";
+            reverseCode(lat,lon);
+
+
+        }
+
+        @Override
+        public void onReceivePoi(BDLocation bdLocation) {
+
+        }
+    }
+
 
     public DataBase getDataBase(){
         return mDataBase;
     }
+
+    /**
+     * 调用百度定位Sdk,并存储定位数据
+     */
+    public void locationSave(){
+        locationClient=mLocationUtils.getLocationClient();
+        locationClient.start();
+        locationClient.requestLocation();
+        BDListener bdListener=new BDListener();
+        locationClient.registerLocationListener(bdListener);
+
+    }
+
+    /**
+     * 调用经纬度编码转换函数并用Sharepreference保存
+     * @param lat
+     * @param lon
+     */
+    public void reverseCode(String lat,String lon){
+        LatLng ptCenter=new LatLng(
+                (Float.valueOf(lat)),
+                Float.valueOf(lon));
+        mcoder.reverseGeoCode(new ReverseGeoCodeOption().location(ptCenter));
+
+    }
+
+    @Override
+    public void onGetGeoCodeResult(GeoCodeResult result) {
+
+    }
+    @Override
+    public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
+        if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
+            Toast.makeText(ManagerActivity.this, "抱歉，未能找到结果", Toast.LENGTH_LONG)
+                    .show();
+            return;
+        }
+        String s=result.getAddress();
+        //将获得的地址保存
+        SharedPreferences mpreference=getSharedPreferences("address",0);
+        SharedPreferences.Editor editor=mpreference.edit();
+        editor.putString("mlocate",s);
+        editor.commit();
+        Log.v("baidusdk","您的当前位置" +s+"已被保存");
+
+    }
+
 
 }

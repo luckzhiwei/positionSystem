@@ -18,7 +18,6 @@ import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 
-import org.dreamfly.positionsystem.Utils.LocationUtils;
 import org.dreamfly.positionsystem.bean.User;
 
 import android.view.View;
@@ -43,7 +42,7 @@ public class ManagerAdapter extends BaseAdapter {
     private DefineDialog mDefineDialog = null;
     private final static String TABLENAME="regulatoritems";
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(mContext);
-    private LocationUtils mLocationUtils=new LocationUtils(mContext);
+
     public ManagerAdapter(List<User> mRegulatorList, Context context, DataBase mDataBase) {
         this.mRegulatorList = mRegulatorList;
         this.mContext = context;
@@ -129,8 +128,8 @@ public class ManagerAdapter extends BaseAdapter {
          */
         public void onClick(View view) {
 
-            oneRegulator.setLastLocation("上次的位置:" + s[pos]);
-            mDataBase.items_changeValue(TABLENAME,"position", oneRegulator.getLastLocation(), pos);
+            /*oneRegulator.setLastLocation("上次的位置:" + s[pos]);
+            mDataBase.items_changeValue(TABLENAME,"position", oneRegulator.getLastLocation(), pos);*/
             oneRegulator.setLastDateTouch(mInformation.getCurrentTime());
             mDataBase.items_changeValue(TABLENAME,"time", oneRegulator.getLastDateTouch(), pos);
             mDefineDialog.dismiss();

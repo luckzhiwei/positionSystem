@@ -24,7 +24,9 @@ import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 
+import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.R;
+import org.dreamfly.positionsystem.Utils.LocationUtils;
 
 /**
  * Created by zhengyl on 15-1-13.
@@ -33,8 +35,10 @@ import org.dreamfly.positionsystem.R;
 public class PositionActivity extends ActionBarActivity implements OnGetGeoCoderResultListener {
 
     private TextView txtPositionLatitute,txtPositionLongitute,txtPositionLocation;
-    private Button btnPositionActivityGeo,btnPositionStart;
+    private Button btnPositionActivityGeo;
     private LocationClient locationClient = null;
+    private DataBase mDataBase = new DataBase(this);
+    private LocationUtils mLocationUtils;
     com.baidu.mapapi.search.geocode.GeoCoder mcoder;
 
     @Override
@@ -43,6 +47,7 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
         SDKInitializer.initialize(getApplicationContext());
         String libName="BaiduMapSDK_v3_2_0_11";
         System.loadLibrary(libName);
+
         this.setContentView(R.layout.position_layout);
         this.initial();
         this.bindListener();
@@ -55,6 +60,8 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
 
     private void initial(){
         this.bindID();
+        mLocationUtils=new LocationUtils(this);
+        mLocationUtils.LocationInfo();
         this.locationInfo();
         mcoder=GeoCoder.newInstance();
         mcoder.setOnGetGeoCodeResultListener(this);
@@ -67,13 +74,6 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
      * @param txt1
      * @param txt2
      */
-    /*private void positionInfo(TextView txt,TextView txt1,TextView txt2){
-        SharedPreferences sp=this.getSharedPreferences("position",0);
-        String location=sp.getString("location","");
-        String location1=sp.getString("location1",""packa);
-        txt.setText(location+"");
-        txt1.setText(location1+"");
-    }*/
 
     /**
      * 绑定控件ID
@@ -83,68 +83,42 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
        txtPositionLongitute=(TextView)this.findViewById(R.id.txt_position_longitute);
        txtPositionLocation=(TextView)this.findViewById(R.id.txt_position_location);
        btnPositionActivityGeo=(Button)this.findViewById(R.id.btn_positionactivity_geo);
-       btnPositionStart=(Button)this.findViewById(R.id.btn_position_start);
+
     }
 
     private void locationInfo(){
-        this.locationClient=new LocationClient(this);
-        LocationClientOption option = new LocationClientOption();
-        option.setOpenGps(true); // 是否打开GPS
-        option.setCoorType("bd09ll"); // 设置返回值的坐标类型。
-        option.setPriority(LocationClientOption.NetWorkFirst); // 设置定位优先级
-        option.setProdName("dreamflyLocationDemo"); // 设置产品线名称
-        option.setScanSpan(1000);// 设置定时定位的时间间隔。单位毫秒
-        locationClient.setLocOption(option);
-        locationClient.registerLocationListener(new BDLocationListener() {
-            @Override
-            public void onReceiveLocation(BDLocation location) {
-                if(location == null){
-                    return;
-                }
-                StringBuffer sb=new StringBuffer(256);
-                sb.append(location.getLatitude());
+        locationClient=mLocationUtils.getLocationClient();
+        BDListener bdListener=new BDListener();
+        locationClient.registerLocationListener(bdListener);
 
-                StringBuffer sb1=new StringBuffer(256);
-                sb1.append(location.getLongitude());
-
-                txtPositionLatitute.setText(sb);
-                txtPositionLongitute.setText(sb1);
-            }
-
-            @Override
-            public void onReceivePoi(BDLocation bdLocation) {
-
-            }
-        });
+        locationClient.start();
+        locationClient.requestLocation();
 
 
     }
+    public class BDListener implements com.baidu.location.BDLocationListener{
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+            if(location == null){
+                return;
+            }
+            StringBuffer sb=new StringBuffer(256);
+            sb.append(location.getLatitude());
 
-    /**
-     * 通过按钮控制是否获取定位服务
-     * @param view
-     */
-    public void start_btn(View view) {
+            StringBuffer sb1=new StringBuffer(256);
+            sb1.append(location.getLongitude());
 
-        if (locationClient == null) {
-            return;
-        }
-        if (locationClient.isStarted()) {
-            btnPositionStart.setText("Start");
-            locationClient.stop();
-        } else {
-            btnPositionStart.setText("Stop");
-            locationClient.start();
-			/*
-			 * 当所设的整数值大于等于1000（ms）时，定位SDK内部使用定时定位模式。调用requestLocation(
-			 * )后，每隔设定的时间，定位SDK就会进行一次定位。如果定位SDK根据定位依据发现位置没有发生变化，就不会发起网络请求，
-			 * 返回上一次定位的结果；如果发现位置改变，就进行网络请求进行定位，得到新的定位结果。
-			 * 定时定位时，调用一次requestLocation，会定时监听到定位结果。
-			 */
-            locationClient.requestLocation();
+            txtPositionLatitute.setText(sb);
+            txtPositionLongitute.setText(sb1);
+
         }
 
+        @Override
+        public void onReceivePoi(BDLocation bdLocation) {
+
+        }
     }
+
 
     /**
      * 绑定按钮监听
@@ -173,6 +147,7 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
             return;
         }
         txtPositionLocation.setText(result.getAddress());
+
     }
 
 }
