@@ -3,6 +3,7 @@ package org.dreamfly.positionsystem.Activity;
 import android.content.SharedPreferences;
 
 
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
@@ -16,6 +17,14 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.SDKInitializer;
 
+import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.MyLocationConfiguration;
+import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
@@ -39,23 +48,65 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
     private LocationClient locationClient = null;
     private DataBase mDataBase = new DataBase(this);
     private LocationUtils mLocationUtils;
+    private MapView mMapView=null;
+    private BaiduMap mBaiduMap;
+    private String sb,sb1;
     com.baidu.mapapi.search.geocode.GeoCoder mcoder;
+    private MyLocationConfiguration.LocationMode mCurrentMode =
+            MyLocationConfiguration.LocationMode.NORMAL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SDKInitializer.initialize(getApplicationContext());
+        SDKInitializer.initialize(getApplicationContext() /*
+        //定义坐标点
+        LatLng point=new LatLng
+                (Float.valueOf(txt1.getText().toString()),Float.valueOf(txt2.getText().toString()));
+
+        //构建Marker图标
+        BitmapDescriptor bitmap = BitmapDescriptorFactory
+                .fromResource(R.drawable.icon_marka);
+
+        OverlayOptions option = new MarkerOptions()
+                .position(point)
+                .icon(bitmap);
+        //在地图上添加Marker，并显示
+        mBaiduMap.addOverlay(option);*/);
         String libName="BaiduMapSDK_v3_2_0_11";
         System.loadLibrary(libName);
 
         this.setContentView(R.layout.position_layout);
-        this.initial();
+        this.initial(); /*
+        //定义坐标点
+        LatLng point=new LatLng
+                (Float.valueOf(txt1.getText().toString()),Float.valueOf(txt2.getText().toString()));
+
+        //构建Marker图标
+        BitmapDescriptor bitmap = BitmapDescriptorFactory
+                .fromResource(R.drawable.icon_marka);
+
+        OverlayOptions option = new MarkerOptions()
+                .position(point)
+                .icon(bitmap);
+        //在地图上添加Marker，并显示
+        mBaiduMap.addOverlay(option);*/
         this.bindListener();
       }
     @Override
     protected void onDestroy(){
         super.onDestroy();
+        mMapView.onDestroy();
         locationClient.stop();
+    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+        mMapView.onResume();
+    }
+    @Override
+    protected void onPause(){
+        super.onPause();
+        mMapView.onPause();
     }
 
     private void initial(){
@@ -65,6 +116,7 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
         this.locationInfo();
         mcoder=GeoCoder.newInstance();
         mcoder.setOnGetGeoCodeResultListener(this);
+
 
     }
 
@@ -83,9 +135,13 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
        txtPositionLongitute=(TextView)this.findViewById(R.id.txt_position_longitute);
        txtPositionLocation=(TextView)this.findViewById(R.id.txt_position_location);
        btnPositionActivityGeo=(Button)this.findViewById(R.id.btn_positionactivity_geo);
+       mMapView=(MapView)this.findViewById(R.id.bmapView);
 
     }
 
+    /**
+     * 初始化定位服务信息
+     */
     private void locationInfo(){
         locationClient=mLocationUtils.getLocationClient();
         BDListener bdListener=new BDListener();
@@ -102,14 +158,14 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
             if(location == null){
                 return;
             }
-            StringBuffer sb=new StringBuffer(256);
-            sb.append(location.getLatitude());
 
-            StringBuffer sb1=new StringBuffer(256);
-            sb1.append(location.getLongitude());
+            sb=location.getLatitude()+"";
+
+            sb1=location.getLongitude()+"";
 
             txtPositionLatitute.setText(sb);
             txtPositionLongitute.setText(sb1);
+            MapInfo(txtPositionLatitute, txtPositionLongitute);
 
         }
 
@@ -133,6 +189,23 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
                 mcoder.reverseGeoCode(new ReverseGeoCodeOption().location(ptCenter));
             }
         });
+    }
+
+    /**
+     * 百度地图服务
+     */
+    protected void MapInfo(TextView txt1,TextView txt2){
+        mBaiduMap=mMapView.getMap();
+        mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
+        mBaiduMap.setTrafficEnabled(true);
+        mBaiduMap.setMyLocationEnabled(true);
+        MyLocationData locData=new MyLocationData.Builder().accuracy(0).direction(100)
+                .latitude(Float.valueOf(txt1.getText().toString())).
+                        longitude(Float.valueOf(txt2.getText().toString())).build();
+        mBaiduMap.setMyLocationData(locData);
+        MyLocationConfiguration config = new MyLocationConfiguration
+                (mCurrentMode, true, BitmapDescriptorFactory.fromResource(R.drawable.icon_marka));
+       mBaiduMap.setMyLocationConfigeration(config);
     }
 
     @Override

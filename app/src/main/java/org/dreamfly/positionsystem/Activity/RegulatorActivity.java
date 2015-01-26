@@ -171,7 +171,7 @@ public class RegulatorActivity extends ManagerActivity implements OnGetGeoCoderR
         SharedPreferences.Editor editor=mpreference.edit();
         editor.putString("rlocate",s);
         editor.commit();
-        Log.v("baidusdk","您的当前位置" +s+"已被保存");
+        Log.v("baidusdk","你的当前位置" +s+"已被保存");
 
     }
 
