@@ -39,15 +39,14 @@ public class LoginActivity extends Activity {
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
 
 
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.setContentView(R.layout.login_layout);
         this.initial();
-        Location mLocation=mInformation.getUserLocation(this);
-        if(mLocation!=null){
-            Log.v("lzw",""+mLocation.getLatitude());
-        }
+
+
     }
 
     /**
