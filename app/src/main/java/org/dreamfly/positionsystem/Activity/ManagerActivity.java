@@ -257,7 +257,7 @@ public class ManagerActivity extends ActionBarActivity implements OnGetGeoCoderR
         SharedPreferences.Editor editor=mpreference.edit();
         editor.putString("mlocate",s);
         editor.commit();
-        Log.v("baidusdk","您的当前位置" +s+"已被保存");
+        Log.i("lzw","您的当前位置" +s+"已被保存");
 
     }
 

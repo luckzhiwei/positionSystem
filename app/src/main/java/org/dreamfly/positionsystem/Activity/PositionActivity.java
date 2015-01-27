@@ -3,12 +3,14 @@ package org.dreamfly.positionsystem.Activity;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
@@ -86,7 +88,6 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
         mcoder=GeoCoder.newInstance();
         mcoder.setOnGetGeoCodeResultListener(this);
 
-
     }
 
     /**
@@ -119,7 +120,6 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
         locationClient.start();
         locationClient.requestLocation();
 
-
     }
     public class BDListener implements com.baidu.location.BDLocationListener{
         @Override
@@ -134,7 +134,7 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
 
             txtPositionLatitute.setText(sb);
             txtPositionLongitute.setText(sb1);
-            MapInfo(txtPositionLatitute, txtPositionLongitute,isFirstLoc);
+            MapInfo(txtPositionLatitute, txtPositionLongitute, isFirstLoc);
         }
 
         @Override
@@ -169,11 +169,13 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
         mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
         //设置交通图
         mBaiduMap.setTrafficEnabled(true);
-        mBaiduMap.setMyLocationEnabled(true);
         //设置标记地点
+        mBaiduMap.setMyLocationEnabled(true);
+        //从经纬度中得到地理位置
         MyLocationData locData=new MyLocationData.Builder().accuracy(0).direction(100)
                 .latitude(Float.valueOf(txt1.getText().toString())).
                         longitude(Float.valueOf(txt2.getText().toString())).build();
+
         mBaiduMap.setMyLocationData(locData);
         //设置定位标记标记图案
         MyLocationConfiguration config = new MyLocationConfiguration
@@ -201,12 +203,14 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
     }
     @Override
     public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
+        Log.i("lzw","trigger");
         if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
             Toast.makeText(PositionActivity.this, "抱歉，未能找到结果", Toast.LENGTH_LONG)
                     .show();
             return;
         }
         txtPositionLocation.setText(result.getAddress());
+        Log.i("lzw",result.getAddress()+"");
 
     }
 
