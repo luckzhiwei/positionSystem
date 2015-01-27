@@ -155,7 +155,9 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
      * 绑定按钮监听
      */
     private void bindListener() {
-
+        SharedPreferences sharedPreferences=this.getSharedPreferences("address",0);
+        String name=sharedPreferences.getString("mlocate","");
+        txtPositionLocation.setText(name);
         this.btnPositionActivityGeo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
