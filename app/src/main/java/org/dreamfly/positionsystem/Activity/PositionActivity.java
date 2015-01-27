@@ -1,6 +1,7 @@
 package org.dreamfly.positionsystem.Activity;
 
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
@@ -19,6 +20,12 @@ import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 
 import com.baidu.mapapi.model.LatLng;
+
+
+
+
+
+
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
 import com.baidu.mapapi.search.geocode.GeoCoder;
@@ -149,6 +156,7 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
      * 绑定按钮监听
      */
     private void bindListener() {
+
         this.btnPositionActivityGeo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

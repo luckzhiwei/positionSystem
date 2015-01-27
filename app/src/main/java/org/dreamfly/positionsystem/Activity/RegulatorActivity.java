@@ -169,7 +169,7 @@ public class RegulatorActivity extends ManagerActivity implements OnGetGeoCoderR
         //将获得的地址保存
         SharedPreferences mpreference=getSharedPreferences("address",0);
         SharedPreferences.Editor editor=mpreference.edit();
-        editor.putString("rlocate",s);
+        editor.putString("mlocate",s);
         editor.commit();
         Log.v("baidusdk","你的当前位置" +s+"已被保存");
 
