@@ -120,7 +120,6 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
         locationClient=mLocationUtils.getLocationClient();
         BDListener bdListener=new BDListener();
         locationClient.registerLocationListener(bdListener);
-
         locationClient.start();
         locationClient.requestLocation();
 
