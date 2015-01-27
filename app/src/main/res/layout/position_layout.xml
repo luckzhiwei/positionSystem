@@ -68,7 +68,7 @@
              android:layout_margin="10dp"
              android:textColor="#000000"
              android:textSize="20sp"
-             android:text="当前位置是:shdakh"/>
+             android:text="当前位置是:埃塞俄比亚"/>
         </LinearLayout>
 
     </LinearLayout>
@@ -79,6 +79,7 @@
 
      <com.baidu.mapapi.map.MapView
         android:id="@+id/bmapView"
+        android:apiKey="MAP API KEY"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:clickable="true" />

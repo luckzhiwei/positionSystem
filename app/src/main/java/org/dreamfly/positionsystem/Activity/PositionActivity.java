@@ -1,30 +1,23 @@
 package org.dreamfly.positionsystem.Activity;
 
-import android.content.SharedPreferences;
 
-
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.SDKInitializer;
-
 import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.MapStatusUpdate;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
-import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
-import com.baidu.mapapi.map.OverlayOptions;
+
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
@@ -46,11 +39,13 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
     private TextView txtPositionLatitute,txtPositionLongitute,txtPositionLocation;
     private Button btnPositionActivityGeo;
     private LocationClient locationClient = null;
+
     private DataBase mDataBase = new DataBase(this);
     private LocationUtils mLocationUtils;
     private MapView mMapView=null;
     private BaiduMap mBaiduMap;
     private String sb,sb1;
+    private boolean isFirstLoc=true;
     com.baidu.mapapi.search.geocode.GeoCoder mcoder;
     private MyLocationConfiguration.LocationMode mCurrentMode =
             MyLocationConfiguration.LocationMode.NORMAL;
@@ -111,6 +106,7 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
        btnPositionActivityGeo=(Button)this.findViewById(R.id.btn_positionactivity_geo);
        mMapView=(MapView)this.findViewById(R.id.bmapView);
 
+
     }
 
     /**
@@ -139,8 +135,7 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
 
             txtPositionLatitute.setText(sb);
             txtPositionLongitute.setText(sb1);
-            MapInfo(txtPositionLatitute, txtPositionLongitute);
-
+            MapInfo(txtPositionLatitute, txtPositionLongitute,isFirstLoc);
         }
 
         @Override
@@ -168,18 +163,37 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
     /**
      * 百度地图服务
      */
-    protected void MapInfo(TextView txt1,TextView txt2){
+    protected void MapInfo(TextView txt1,TextView txt2,boolean isFirstLoc){
+        //初始化百度地图
         mBaiduMap=mMapView.getMap();
+        //设置类型:普通地图
         mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
+        //设置交通图
         mBaiduMap.setTrafficEnabled(true);
         mBaiduMap.setMyLocationEnabled(true);
+        //设置标记地点
         MyLocationData locData=new MyLocationData.Builder().accuracy(0).direction(100)
                 .latitude(Float.valueOf(txt1.getText().toString())).
                         longitude(Float.valueOf(txt2.getText().toString())).build();
         mBaiduMap.setMyLocationData(locData);
+        //设置定位标记标记图案
         MyLocationConfiguration config = new MyLocationConfiguration
                 (mCurrentMode, true, BitmapDescriptorFactory.fromResource(R.drawable.icon_marka));
        mBaiduMap.setMyLocationConfigeration(config);
+        //如果是第一次定位,定位到指定地点
+        if(isFirstLoc){
+            this.isFirstLoc=false;
+
+            LatLng ll=new LatLng
+                    (Float.valueOf(txt1.getText().toString()),Float.valueOf(txt2.getText().toString()));
+            //设置默认比例尺
+            float f=mBaiduMap.getMaxZoomLevel();
+            MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(ll,f-3);
+            mBaiduMap.animateMapStatus(u);
+        }
+
+
+
     }
 
     @Override
