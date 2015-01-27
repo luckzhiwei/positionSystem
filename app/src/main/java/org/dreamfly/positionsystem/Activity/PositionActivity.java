@@ -1,6 +1,7 @@
 package org.dreamfly.positionsystem.Activity;
 
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -155,8 +156,8 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
      * 绑定按钮监听
      */
     private void bindListener() {
-        SharedPreferences sharedPreferences=this.getSharedPreferences("address",0);
-        String name=sharedPreferences.getString("mlocate","");
+        SharedPreferences sharedPreferences=this.getSharedPreferences("address", Context.MODE_PRIVATE);
+        String name=sharedPreferences.getString("address","");
         txtPositionLocation.setText(name);
         this.btnPositionActivityGeo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -220,7 +221,7 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
             return;
         }
         txtPositionLocation.setText(result.getAddress());
-        Log.i("lzw",result.getAddress()+"");
+        Log.i("lzw", result.getAddress() + "");
 
     }
 

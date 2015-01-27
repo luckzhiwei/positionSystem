@@ -56,6 +56,7 @@ public class ManagerActivity extends ActionBarActivity implements OnGetGeoCoderR
     protected LocationClient locationClient;
     protected String lat;
     protected String lon;
+    private boolean isClear=true;
     com.baidu.mapapi.search.geocode.GeoCoder mcoder;
     private final static String TABLENAME="regulatoritems";
 
@@ -253,10 +254,15 @@ public class ManagerActivity extends ActionBarActivity implements OnGetGeoCoderR
         }
         String s=result.getAddress();
         //将获得的地址保存
-        SharedPreferences mpreference=getSharedPreferences("address",0);
+        SharedPreferences mpreference=getSharedPreferences("address", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor=mpreference.edit();
-        editor.putString("mlocate",s);
+        editor.putString("address", s);
         editor.commit();
+        if(isClear) {
+            editor.clear();
+            editor.putString("address", s);
+            editor.commit();
+        }
         Log.i("lzw","您的当前位置" +s+"已被保存");
 
     }
