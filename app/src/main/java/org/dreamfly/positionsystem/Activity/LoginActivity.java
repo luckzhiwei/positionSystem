@@ -46,6 +46,7 @@ public class LoginActivity extends Activity {
         this.setContentView(R.layout.login_layout);
         this.initial();
 
+
     }
 
     /**
