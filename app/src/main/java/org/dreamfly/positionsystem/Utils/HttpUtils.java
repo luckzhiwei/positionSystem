@@ -53,10 +53,10 @@ public class HttpUtils {
                 {
                     return (switchStreamToString(ServerInputStream, responseEncode));
                 }else{
-                    return "InterException";
+                    return "InterNetException";
                 }
             }else{
-                return "singleException";
+                return "singleTonException";
             }
         }else{
               return "paramsException";

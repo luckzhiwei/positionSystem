@@ -204,7 +204,6 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
         }
 
 
-
     }
 
     @Override

@@ -4,6 +4,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
@@ -12,10 +14,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.dreamfly.positionsystem.CommonParameter.ComParameter;
 import org.dreamfly.positionsystem.Custom.DefineDialog;
 import org.dreamfly.positionsystem.R;
+import org.dreamfly.positionsystem.Thread.BaseThread;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 import org.dreamfly.positionsystem.Utils.FileUitls;
+import org.dreamfly.positionsystem.Utils.ToastUtils;
 import org.dreamfly.positionsystem.Utils.UserInfoUtils;
 
 
@@ -38,7 +43,7 @@ public class LoginActivity extends Activity {
     private DefineDialog mIsManagerDialog;
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
 
-
+    private BaseThread loginReuquestThread;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,5 +153,34 @@ public class LoginActivity extends Activity {
         //记录本机的设备名字
         mUserInfoUitls.updateUserInfo(hashmap);
     }
+
+    private Handler mHandler=new Handler(Looper.getMainLooper())
+    {
+        public void handleMessage(Message msg) {
+               if(msg.getData().getInt("firstloginstate")== ComParameter.STATE_RIGHT)
+               {
+                      this.dealFirstMessage();
+               }else if(msg.getData().getInt("loginstate")==ComParameter.STATE_RIGHT)
+               {
+                      this.dealLoginMessage();
+               }else if(msg.getData().getInt("firstloginstate")==ComParameter.STATE_ERROR){
+
+                   ToastUtils.showToast(getApplicationContext(),ComParameter.ERRORINFO);
+
+               }else if(msg.getData().getInt("loginstate")==ComParameter.STATE_ERROR){
+
+                   ToastUtils.showToast(getApplicationContext(),ComParameter.ERRORINFO);
+               }
+        }
+
+        private void dealFirstMessage()
+        {
+
+        }
+        private void dealLoginMessage()
+        {
+
+        }
+    };
 }
 
