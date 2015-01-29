@@ -32,7 +32,7 @@ public abstract class BaseThread extends Thread{
                  this.mHandler=mHandler;
                  this.stateId=stateId;
              }
-             protected void setRequestPrepare(String  requestURL,Map requestParams)
+             public void setRequestPrepare(String  requestURL,Map requestParams)
              {
                    this.requestURL=requestURL;
                    this.requestParams=requestParams;

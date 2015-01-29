@@ -11,7 +11,7 @@ import org.apache.http.params.HttpConnectionParams;
  */
 public class CustomHttpclient {
 
-    private static HttpClient mHttpClient = null;
+    private static volatile HttpClient mHttpClient = null;
     private static int  MAXREQUEST_TIME=10*1000;
     private static int  MAXCON_TIME=10*1000;
     /**
@@ -20,7 +20,7 @@ public class CustomHttpclient {
      */
     public static HttpClient getSigleTonInstance() {
         if (mHttpClient == null) {
-            synchronized ("") {
+            synchronized (CustomHttpclient.class) {
                 if (mHttpClient == null) {
                     BasicHttpParams params=new BasicHttpParams();
                     HttpConnectionParams.setConnectionTimeout(params,MAXREQUEST_TIME);

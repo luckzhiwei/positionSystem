@@ -7,6 +7,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -84,6 +85,16 @@ public class CurrentInformationUtils {
         String model=bd.MODEL;
         Log.i("position",model);
         return  model;
+    }
+
+    /**
+     * 获取设备的ID标识号
+     * @return
+     */
+    public String  getDeviceId()
+    {
+        TelephonyManager tm=(TelephonyManager)this.context.getSystemService(Context.TELEPHONY_SERVICE);
+        return (tm.getDeviceId());
     }
 
 

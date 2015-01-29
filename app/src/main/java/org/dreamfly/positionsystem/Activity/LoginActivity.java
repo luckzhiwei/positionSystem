@@ -1,5 +1,6 @@
 package org.dreamfly.positionsystem.Activity;
 
+import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -18,6 +20,7 @@ import org.dreamfly.positionsystem.CommonParameter.ComParameter;
 import org.dreamfly.positionsystem.Custom.DefineDialog;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Thread.BaseThread;
+import org.dreamfly.positionsystem.Thread.FirstLoginRequestThread;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 import org.dreamfly.positionsystem.Utils.FileUitls;
 import org.dreamfly.positionsystem.Utils.ToastUtils;
@@ -41,8 +44,8 @@ public class LoginActivity extends Activity {
     private EditText edittextLoginactivityUsername;
     private EditText editextLoginactivityPassword;
     private DefineDialog mIsManagerDialog;
-    private CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
 
+    private CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
     private BaseThread loginReuquestThread;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,8 +113,9 @@ public class LoginActivity extends Activity {
      */
     private View.OnClickListener managerClickListener = new View.OnClickListener() {
         public void onClick(View view) {
-            writeUserInfo("manager",mInformation);
+            writeUserInfo("manager",mInformation,"2","Tree");
             mIsManagerDialog.dismiss();
+            sendLoginInfoToServer(true);
             Intent in = new Intent(LoginActivity.this, ManagerActivity.class);
             startActivity(in);
             finish();
@@ -122,8 +126,9 @@ public class LoginActivity extends Activity {
      */
     private View.OnClickListener regulatorClickListener = new View.OnClickListener() {
         public void onClick(View view) {
-            writeUserInfo("unmanager",mInformation);
+            writeUserInfo("unmanager",mInformation,"2","Tree");
             mIsManagerDialog.dismiss();
+            sendLoginInfoToServer(false);
             Intent in = new Intent(LoginActivity.this, RegulatorActivity.class);
             startActivity(in);
             finish();
@@ -138,20 +143,45 @@ public class LoginActivity extends Activity {
      * @param isManager
      * @param mInformation 得到的本机信息
      */
-    private void writeUserInfo(String isManager,CurrentInformationUtils mInformation) {
+    private void writeUserInfo(String isManager,CurrentInformationUtils mInformation
+       ,String userId,String userName) {
         UserInfoUtils mUserInfoUitls = new UserInfoUtils(LoginActivity.this);
         HashMap<String, String> hashmap = new HashMap<String, String>();
         hashmap.put("loginstate", "login");
         //记录登录状态
         hashmap.put("managerstate", isManager);
         //记录是否是管理者
-        hashmap.put("userrID", "2");
+        hashmap.put("userrID", userId);
         //记录服务器中数据库的主键的数值
-        hashmap.put("famliyName", "Tree");
+        hashmap.put("famliyName",userName);
         //记录用户登录的帐号名字
         hashmap.put("devName", mInformation.getCurrentDeviceName());
         //记录本机的设备名字
         mUserInfoUitls.updateUserInfo(hashmap);
+    }
+
+    private void sendLoginInfoToServer(boolean isManager)
+    {
+          this.loginReuquestThread=new FirstLoginRequestThread(mHandler,"firstloginstate");
+           String requestURL=ComParameter.HOST+"";
+          this.loginReuquestThread.setRequestPrepare(requestURL,this.prepareLoginParams(isManager));
+          this.loginReuquestThread.start();
+    }
+    private Map prepareLoginParams(boolean isManager)
+    {
+            Map<String,String> params=new HashMap<String,String>();
+            params.put("username",edittextLoginactivityUsername.getText().toString());
+            params.put("password",editextLoginactivityPassword.getText().toString());
+            if(isManager)
+            {
+                  params.put("type","admin");
+            }else{
+                  params.put("type","user");
+            }
+            params.put("devId", this.mInformation.getDeviceId());
+            params.put("devName",this.mInformation.getCurrentDeviceName());
+           return(params);
+
     }
 
     private Handler mHandler=new Handler(Looper.getMainLooper())
@@ -159,27 +189,45 @@ public class LoginActivity extends Activity {
         public void handleMessage(Message msg) {
                if(msg.getData().getInt("firstloginstate")== ComParameter.STATE_RIGHT)
                {
-                      this.dealFirstMessage();
-               }else if(msg.getData().getInt("loginstate")==ComParameter.STATE_RIGHT)
-               {
-                      this.dealLoginMessage();
+                      this.dealFirstLogintMessage();
                }else if(msg.getData().getInt("firstloginstate")==ComParameter.STATE_ERROR){
-
-                   ToastUtils.showToast(getApplicationContext(),ComParameter.ERRORINFO);
-
-               }else if(msg.getData().getInt("loginstate")==ComParameter.STATE_ERROR){
-
-                   ToastUtils.showToast(getApplicationContext(),ComParameter.ERRORINFO);
+                      ToastUtils.showToast(getApplicationContext(),ComParameter.ERRORINFO);
                }
         }
 
-        private void dealFirstMessage()
+        private void dealFirstLogintMessage()
         {
+                Map<String,String> resultMap=loginReuquestThread.getResultMap();
+                String loginstate=resultMap.get("loginstate");
+                if(loginstate!=null)
+                {
+                      if(loginstate.equals("login"))
+                      {
+                         writeUserInfo(resultMap.get("type"),
+                                 mInformation,
+                                 resultMap.get("dataBaseId"),
+                                 edittextLoginactivityUsername.getText().toString());
+                         this.dealAfterLogin(resultMap.get("type"));
 
+                      }else if(loginstate.equals("unlogin"))
+                      {
+                            ToastUtils.showToast(getApplicationContext(),resultMap.get("failReason")+"");
+                      }
+                }
         }
-        private void dealLoginMessage()
-        {
 
+        private void dealAfterLogin(String type)
+        {
+            Intent in=null;
+            if(type.equals("manager"))
+            {
+                in=new Intent().setClass(LoginActivity.this,ManagerActivity.class);
+                startActivity(in);
+            }else if(type.equals("unmanager"))
+            {
+                 in=new Intent().setClass(LoginActivity.this,RegulatorActivity.class);
+                 startActivity(in);
+            }
         }
     };
 }

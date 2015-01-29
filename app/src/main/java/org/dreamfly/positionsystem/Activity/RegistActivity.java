@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.app.Activity;
 import android.widget.Toast;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -70,6 +71,11 @@ public class RegistActivity extends Activity {
          public void onClick(View view) {
                     requestRegisterThread=new RegisterRequestThread
                      (mHandler,"registerstate");
+                    String requestURL=ComParameter.HOST+"";
+                    Map<String,String> params=new HashMap<String,String>();
+                    params.put("username",editRegisterActivityUsername.getText().toString());
+                    params.put("password",editRegisterActivityPassword.getText().toString());
+                    requestRegisterThread.setRequestPrepare(requestURL,params);
                     requestRegisterThread.start();
         }
     };
@@ -92,7 +98,7 @@ public class RegistActivity extends Activity {
                      }
 
                }else if(msg.getData().getInt("registerstate")==ComParameter.STATE_ERROR){
-
+                      ToastUtils.showToast(getApplicationContext(),ComParameter.ERRORINFO);
                }
         }
     };
