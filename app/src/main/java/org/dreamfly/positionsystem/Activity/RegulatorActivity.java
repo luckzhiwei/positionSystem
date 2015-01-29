@@ -1,5 +1,6 @@
 package org.dreamfly.positionsystem.Activity;
 
+import android.content.Context;
 import
         android.content.SharedPreferences;
 import android.database.Cursor;
@@ -35,7 +36,7 @@ import java.util.List;
  * Created by zhengyl on 15-1-13.
  * 被管理者界面Activity类
  */
-public class RegulatorActivity extends ManagerActivity implements OnGetGeoCoderResultListener {
+public class RegulatorActivity extends ManagerActivity  {
 
     private DefineListView listViewRegulatorActivityReglutorList;
     private TextView txtRegulatorActivityTitle;
@@ -47,9 +48,6 @@ public class RegulatorActivity extends ManagerActivity implements OnGetGeoCoderR
     private ComParameter com=new ComParameter();
     private DataBase mDataBase=new DataBase(this);
     private LocationUtils mLocationUtils;
-
-
-    com.baidu.mapapi.search.geocode.GeoCoder mcoder;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,28 +153,6 @@ public class RegulatorActivity extends ManagerActivity implements OnGetGeoCoderR
             mDialog.dismiss();
         }
     }
-    @Override
-    public void onGetGeoCodeResult(GeoCodeResult result) {
-
-    }
-    @Override
-    public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
-        if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
-            Toast.makeText(RegulatorActivity.this, "抱歉，未能找到结果", Toast.LENGTH_LONG)
-                    .show();
-            return;
-        }
-        String s=result.getAddress();
-        //将获得的地址保存
-        SharedPreferences mpreference=getSharedPreferences("address",0);
-        SharedPreferences.Editor editor=mpreference.edit();
-        editor.putString("mlocate",s);
-        editor.commit();
-        Log.v("baidusdk","你的当前位置" +s+"已被保存");
-
-    }
-
-
 }
 
 
