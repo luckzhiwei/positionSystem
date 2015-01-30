@@ -6,20 +6,21 @@
     android:orientation="vertical"
     android:background="#ffffff"
     >
-    <LinearLayout
+    <RelativeLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:orientation="horizontal"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="6dp"
-        android:background="@drawable/regulatorlayout_drawable"
+        android:background="@drawable/managerlayout_drawable"
         >
         <LinearLayout
             android:id="@+id/regulatoractivity_layout1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="3dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dp"
             android:orientation="vertical">
             <ImageView
                 android:id="@+id/regulatoractivity_imv1"
@@ -33,8 +34,9 @@
         <LinearLayout
             android:id="@+id/regulatoractivity_layout2"
             android:orientation="vertical"
+            android:layout_toRightOf="@+id/regulatoractivity_layout1"
             android:layout_marginLeft="10dp"
-            android:layout_width="120dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/regulatoractivity_txt2_name"
@@ -66,6 +68,8 @@
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
             >
             <TextView
                 android:id="@+id/regulatoractivity_txt3_time"
@@ -102,5 +106,5 @@
                     />
             </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 </LinearLayout>
