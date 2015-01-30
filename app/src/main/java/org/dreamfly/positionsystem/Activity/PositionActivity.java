@@ -1,15 +1,18 @@
 package org.dreamfly.positionsystem.Activity;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
@@ -23,10 +26,6 @@ import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 
 import com.baidu.mapapi.model.LatLng;
-
-
-
-
 
 
 import com.baidu.mapapi.search.core.SearchResult;
@@ -44,18 +43,18 @@ import org.dreamfly.positionsystem.Utils.LocationUtils;
  * Created by zhengyl on 15-1-13.
  * 定位界面Activity类
  */
-public class PositionActivity extends ActionBarActivity implements OnGetGeoCoderResultListener {
+public class PositionActivity extends Activity implements OnGetGeoCoderResultListener {
 
-    private TextView txtPositionLatitute,txtPositionLongitute,txtPositionLocation;
+    private TextView txtPositionLatitute, txtPositionLongitute, txtPositionLocation;
     private Button btnPositionActivityGeo;
     private LocationClient locationClient = null;
 
     private DataBase mDataBase = new DataBase(this);
     private LocationUtils mLocationUtils;
-    private MapView mMapView=null;
+    private MapView mMapView = null;
     private BaiduMap mBaiduMap;
-    private String sb,sb1;
-    private boolean isFirstLoc=true;
+    private String sb, sb1;
+    private boolean isFirstLoc = true;
     com.baidu.mapapi.search.geocode.GeoCoder mcoder;
     private MyLocationConfiguration.LocationMode mCurrentMode =
             MyLocationConfiguration.LocationMode.NORMAL;
@@ -63,37 +62,41 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         SDKInitializer.initialize(getApplicationContext());
-        String libName="BaiduMapSDK_v3_2_0_11";
+        String libName = "BaiduMapSDK_v3_2_0_11";
         System.loadLibrary(libName);
 
         this.setContentView(R.layout.position_layout);
         this.initial();
         this.bindListener();
-      }
+    }
+
     @Override
-    protected void onDestroy(){
+    protected void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
         locationClient.stop();
     }
+
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         mMapView.onResume();
     }
+
     @Override
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
         mMapView.onPause();
     }
 
-    private void initial(){
+    private void initial() {
         this.bindID();
-        mLocationUtils=new LocationUtils(this);
+        mLocationUtils = new LocationUtils(this);
         mLocationUtils.LocationInfo();
         this.locationInfo();
-        mcoder=GeoCoder.newInstance();
+        mcoder = GeoCoder.newInstance();
         mcoder.setOnGetGeoCodeResultListener(this);
 
     }
@@ -108,12 +111,12 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
     /**
      * 绑定控件ID
      */
-    private void bindID(){
-       txtPositionLatitute=(TextView)this.findViewById(R.id.txt_position_latitute);
-       txtPositionLongitute=(TextView)this.findViewById(R.id.txt_position_longitute);
-       txtPositionLocation=(TextView)this.findViewById(R.id.txt_position_location);
-       btnPositionActivityGeo=(Button)this.findViewById(R.id.btn_positionactivity_geo);
-       mMapView=(MapView)this.findViewById(R.id.bmapView);
+    private void bindID() {
+        txtPositionLatitute = (TextView) this.findViewById(R.id.txt_position_latitute);
+        txtPositionLongitute = (TextView) this.findViewById(R.id.txt_position_longitute);
+        txtPositionLocation = (TextView) this.findViewById(R.id.txt_position_location);
+        btnPositionActivityGeo = (Button) this.findViewById(R.id.btn_positionactivity_geo);
+        mMapView = (MapView) this.findViewById(R.id.bmapView);
 
 
     }
@@ -121,24 +124,25 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
     /**
      * 初始化定位服务信息
      */
-    private void locationInfo(){
-        locationClient=mLocationUtils.getLocationClient();
-        BDListener bdListener=new BDListener();
+    private void locationInfo() {
+        locationClient = mLocationUtils.getLocationClient();
+        BDListener bdListener = new BDListener();
         locationClient.registerLocationListener(bdListener);
         locationClient.start();
         locationClient.requestLocation();
 
     }
-    public class BDListener implements com.baidu.location.BDLocationListener{
+
+    public class BDListener implements com.baidu.location.BDLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location) {
-            if(location == null){
+            if (location == null) {
                 return;
             }
 
-            sb=location.getLatitude()+"";
+            sb = location.getLatitude() + "";
 
-            sb1=location.getLongitude()+"";
+            sb1 = location.getLongitude() + "";
 
             txtPositionLatitute.setText(sb);
             txtPositionLongitute.setText(sb1);
@@ -156,13 +160,13 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
      * 绑定按钮监听
      */
     private void bindListener() {
-        SharedPreferences sharedPreferences=this.getSharedPreferences("address", Context.MODE_PRIVATE);
-        String name=sharedPreferences.getString("address","");
+        SharedPreferences sharedPreferences = this.getSharedPreferences("address", Context.MODE_PRIVATE);
+        String name = sharedPreferences.getString("address", "");
         txtPositionLocation.setText(name);
         this.btnPositionActivityGeo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LatLng ptCenter=new LatLng(
+                LatLng ptCenter = new LatLng(
                         (Float.valueOf(txtPositionLatitute.getText().toString())),
                         Float.valueOf(txtPositionLongitute.getText().toString()));
                 mcoder.reverseGeoCode(new ReverseGeoCodeOption().location(ptCenter));
@@ -173,9 +177,9 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
     /**
      * 百度地图服务
      */
-    protected void MapInfo(TextView txt1,TextView txt2,boolean isFirstLoc){
+    protected void MapInfo(TextView txt1, TextView txt2, boolean isFirstLoc) {
         //初始化百度地图
-        mBaiduMap=mMapView.getMap();
+        mBaiduMap = mMapView.getMap();
         //设置类型:普通地图
         mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
         //设置交通图
@@ -183,7 +187,7 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
         //设置标记地点
         mBaiduMap.setMyLocationEnabled(true);
         //从经纬度中得到地理位置
-        MyLocationData locData=new MyLocationData.Builder().accuracy(0).direction(100)
+        MyLocationData locData = new MyLocationData.Builder().accuracy(0).direction(100)
                 .latitude(Float.valueOf(txt1.getText().toString())).
                         longitude(Float.valueOf(txt2.getText().toString())).build();
 
@@ -191,16 +195,16 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
         //设置定位标记标记图案
         MyLocationConfiguration config = new MyLocationConfiguration
                 (mCurrentMode, true, BitmapDescriptorFactory.fromResource(R.drawable.icon_marka));
-       mBaiduMap.setMyLocationConfigeration(config);
+        mBaiduMap.setMyLocationConfigeration(config);
         //如果是第一次定位,定位到指定地点
-        if(isFirstLoc){
-            this.isFirstLoc=false;
+        if (isFirstLoc) {
+            this.isFirstLoc = false;
 
-            LatLng ll=new LatLng
-                    (Float.valueOf(txt1.getText().toString()),Float.valueOf(txt2.getText().toString()));
+            LatLng ll = new LatLng
+                    (Float.valueOf(txt1.getText().toString()), Float.valueOf(txt2.getText().toString()));
             //设置默认比例尺
-            float f=mBaiduMap.getMaxZoomLevel();
-            MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(ll,f-3);
+            float f = mBaiduMap.getMaxZoomLevel();
+            MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(ll, f - 3);
             mBaiduMap.animateMapStatus(u);
         }
 
@@ -211,9 +215,10 @@ public class PositionActivity extends ActionBarActivity implements OnGetGeoCoder
     public void onGetGeoCodeResult(GeoCodeResult result) {
 
     }
+
     @Override
     public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
-        Log.i("lzw","trigger");
+        Log.i("lzw", "trigger");
         if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
             Toast.makeText(PositionActivity.this, "抱歉，未能找到结果", Toast.LENGTH_LONG)
                     .show();

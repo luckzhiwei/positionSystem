@@ -29,6 +29,7 @@ import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 import org.dreamfly.positionsystem.Utils.LocationUtils;
 import org.dreamfly.positionsystem.bean.User;
 import org.dreamfly.positionsystem.CommonParameter.ComParameter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,37 +37,37 @@ import java.util.List;
  * Created by zhengyl on 15-1-13.
  * 被管理者界面Activity类
  */
-public class RegulatorActivity extends ManagerActivity  {
+public class RegulatorActivity extends ManagerActivity {
 
     private DefineListView listViewRegulatorActivityReglutorList;
     private TextView txtRegulatorActivityTitle;
     private DefineDialog mDefineDialog;
     private RegulatorAdapter mRegulatordapter;
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
-    private User oneRegulator=new User();
-    private ManagerActivity manager=new ManagerActivity();
-    private ComParameter com=new ComParameter();
-    private DataBase mDataBase=new DataBase(this);
+    private User oneRegulator = new User();
+    private ManagerActivity manager = new ManagerActivity();
+    private ComParameter com = new ComParameter();
+    private DataBase mDataBase = new DataBase(this);
     private LocationUtils mLocationUtils;
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SDKInitializer.initialize(getApplicationContext());
-        String libName="BaiduMapSDK_v3_2_0_11";
+        String libName = "BaiduMapSDK_v3_2_0_11";
         System.loadLibrary(libName);
         this.setContentView(R.layout.regulator_layout);
         this.initial();
     }
 
     private void initial() {
-        mLocationUtils=new LocationUtils(this);
+        mLocationUtils = new LocationUtils(this);
         mLocationUtils.LocationInfo();
-        mcoder= GeoCoder.newInstance();
+        mcoder = GeoCoder.newInstance();
         mcoder.setOnGetGeoCodeResultListener(this);
         this.locationSave();
         this.bindID();
-        this.mRegulatordapter=new RegulatorAdapter(this.getData(), this, mDataBase);
+        this.mRegulatordapter = new RegulatorAdapter(this.getData(), this, mDataBase);
         this.listViewRegulatorActivityReglutorList.setAdapter(mRegulatordapter);
         this.setCLickListener();
     }
@@ -74,7 +75,7 @@ public class RegulatorActivity extends ManagerActivity  {
     private void bindID() {
         this.listViewRegulatorActivityReglutorList = (DefineListView)
                 this.findViewById(R.id.listivew_regulatoractivity_regulatorlist);
-        this.txtRegulatorActivityTitle=(TextView)
+        this.txtRegulatorActivityTitle = (TextView)
                 this.findViewById(R.id.txt_regulatoractivity_title);
 
     }
@@ -106,23 +107,26 @@ public class RegulatorActivity extends ManagerActivity  {
 
     /**
      * 向数据库中存储数据
+     *
      * @param mDataBase
      * @param list
      */
     public void setData(DataBase mDataBase, List<User> list) {
-        Cursor cur = mDataBase.Selector(0,com.MANTABLENAME);
+        Cursor cur = mDataBase.Selector(0, com.MANTABLENAME);
         if (!cur.moveToNext()) {
             for (int i = 0; i < 7; i++) {
                 User regulator = list.get(i);
-                mDataBase.itemsInsert(com.MANTABLENAME,i, regulator.getDeviceName(), regulator.getMangerMarks()
+                mDataBase.itemsInsert(com.MANTABLENAME, i, regulator.getDeviceName(), regulator.getMangerMarks()
                         , regulator.getLastLocation(), regulator.getLastDateTouch(), regulator.getOnLine());
 
             }
         }
         cur.close();
     }
+
     /**
      * 实现点击由用户修改备注名的效果
+     *
      * @param position
      */
 
@@ -134,7 +138,7 @@ public class RegulatorActivity extends ManagerActivity  {
         RegPositiveButtonListener mPositiveButtonListener =
 
                 new RegPositiveButtonListener(position, oneRegulator, mDataBase,
-                        this.mDefineDialog.getEditText(),this.mDefineDialog);
+                        this.mDefineDialog.getEditText(), this.mDefineDialog);
         mDefineDialog.setPosBtnClickListener(mPositiveButtonListener);
 
     }
@@ -148,8 +152,8 @@ public class RegulatorActivity extends ManagerActivity  {
         @Override
         public void onClick(View view) {
             regulator.setMangerMarks(mEditText.getText().toString());
-            Log.v("textstring",regulator.getMangerMarks());
-            mDataBase.items_changeValue(com.MANTABLENAME,"subname", regulator.getMangerMarks(), (pos - 1));
+            Log.v("textstring", regulator.getMangerMarks());
+            mDataBase.items_changeValue(com.MANTABLENAME, "subname", regulator.getMangerMarks(), (pos - 1));
             mDialog.dismiss();
         }
     }

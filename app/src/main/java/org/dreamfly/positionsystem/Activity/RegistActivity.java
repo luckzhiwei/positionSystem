@@ -64,42 +64,38 @@ public class RegistActivity extends Activity {
     }
 
     private void bindListener() {
-              this.btnRegisterActivityRegister.setOnClickListener(registerBtnListener);
+        this.btnRegisterActivityRegister.setOnClickListener(registerBtnListener);
     }
 
-    private  View.OnClickListener registerBtnListener=new View.OnClickListener() {
-         public void onClick(View view) {
-                    requestRegisterThread=new RegisterRequestThread
-                     (mHandler,"registerstate");
-                    String requestURL=ComParameter.HOST+"";
-                    Map<String,String> params=new HashMap<String,String>();
-                    params.put("username",editRegisterActivityUsername.getText().toString());
-                    params.put("password",editRegisterActivityPassword.getText().toString());
-                    requestRegisterThread.setRequestPrepare(requestURL,params);
-                    requestRegisterThread.start();
+    private View.OnClickListener registerBtnListener = new View.OnClickListener() {
+        public void onClick(View view) {
+            requestRegisterThread = new RegisterRequestThread
+                    (mHandler, "registerstate");
+            String requestURL = ComParameter.HOST + "";
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("username", editRegisterActivityUsername.getText().toString());
+            params.put("password", editRegisterActivityPassword.getText().toString());
+            requestRegisterThread.setRequestPrepare(requestURL, params);
+            requestRegisterThread.start();
         }
     };
-    private Handler mHandler=new Handler(Looper.getMainLooper()){
+    private Handler mHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
-               if(msg.getData().getInt("registerstate")== ComParameter.STATE_RIGHT)
-               {
-                     Map<String,String> resultMap=requestRegisterThread.getResultMap();
-                     String registerState=resultMap.get("egisterstate");
-                     if(registerState!=null)
-                     {
-                        if(registerState.equals("success"))
-                        {
-                            ToastUtils.showToast(getApplicationContext(),"注册成功");
-                        }else if(registerState.equals("fail"))
-                        {
-                           ToastUtils.showToast(getApplicationContext(),"注册失败:"+
-                           resultMap.get("failReason")+"");
-                        }
-                     }
+            if (msg.getData().getInt("registerstate") == ComParameter.STATE_RIGHT) {
+                Map<String, String> resultMap = requestRegisterThread.getResultMap();
+                String registerState = resultMap.get("egisterstate");
+                if (registerState != null) {
+                    if (registerState.equals("success")) {
+                        ToastUtils.showToast(getApplicationContext(), "注册成功");
+                    } else if (registerState.equals("fail")) {
+                        ToastUtils.showToast(getApplicationContext(), "注册失败:" +
+                                resultMap.get("failReason") + "");
+                    }
+                }
 
-               }else if(msg.getData().getInt("registerstate")==ComParameter.STATE_ERROR){
-                      ToastUtils.showToast(getApplicationContext(),ComParameter.ERRORINFO);
-               }
+            } else if (msg.getData().getInt("registerstate") == ComParameter.STATE_ERROR) {
+                ToastUtils.showToast(getApplicationContext(), ComParameter.ERRORINFO);
+            }
         }
     };
 }

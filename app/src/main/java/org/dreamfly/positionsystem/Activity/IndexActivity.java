@@ -1,5 +1,6 @@
 package org.dreamfly.positionsystem.Activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,8 +9,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Utils.UserInfoUtils;
@@ -19,7 +22,7 @@ import org.dreamfly.positionsystem.Utils.UserInfoUtils;
  * @author liaozhiwei create 2015/1/12
  *         出场动画的加载Activiy类
  */
-public class IndexActivity extends ActionBarActivity {
+public class IndexActivity extends Activity {
 
     //变量名与View层id一致
     ImageView imv_indexactivity_background;
@@ -40,7 +43,7 @@ public class IndexActivity extends ActionBarActivity {
      */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.setContentView(R.layout.index_layout);
         DataBase mDataBase = new DataBase(this);
         dataBaseStart(this, mDataBase);
@@ -49,7 +52,7 @@ public class IndexActivity extends ActionBarActivity {
          * 设置图片渐变的函数
          * @param alpha:
          */
-        imv_indexactivity_background.setImageAlpha(alpha);
+        imv_indexactivity_background.setAlpha(alpha);
         /**
          * 定义并实例化子线程该线程用以控制动画加载并启动主界面Activity
          * @param b变量用以控制线程状态

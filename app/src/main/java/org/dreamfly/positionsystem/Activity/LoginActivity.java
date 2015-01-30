@@ -113,7 +113,7 @@ public class LoginActivity extends Activity {
      */
     private View.OnClickListener managerClickListener = new View.OnClickListener() {
         public void onClick(View view) {
-            writeUserInfo("manager",mInformation,"2","Tree");
+            writeUserInfo("manager", mInformation, "2", "Tree");
             mIsManagerDialog.dismiss();
             sendLoginInfoToServer(true);
             Intent in = new Intent(LoginActivity.this, ManagerActivity.class);
@@ -126,7 +126,7 @@ public class LoginActivity extends Activity {
      */
     private View.OnClickListener regulatorClickListener = new View.OnClickListener() {
         public void onClick(View view) {
-            writeUserInfo("unmanager",mInformation,"2","Tree");
+            writeUserInfo("unmanager", mInformation, "2", "Tree");
             mIsManagerDialog.dismiss();
             sendLoginInfoToServer(false);
             Intent in = new Intent(LoginActivity.this, RegulatorActivity.class);
@@ -143,8 +143,8 @@ public class LoginActivity extends Activity {
      * @param isManager
      * @param mInformation 得到的本机信息
      */
-    private void writeUserInfo(String isManager,CurrentInformationUtils mInformation
-       ,String userId,String userName) {
+    private void writeUserInfo(String isManager, CurrentInformationUtils mInformation
+            , String userId, String userName) {
         UserInfoUtils mUserInfoUitls = new UserInfoUtils(LoginActivity.this);
         HashMap<String, String> hashmap = new HashMap<String, String>();
         hashmap.put("loginstate", "login");
@@ -153,80 +153,69 @@ public class LoginActivity extends Activity {
         //记录是否是管理者
         hashmap.put("userrID", userId);
         //记录服务器中数据库的主键的数值
-        hashmap.put("famliyName",userName);
+        hashmap.put("famliyName", userName);
         //记录用户登录的帐号名字
         hashmap.put("devName", mInformation.getCurrentDeviceName());
         //记录本机的设备名字
         mUserInfoUitls.updateUserInfo(hashmap);
     }
 
-    private void sendLoginInfoToServer(boolean isManager)
-    {
-          this.loginReuquestThread=new FirstLoginRequestThread(mHandler,"firstloginstate");
-           String requestURL=ComParameter.HOST+"";
-          this.loginReuquestThread.setRequestPrepare(requestURL,this.prepareLoginParams(isManager));
-          this.loginReuquestThread.start();
+    private void sendLoginInfoToServer(boolean isManager) {
+        this.loginReuquestThread = new FirstLoginRequestThread(mHandler, "firstloginstate");
+        String requestURL = ComParameter.HOST + "";
+        this.loginReuquestThread.setRequestPrepare(requestURL, this.prepareLoginParams(isManager));
+        this.loginReuquestThread.start();
     }
-    private Map prepareLoginParams(boolean isManager)
-    {
-            Map<String,String> params=new HashMap<String,String>();
-            params.put("username",edittextLoginactivityUsername.getText().toString());
-            params.put("password",editextLoginactivityPassword.getText().toString());
-            if(isManager)
-            {
-                  params.put("type","admin");
-            }else{
-                  params.put("type","user");
-            }
-            params.put("devId", this.mInformation.getDeviceId());
-            params.put("devName",this.mInformation.getCurrentDeviceName());
-           return(params);
+
+    private Map prepareLoginParams(boolean isManager) {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("username", edittextLoginactivityUsername.getText().toString());
+        params.put("password", editextLoginactivityPassword.getText().toString());
+        if (isManager) {
+            params.put("type", "admin");
+        } else {
+            params.put("type", "user");
+        }
+        params.put("devId", this.mInformation.getDeviceId());
+        params.put("devName", this.mInformation.getCurrentDeviceName());
+        return (params);
 
     }
 
-    private Handler mHandler=new Handler(Looper.getMainLooper())
-    {
+    private Handler mHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
-               if(msg.getData().getInt("firstloginstate")== ComParameter.STATE_RIGHT)
-               {
-                      this.dealFirstLogintMessage();
-               }else if(msg.getData().getInt("firstloginstate")==ComParameter.STATE_ERROR){
-                      ToastUtils.showToast(getApplicationContext(),ComParameter.ERRORINFO);
-               }
+            if (msg.getData().getInt("firstloginstate") == ComParameter.STATE_RIGHT) {
+                this.dealFirstLogintMessage();
+            } else if (msg.getData().getInt("firstloginstate") == ComParameter.STATE_ERROR) {
+                ToastUtils.showToast(getApplicationContext(), ComParameter.ERRORINFO);
+            }
         }
 
-        private void dealFirstLogintMessage()
-        {
-                Map<String,String> resultMap=loginReuquestThread.getResultMap();
-                String loginstate=resultMap.get("loginstate");
-                if(loginstate!=null)
-                {
-                      if(loginstate.equals("login"))
-                      {
-                         writeUserInfo(resultMap.get("type"),
-                                 mInformation,
-                                 resultMap.get("dataBaseId"),
-                                 edittextLoginactivityUsername.getText().toString());
-                         this.dealAfterLogin(resultMap.get("type"));
+        private void dealFirstLogintMessage() {
+            Map<String, String> resultMap = loginReuquestThread.getResultMap();
+            String loginstate = resultMap.get("loginstate");
+            if (loginstate != null) {
+                if (loginstate.equals("login")) {
+                    writeUserInfo(resultMap.get("type"),
+                            mInformation,
+                            resultMap.get("dataBaseId"),
+                            edittextLoginactivityUsername.getText().toString());
+                    this.dealAfterLogin(resultMap.get("type"));
 
-                      }else if(loginstate.equals("unlogin"))
-                      {
-                            ToastUtils.showToast(getApplicationContext(),resultMap.get("failReason")+"");
-                      }
+                } else if (loginstate.equals("unlogin")) {
+                    ToastUtils.showToast(getApplicationContext(), resultMap.get("failReason") + "");
                 }
+            }
         }
 
-        private void dealAfterLogin(String type)
-        {
-            Intent in=null;
-            if(type.equals("manager"))
-            {
-                in=new Intent().setClass(LoginActivity.this,ManagerActivity.class);
+        private void dealAfterLogin(String type) {
+            Intent in = null;
+            if (type.equals("manager")) {
+                in = new Intent().setClass(LoginActivity.this, ManagerActivity.class);
                 startActivity(in);
-            }else if(type.equals("unmanager"))
-            {
-                 in=new Intent().setClass(LoginActivity.this,RegulatorActivity.class);
-                 startActivity(in);
+            } else if (type.equals("unmanager")) {
+                in = new Intent().setClass(LoginActivity.this, RegulatorActivity.class);
+                startActivity(in);
             }
         }
     };
