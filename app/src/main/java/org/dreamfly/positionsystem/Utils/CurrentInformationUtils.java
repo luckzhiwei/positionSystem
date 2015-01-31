@@ -97,6 +97,15 @@ public class CurrentInformationUtils {
         return (tm.getDeviceId());
     }
 
+    /**
+     * 获取设备的手机号码
+     * @return
+     */
+    public String getDeviceTelNum(){
+        TelephonyManager tm=(TelephonyManager)this.context.getSystemService(Context.TELEPHONY_SERVICE);
+        return tm.getLine1Number();
+    }
+
 
     
 

@@ -34,6 +34,8 @@ public class DataBase extends SQLiteOpenHelper{
                     "subname TEXT," + "position TEXT," + "time TEXT," +"isconnect  TEXT"+ ");");
             db.execSQL("CREATE TABLE manageritems(" + "id INTEGER primary key ," + "name TEXT," +
                     "subname TEXT," + "position TEXT," + "time TEXT," +"isconnect  TEXT"+ ");");
+            db.execSQL("CREATE TABLE deviceinformation("+"id INTEGER primary key,"+
+            "telnumber TEXT,"+"location TEXT,"+"latitude TEXT,"+"longitude TEXT"+");");
             Log.v(TAG, "create table ok");
         }
         catch (Exception e){
@@ -46,8 +48,10 @@ public class DataBase extends SQLiteOpenHelper{
     {
         String sql = "DROP TABLE IF EXISTS " + TABLE_NAME;
         String sql1="DROP TABLE IF EXISTS " + "manageritems";
+        String sql2="DROP TABLE IF EXISTS"+"deviceinformation";
         db.execSQL(sql);
         db.execSQL(sql1);
+        db.execSQL(sql2);
         onCreate(db);
     }
 
@@ -81,9 +85,32 @@ public class DataBase extends SQLiteOpenHelper{
         }
     }
 
+    /**
+     * 初始化表deviceinformation的数据
+     * @param telnumber
+     * @param location
+     * @param latitude
+     * @param longitude
+     */
+    public void devicesInsert(int id,String telnumber,String location,String latitude,String longitude){
+        try {
+            db=this.getWritableDatabase();
+            ContentValues cv = new ContentValues();
+            cv.put("id",id);
+            cv.put("telnumber",telnumber);
+            cv.put("location",location);
+            cv.put("latitude",latitude);
+            cv.put("longitude",longitude);
+            db.insert("deviceinformation", null, cv);
+            Log.v(TAG,"insert into deviceinformation ok");
+        }
+        catch (Exception e){
+            Log.v(TAG,"insert into deviceinformation err");
+        }
+    }
 
     /**
-     * 修改数据表regulatoritems中的某一行中的某列
+     * 修改数据表中的某一行中的某列
      * @param tableName 表名
      * @param columName 列名
      * @param Values 想要修改的值

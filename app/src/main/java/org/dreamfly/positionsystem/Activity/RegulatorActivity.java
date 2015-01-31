@@ -66,6 +66,7 @@ public class RegulatorActivity extends ManagerActivity {
         mcoder = GeoCoder.newInstance();
         mcoder.setOnGetGeoCodeResultListener(this);
         this.locationSave();
+        this.telNumSave(mInformation);
         this.bindID();
         this.mRegulatordapter = new RegulatorAdapter(this.getData(), this, mDataBase);
         this.listViewRegulatorActivityReglutorList.setAdapter(mRegulatordapter);

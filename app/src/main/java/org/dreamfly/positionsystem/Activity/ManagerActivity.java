@@ -50,7 +50,6 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
     private ManagerAdapter mManagerAdapter;
     private TextView txtManagerActivityTitle, txtManagertgetDeviceName;
     private DataBase mDataBase = new DataBase(this);
-    private CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
     private User oneManager = new User();
     private User oneRegulator = new User();
     private DefineDialog mDefineDialog;
@@ -58,10 +57,11 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
     protected LocationClient locationClient;
     protected String lat;
     protected String lon;
+    protected CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
+    protected final static String DEVICE="deviceinformation";
     private boolean isClear = true;
     com.baidu.mapapi.search.geocode.GeoCoder mcoder;
     private final static String TABLENAME = "regulatoritems";
-
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +83,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         mcoder.setOnGetGeoCodeResultListener(this);
         this.mManagerAdapter = new ManagerAdapter(this.getData(), this, mDataBase);
         this.managerActivityListView.setAdapter(this.mManagerAdapter);
+        this.telNumSave(mInformation);
         this.locationSave();
         this.setListViewListener();
     }
@@ -208,6 +209,8 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
             lat = location.getLatitude() + "";
 
             lon = location.getLongitude() + "";
+            mDataBase.items_changeValue(DEVICE,"latitude",lat,0);
+            mDataBase.items_changeValue(DEVICE,"longitude",lon,0);
             reverseCode(lat, lon);
 
 
@@ -237,6 +240,14 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
     }
 
     /**
+     * 存储本机号码
+     */
+    public void telNumSave(CurrentInformationUtils mInformation){
+        Log.i("zyl",mInformation.getDeviceTelNum());
+        mDataBase.items_changeValue(DEVICE,"telnumber",mInformation.getDeviceTelNum(),0);
+    }
+
+    /**
      * 调用经纬度编码转换函数并用Sharepreference保存
      *
      * @param lat
@@ -263,6 +274,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
             return;
         }
         String s = result.getAddress();
+        mDataBase.items_changeValue(DEVICE,"location",s,0);
         //将获得的地址保存
         SharedPreferences mpreference = getSharedPreferences("address", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = mpreference.edit();
