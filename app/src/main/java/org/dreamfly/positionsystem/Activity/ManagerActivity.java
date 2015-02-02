@@ -60,6 +60,8 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
     protected CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
     protected final static String DEVICE="deviceinformation";
     private boolean isClear = true;
+    private boolean isFirstGetLocation=true;
+    private boolean isGetFromServer=false;
     com.baidu.mapapi.search.geocode.GeoCoder mcoder;
     private final static String TABLENAME = "regulatoritems";
 
@@ -81,11 +83,13 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         mLocationUtils.LocationInfo();
         mcoder = GeoCoder.newInstance();
         mcoder.setOnGetGeoCodeResultListener(this);
+        locationRunnable lr=new locationRunnable();
+        Thread locationThread=new Thread(lr);
         this.mManagerAdapter = new ManagerAdapter(this.getData(), this, mDataBase);
         this.managerActivityListView.setAdapter(this.mManagerAdapter);
         this.telNumSave(mInformation);
-        this.locationSave();
         this.setListViewListener();
+        locationThread.start();
     }
 
     private void bindID() {
@@ -287,6 +291,27 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         }
         Log.i("lzw", "您的当前位置" + s + "已被保存");
 
+    }
+    public class locationRunnable implements Runnable  {
+        @Override
+        public void run() {
+            try {
+                if(isFirstGetLocation) {
+                    locationSave();
+                    isFirstGetLocation=false;
+                }
+                else {
+                        this.wait();
+                }
+                if(isGetFromServer){
+                    locationSave();
+                }
+
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        }
     }
 
 
