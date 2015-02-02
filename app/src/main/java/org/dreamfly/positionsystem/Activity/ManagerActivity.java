@@ -83,13 +83,11 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         mLocationUtils.LocationInfo();
         mcoder = GeoCoder.newInstance();
         mcoder.setOnGetGeoCodeResultListener(this);
-        locationRunnable lr=new locationRunnable();
-        Thread locationThread=new Thread(lr);
         this.mManagerAdapter = new ManagerAdapter(this.getData(), this, mDataBase);
         this.managerActivityListView.setAdapter(this.mManagerAdapter);
         this.telNumSave(mInformation);
         this.setListViewListener();
-        locationThread.start();
+        this.locationSave();
 
     }
 
@@ -295,7 +293,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         Log.i("lzw", "您的当前位置" + s + "已被保存");
 
     }
-
+    /*
     public class locationRunnable implements Runnable  {
         @Override
         public void run() {
@@ -308,7 +306,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 
 
 }
