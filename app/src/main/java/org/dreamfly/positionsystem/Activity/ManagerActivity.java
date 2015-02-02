@@ -61,7 +61,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
     protected final static String DEVICE="deviceinformation";
     private boolean isClear = true;
     private boolean isFirstGetLocation=true;
-    private boolean isGetFromServer=false;
+    private boolean isGetFromServer=true;
     com.baidu.mapapi.search.geocode.GeoCoder mcoder;
     private final static String TABLENAME = "regulatoritems";
 
@@ -90,6 +90,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         this.telNumSave(mInformation);
         this.setListViewListener();
         locationThread.start();
+
     }
 
     private void bindID() {
@@ -216,6 +217,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
             mDataBase.items_changeValue(DEVICE,"latitude",lat,0);
             mDataBase.items_changeValue(DEVICE,"longitude",lon,0);
             reverseCode(lat, lon);
+            locationClient.stop();
 
 
         }
@@ -235,11 +237,12 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
      * 调用百度定位Sdk,并存储定位数据
      */
     public void locationSave() {
-        locationClient = mLocationUtils.getLocationClient();
-        locationClient.start();
-        locationClient.requestLocation();
-        BDListener bdListener = new BDListener();
-        locationClient.registerLocationListener(bdListener);
+
+          locationClient = mLocationUtils.getLocationClient();
+          locationClient.start();
+          locationClient.requestLocation();
+          BDListener bdListener = new BDListener();
+          locationClient.registerLocationListener(bdListener);
 
     }
 
@@ -292,20 +295,13 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         Log.i("lzw", "您的当前位置" + s + "已被保存");
 
     }
+
     public class locationRunnable implements Runnable  {
         @Override
         public void run() {
             try {
-                if(isFirstGetLocation) {
                     locationSave();
-                    isFirstGetLocation=false;
-                }
-                else {
-                        this.wait();
-                }
-                if(isGetFromServer){
-                    locationSave();
-                }
+                    Log.i("zyl","线程启动");
 
             }
             catch (Exception e){

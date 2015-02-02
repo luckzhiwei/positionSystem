@@ -50,6 +50,7 @@ public class ManagerAdapter extends BaseAdapter {
     }
 
     public int getCount() {
+
         return (this.mRegulatorList.size());
     }
 

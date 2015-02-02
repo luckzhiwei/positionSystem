@@ -12,7 +12,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="6dp"
-        android:background="@drawable/managerlayout_drawable"
+        android:background="@drawable/regulatorlayout_drawable"
         >
         <LinearLayout
             android:id="@+id/regulatoractivity_layout1"
