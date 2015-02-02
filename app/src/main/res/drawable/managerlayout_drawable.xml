@@ -6,8 +6,8 @@
           >
             <shape>
                   <gradient
-                      android:endColor="#FFFFFF"
-                      android:startColor="#FFFFFF"
+                      android:endColor="@color/light_orange"
+                      android:startColor="@color/light_orange"
                       android:angle="90"
                      >
                   </gradient>
@@ -22,8 +22,8 @@
           android:state_pressed="true"
           >
            <shape>
-                 <gradient android:endColor="#C4C4C4"
-                     android:startColor="#C4C4C4"
+                 <gradient android:endColor="@color/orange"
+                     android:startColor="@color/orange"
                      android:angle="90"
                      />
                <corners

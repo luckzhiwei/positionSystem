@@ -6,4 +6,5 @@
       <color name="red">#ff0000</color>
       <color name="blue_define">#037BFF</color>
       <color name="orange">#f04800</color>
+      <color name="light_orange">#feefe8</color>
 </resources>
