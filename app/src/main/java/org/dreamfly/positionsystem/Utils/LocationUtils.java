@@ -30,4 +30,9 @@ public class LocationUtils {
         return this.mlocationClient;
     }
 
+    public void shutdown(){
+        LocationClientOption option=null;
+        mlocationClient.setLocOption(option);
+    }
+
 }

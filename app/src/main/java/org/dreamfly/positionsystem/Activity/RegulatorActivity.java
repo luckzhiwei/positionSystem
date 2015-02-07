@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -41,15 +42,13 @@ public class RegulatorActivity extends ManagerActivity {
 
     private DefineListView listViewRegulatorActivityReglutorList;
     private TextView txtRegulatorActivityTitle;
+    private LinearLayout layout;
     private DefineDialog mDefineDialog;
     private RegulatorAdapter mRegulatordapter;
-    private CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
     private User oneRegulator = new User();
     private ManagerActivity manager = new ManagerActivity();
     private ComParameter com = new ComParameter();
-    private DataBase mDataBase = new DataBase(this);
-    private LocationUtils mLocationUtils;
-
+    private DataBase mDataBase=new DataBase(this);
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +59,7 @@ public class RegulatorActivity extends ManagerActivity {
         this.initial();
     }
 
-    private void initial() {
+    public void initial() {
         mLocationUtils = new LocationUtils(this);
         mLocationUtils.LocationInfo();
         mcoder = GeoCoder.newInstance();
@@ -71,6 +70,8 @@ public class RegulatorActivity extends ManagerActivity {
         this.mRegulatordapter = new RegulatorAdapter(this.getData(), this, mDataBase);
         this.listViewRegulatorActivityReglutorList.setAdapter(mRegulatordapter);
         this.setCLickListener();
+
+
     }
 
     private void bindID() {
@@ -78,6 +79,8 @@ public class RegulatorActivity extends ManagerActivity {
                 this.findViewById(R.id.listivew_regulatoractivity_regulatorlist);
         this.txtRegulatorActivityTitle = (TextView)
                 this.findViewById(R.id.txt_regulatoractivity_title);
+        this.layout=(LinearLayout)
+                this.findViewById(R.id.myregulator_activity_layout);
 
     }
 
@@ -102,8 +105,17 @@ public class RegulatorActivity extends ManagerActivity {
 
         }
         this.setData(mDataBase, list);
+        this.changeRegBackground(list);
         Log.v("textlist", "" + list.size());
         return list;
+    }
+    public void changeRegBackground(List<User> list){
+        if(list.size()==0){
+            layout.setBackgroundResource(R.drawable.regulator_background);
+        }
+        else{
+            layout.setBackgroundResource(R.color.white_layout);
+        }
     }
 
     /**
@@ -112,6 +124,7 @@ public class RegulatorActivity extends ManagerActivity {
      * @param mDataBase
      * @param list
      */
+
     public void setData(DataBase mDataBase, List<User> list) {
         Cursor cur = mDataBase.Selector(0, com.MANTABLENAME);
         if (!cur.moveToNext()) {

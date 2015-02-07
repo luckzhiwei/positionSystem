@@ -3,14 +3,18 @@ package org.dreamfly.positionsystem.Activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,11 +53,12 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
     private DefineListView managerActivityListView;
     private ManagerAdapter mManagerAdapter;
     private TextView txtManagerActivityTitle, txtManagertgetDeviceName;
-    private DataBase mDataBase = new DataBase(this);
+    private LinearLayout layout;
+    protected DataBase mDataBase = new DataBase(this);
     private User oneManager = new User();
     private User oneRegulator = new User();
     private DefineDialog mDefineDialog;
-    private LocationUtils mLocationUtils;
+    protected LocationUtils mLocationUtils;
     protected LocationClient locationClient;
     protected String lat;
     protected String lon;
@@ -72,12 +77,12 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         String libName = "BaiduMapSDK_v3_2_0_11";
         System.loadLibrary(libName);
         this.setContentView(R.layout.manager_layout);
-        this.initial(mDataBase);
+        this.initial();
 
 
     }
 
-    public void initial(DataBase mDataBase) {
+    private void initial() {
         this.bindID();
         mLocationUtils = new LocationUtils(this);
         mLocationUtils.LocationInfo();
@@ -98,6 +103,8 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
                 this.findViewById(R.id.txt_manageractivity_title);
         this.txtManagertgetDeviceName = (TextView)
                 this.findViewById(R.id.manageractivity_txt2_name);
+        this.layout=(LinearLayout)
+                this.findViewById(R.id.manageractivity_layout);
 
     }
 
@@ -118,9 +125,9 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
      *
      * @return
      */
-    public List<User> getData() {
+    private List<User> getData() {
         List<User> list = new ArrayList<User>();
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 0; i++) {
             User r = new User();
             r.setDeviceNma(mInformation.setFirstDeviceName(i));
             r.setLastDateTouch(mInformation.getCurrentTime());
@@ -130,7 +137,21 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
             list.add(r);
         }
         this.setData(mDataBase, list);
+        this.changeBackground(list);
         return list;
+    }
+
+    /**
+     * 如果没有条目,显示一个提示背景
+     * @param list
+     */
+    public void changeBackground(List<User> list){
+        if(list.size()==0){
+          layout.setBackgroundResource(R.drawable.manager_background_none);
+        }
+        else{
+            layout.setBackgroundResource(R.color.white_layout);
+        }
     }
 
     /**
@@ -139,10 +160,10 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
      * @param mDataBase
      * @param list
      */
-    public void setData(DataBase mDataBase, List<User> list) {
+    private void setData(DataBase mDataBase, List<User> list) {
         Cursor cur = mDataBase.Selector(0, TABLENAME);
         if (!cur.moveToNext()) {
-            for (int i = 0; i < 7; i++) {
+            for (int i = 0; i < 0; i++) {
                 User regulator = list.get(i);
                 mDataBase.itemsInsert(TABLENAME, i, regulator.getDeviceName(), regulator.getMangerMarks()
                         , regulator.getLastLocation(), regulator.getLastDateTouch(), regulator.getOnLine());
@@ -215,6 +236,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
             mDataBase.items_changeValue(DEVICE,"latitude",lat,0);
             mDataBase.items_changeValue(DEVICE,"longitude",lon,0);
             reverseCode(lat, lon);
+            Log.v("connection","监听已连接");
             locationClient.stop();
 
 
