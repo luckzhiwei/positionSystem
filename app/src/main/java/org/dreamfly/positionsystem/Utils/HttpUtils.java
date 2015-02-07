@@ -1,5 +1,7 @@
 package org.dreamfly.positionsystem.Utils;
 
+import android.util.Log;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -79,13 +81,14 @@ public class HttpUtils {
                    strBuilder.append(tmpStr);
             }
             mBufferReader.close();
+            Log.i("lzw","转换流至字符串");
             return(strBuilder.toString());
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            return "";
+            return "switchException";
         }catch(IOException e){
             e.printStackTrace();
-            return "";
+            return "switchException";
         }
     }
 
@@ -99,6 +102,7 @@ public class HttpUtils {
     private static List<NameValuePair> getRequestParams(Map<String, String> reuqestParams) {
         List<NameValuePair> list = null;
         if (reuqestParams != null && (!reuqestParams.isEmpty())) {
+            Log.i("lzw","post御前准备");
             list = new ArrayList<NameValuePair>();
             Iterator iterator = reuqestParams.entrySet().iterator();
             while (iterator.hasNext()) {
@@ -121,6 +125,7 @@ public class HttpUtils {
     private static HttpPost bulidHttpPost(List<NameValuePair> list, String requestPath) {
         HttpPost post = null;
         try {
+            Log.i("lzw","形成表单");
             UrlEncodedFormEntity postEntity = new UrlEncodedFormEntity(list, "utf-8");
             //请求体的编码格式
             post = new HttpPost(requestPath);
@@ -144,6 +149,7 @@ public class HttpUtils {
             //向服务器做请求连接
             if (mResponse.getStatusLine().getStatusCode() == 200) {
                 HttpEntity mEntity = mResponse.getEntity();
+                Log.i("lzw","获取服务器对接流");
                 return (mEntity.getContent());
             }
         } catch (ConnectTimeoutException e) {

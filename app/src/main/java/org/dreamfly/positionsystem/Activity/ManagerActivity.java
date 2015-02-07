@@ -84,6 +84,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
 
     private void initial() {
         this.bindID();
+        Log.i("lzw","manage_intial");
         mLocationUtils = new LocationUtils(this);
         mLocationUtils.LocationInfo();
         mcoder = GeoCoder.newInstance();
@@ -93,6 +94,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         this.telNumSave(mInformation);
         this.setListViewListener();
         this.locationSave();
+
 
     }
 
@@ -138,7 +140,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         }
         this.setData(mDataBase, list);
         this.changeBackground(list);
-        return list;
+        return (list);
     }
 
     /**
@@ -236,9 +238,10 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
             mDataBase.items_changeValue(DEVICE,"latitude",lat,0);
             mDataBase.items_changeValue(DEVICE,"longitude",lon,0);
             reverseCode(lat, lon);
-            Log.v("connection","监听已连接");
+            Log.i("lzw",lat+"");
+            Log.i("lzw",lon+"");
             locationClient.stop();
-
+            Log.i("lzw","unlink");
 
         }
 
@@ -263,7 +266,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
           locationClient.requestLocation();
           BDListener bdListener = new BDListener();
           locationClient.registerLocationListener(bdListener);
-
+          Log.i("lzw","locationSDKwork");
     }
 
     /**
@@ -329,6 +332,10 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
             }
         }
     }*/
+
+
+
+
 
 
 }

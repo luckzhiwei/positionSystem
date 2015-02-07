@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -71,7 +72,7 @@ public class RegistActivity extends Activity {
         public void onClick(View view) {
             requestRegisterThread = new RegisterRequestThread
                     (mHandler, "registerstate");
-            String requestURL = ComParameter.HOST + "";
+            String requestURL =ComParameter.HOST+"";
             Map<String, String> params = new HashMap<String, String>();
             params.put("username", editRegisterActivityUsername.getText().toString());
             params.put("password", editRegisterActivityPassword.getText().toString());
@@ -82,16 +83,17 @@ public class RegistActivity extends Activity {
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
             if (msg.getData().getInt("registerstate") == ComParameter.STATE_RIGHT) {
-                Map<String, String> resultMap = requestRegisterThread.getResultMap();
-                String registerState = resultMap.get("egisterstate");
-                if (registerState != null) {
-                    if (registerState.equals("success")) {
-                        ToastUtils.showToast(getApplicationContext(), "注册成功");
-                    } else if (registerState.equals("fail")) {
-                        ToastUtils.showToast(getApplicationContext(), "注册失败:" +
-                                resultMap.get("failReason") + "");
-                    }
-                }
+//                Map<String, String> resultMap = requestRegisterThread.getResultMap();
+//                String registerState = resultMap.get("egisterstate");
+//                if (registerState != null) {
+//                    if (registerState.equals("success")) {
+//                        ToastUtils.showToast(getApplicationContext(), "注册成功");
+//                    } else if (registerState.equals("fail")) {
+//                        ToastUtils.showToast(getApplicationContext(), "注册失败:" +
+//                                resultMap.get("failReason") + "");
+//                    }
+//                }
+
 
             } else if (msg.getData().getInt("registerstate") == ComParameter.STATE_ERROR) {
                 ToastUtils.showToast(getApplicationContext(), ComParameter.ERRORINFO);

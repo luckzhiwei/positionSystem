@@ -13,23 +13,20 @@ import java.util.Map;
 public class LoginRequestThread extends BaseThread {
 
 
-    public LoginRequestThread(Handler mHandler,String stateId)
-    {
-         super(mHandler,stateId);
+    public LoginRequestThread(Handler mHandler, String stateId) {
+        super(mHandler, stateId);
     }
-    protected  void dealReponseString(String responseString)
-    {
-         this.resultMap=new HashMap<String,String>();
-         String tmpArrStr[]=responseString.split(":");
-         if(tmpArrStr[1].equals("login"))
-         {
-                this.resultMap.put(tmpArrStr[0],tmpArrStr[1]);
 
-         }else if(tmpArrStr.equals("unlogin"))
-         {
-               this.resultMap.put(tmpArrStr[0],tmpArrStr[1]);
-               this.resultMap.put("failReason",tmpArrStr[2]);
-         }
+    protected void dealReponseString(String responseString) {
+        this.resultMap = new HashMap<String, String>();
+        String tmpArrStr[] = responseString.split(":");
+        if (tmpArrStr[1].equals("login")) {
+            this.resultMap.put(tmpArrStr[0], tmpArrStr[1]);
+
+        } else if (tmpArrStr.equals("unlogin")) {
+            this.resultMap.put(tmpArrStr[0], tmpArrStr[1]);
+            this.resultMap.put("failReason", tmpArrStr[2]);
+        }
 
     }
 

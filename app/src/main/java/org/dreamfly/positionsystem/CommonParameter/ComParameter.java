@@ -13,7 +13,7 @@ public class ComParameter {
 
           public final static String MANTABLENAME="manageritems";
 
-          public final static String HOST="http://";
+          public final static String HOST="http://locationapp.dreamfly.org/";
           //请求主机的地址
 
           public final static String ENCODE_GBK="gbk";

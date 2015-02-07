@@ -59,14 +59,17 @@ public class RegulatorActivity extends ManagerActivity {
         this.initial();
     }
 
-    public void initial() {
+    private void initial() {
+        Log.i("lzw","unmanager_init");
+        this.bindID();
         mLocationUtils = new LocationUtils(this);
         mLocationUtils.LocationInfo();
         mcoder = GeoCoder.newInstance();
         mcoder.setOnGetGeoCodeResultListener(this);
         this.locationSave();
+
         this.telNumSave(mInformation);
-        this.bindID();
+
         this.mRegulatordapter = new RegulatorAdapter(this.getData(), this, mDataBase);
         this.listViewRegulatorActivityReglutorList.setAdapter(mRegulatordapter);
         this.setCLickListener();
