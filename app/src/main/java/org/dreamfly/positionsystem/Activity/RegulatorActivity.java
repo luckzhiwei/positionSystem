@@ -66,7 +66,7 @@ public class RegulatorActivity extends ManagerActivity {
         mLocationUtils.LocationInfo();
         mcoder = GeoCoder.newInstance();
         mcoder.setOnGetGeoCodeResultListener(this);
-        this.locationSave();
+       // this.locationSave();
 
         this.telNumSave(mInformation);
 
