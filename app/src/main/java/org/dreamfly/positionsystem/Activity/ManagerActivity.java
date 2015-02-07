@@ -127,7 +127,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
      */
     private List<User> getData() {
         List<User> list = new ArrayList<User>();
-        for (int i = 0; i < 0; i++) {
+        for (int i = 0; i < 7; i++) {
             User r = new User();
             r.setDeviceNma(mInformation.setFirstDeviceName(i));
             r.setLastDateTouch(mInformation.getCurrentTime());
@@ -163,7 +163,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
     private void setData(DataBase mDataBase, List<User> list) {
         Cursor cur = mDataBase.Selector(0, TABLENAME);
         if (!cur.moveToNext()) {
-            for (int i = 0; i < 0; i++) {
+            for (int i = 0; i < 7; i++) {
                 User regulator = list.get(i);
                 mDataBase.itemsInsert(TABLENAME, i, regulator.getDeviceName(), regulator.getMangerMarks()
                         , regulator.getLastLocation(), regulator.getLastDateTouch(), regulator.getOnLine());
