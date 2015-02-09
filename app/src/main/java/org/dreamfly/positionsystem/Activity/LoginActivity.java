@@ -162,7 +162,7 @@ public class LoginActivity extends Activity {
 
     private void sendLoginInfoToServer(boolean isManager) {
         this.loginReuquestThread = new FirstLoginRequestThread(mHandler, "firstloginstate");
-        String requestURL = ComParameter.HOST + "";
+        String requestURL = ComParameter.HOST + "user_firslogin.action";
         this.loginReuquestThread.setRequestPrepare(requestURL, this.prepareLoginParams(isManager));
         this.loginReuquestThread.start();
     }

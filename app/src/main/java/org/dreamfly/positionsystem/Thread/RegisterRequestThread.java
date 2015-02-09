@@ -15,14 +15,14 @@ public class RegisterRequestThread extends BaseThread {
     }
 
     protected void dealReponseString(String responseString) {
-//        this.resultMap = new HashMap<String, String>();
-//        String tmpStrArr[] = responseString.split(":");
-//        if (tmpStrArr.length == 2) {
-//            this.resultMap.put(tmpStrArr[0], tmpStrArr[1]);
-//        } else if (tmpStrArr.length == 3) {
-//            this.resultMap.put(tmpStrArr[0], tmpStrArr[1]);
-//            this.resultMap.put("failReason", tmpStrArr[2]);
-//        }
+        this.resultMap = new HashMap<String, String>();
+        String tmpStrArr[] = responseString.split(":");
+        if (tmpStrArr.length == 2) {
+            this.resultMap.put(tmpStrArr[0], tmpStrArr[1]);
+        } else if (tmpStrArr.length == 3) {
+            this.resultMap.put(tmpStrArr[0], tmpStrArr[1]);
+            this.resultMap.put("failReason", tmpStrArr[2]);
+        }
         Log.i("lzw","返回字符"+responseString);
 
     }
