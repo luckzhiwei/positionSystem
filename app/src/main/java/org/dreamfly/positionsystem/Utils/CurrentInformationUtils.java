@@ -103,7 +103,7 @@ public class CurrentInformationUtils {
      */
     public String getDeviceTelNum(){
         TelephonyManager tm=(TelephonyManager)this.context.getSystemService(Context.TELEPHONY_SERVICE);
-        return tm.getLine1Number();
+        return (tm.getLine1Number());
     }
 
 

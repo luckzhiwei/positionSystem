@@ -10,6 +10,7 @@ import org.dreamfly.positionsystem.Utils.HttpUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -84,6 +85,8 @@ public abstract class BaseThread extends Thread {
      * 将服务器的返回的结果（字符）交给子类的实例化的方法来
      */
     public void run() {
+        this.checkRequestMap();
+//        Log.i("lzw","URL="+this.requestURL);
         try {
             String responseStr =
                     HttpUtils.requestHttpServer(this.requestURL, this.requestParams,
@@ -142,6 +145,17 @@ public abstract class BaseThread extends Thread {
         } else {
             Log.i("lzw","null");
             return (false);
+        }
+    }
+
+    protected void checkRequestMap()
+    {
+        Iterator it=this.requestParams.entrySet().iterator();
+        while(it.hasNext())
+        {
+            Map.Entry<String,String> entry=(Map.Entry<String,String>)it.next();
+           Log.i("lzw",entry.getKey());
+            Log.i("lzw",entry.getValue());
         }
     }
 }

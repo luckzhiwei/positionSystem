@@ -113,12 +113,10 @@ public class LoginActivity extends Activity {
      */
     private View.OnClickListener managerClickListener = new View.OnClickListener() {
         public void onClick(View view) {
-            writeUserInfo("manager", mInformation, "2", "Tree");
             mIsManagerDialog.dismiss();
             sendLoginInfoToServer(true);
-            Intent in = new Intent(LoginActivity.this, ManagerActivity.class);
-            startActivity(in);
-            finish();
+            ToastUtils.showToast(getApplicationContext(),"正在登录,请稍后");
+
         }
     };
     /**
@@ -126,12 +124,9 @@ public class LoginActivity extends Activity {
      */
     private View.OnClickListener regulatorClickListener = new View.OnClickListener() {
         public void onClick(View view) {
-            writeUserInfo("unmanager", mInformation, "2", "Tree");
             mIsManagerDialog.dismiss();
             sendLoginInfoToServer(false);
-            Intent in = new Intent(LoginActivity.this, RegulatorActivity.class);
-            startActivity(in);
-            finish();
+            ToastUtils.showToast(getApplicationContext(),"正在登录,请稍后");
         }
     };
 
@@ -176,12 +171,18 @@ public class LoginActivity extends Activity {
         } else {
             params.put("type", "user");
         }
+        params.put("phonenum",this.mInformation.getDeviceTelNum());
+
         params.put("devId", this.mInformation.getDeviceId());
+        Log.i("lzw",this.mInformation.getDeviceTelNum());
         params.put("devName", this.mInformation.getCurrentDeviceName());
         return (params);
 
     }
 
+    /**
+     * 处理首次登录的子线程的handler
+     */
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
             if (msg.getData().getInt("firstloginstate") == ComParameter.STATE_RIGHT) {

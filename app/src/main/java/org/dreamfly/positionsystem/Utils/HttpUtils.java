@@ -103,7 +103,7 @@ public class HttpUtils {
     private static List<NameValuePair> getRequestParams(Map<String, String> reuqestParams) {
         List<NameValuePair> list = null;
         if (reuqestParams != null && (!reuqestParams.isEmpty())) {
-            Log.i("lzw","post御前准备");
+            Log.i("lzw","post预前准备");
             list = new ArrayList<NameValuePair>();
             Iterator iterator = reuqestParams.entrySet().iterator();
             while (iterator.hasNext()) {
@@ -148,18 +148,18 @@ public class HttpUtils {
         try {
             HttpResponse mResponse = mHttpCLient.execute(post);
             //向服务器做请求连接
-            if (mResponse.getStatusLine().getStatusCode() == 200) {
                 HttpEntity mEntity = mResponse.getEntity();
-                Log.i("lzw","获取服务器对接流");
                 return (mEntity.getContent());
-            }
+
         } catch (ConnectTimeoutException e) {
             //请求超时异常捕捉
+            Log.i("lzw","connection_timeout");
             e.printStackTrace();
         } catch (IOException e) {
             //请求服务器异常捕捉
             e.printStackTrace();
+            Log.i("lzw","IOException");
         }
         return (null);
-    }
+}
 }

@@ -78,19 +78,27 @@ public class RegistActivity extends Activity {
             params.put("password", editRegisterActivityPassword.getText().toString());
             requestRegisterThread.setRequestPrepare(requestURL, params);
             requestRegisterThread.start();
+            ToastUtils.showToast(getApplication(),"请求服务器中...");
         }
     };
+    /**
+     * 关于子线程的交互的handler
+     */
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
             if (msg.getData().getInt("registerstate") == ComParameter.STATE_RIGHT) {
                 Map<String, String> resultMap = requestRegisterThread.getResultMap();
-                String registerState = resultMap.get("egisterstate");
+                String registerState = resultMap.get("registerstate");
                 if (registerState != null) {
                     if (registerState.equals("success")) {
-                        ToastUtils.showToast(getApplicationContext(), "注册成功");
+                        ToastUtils.showToast(getApplicationContext(), "注册成功,可以登录下了");
+                        editRegisterActivityPassword.setText("");
+                        editRegisterActivityUsername.setText("");
                     } else if (registerState.equals("fail")) {
                         ToastUtils.showToast(getApplicationContext(), "注册失败:" +
                                 resultMap.get("failReason") + "");
+                        editRegisterActivityPassword.setText("");
+                        editRegisterActivityUsername.setText("");
                     }
                 }
 
