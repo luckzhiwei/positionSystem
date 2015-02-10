@@ -16,7 +16,7 @@ public class FirstLoginRequestThread extends BaseThread {
 
     protected void dealReponseString(String responseString) {
         this.resultMap = new HashMap<String, String>();
-//        String tmpArrStr[] = responseString.split(":");
+        String tmpArrStr[] = responseString.split(":");
 //        if (tmpArrStr[1].equals("login")) {
 //            this.resultMap.put(tmpArrStr[0], tmpArrStr[1]);
 //            this.resultMap.put("dataBaseId", tmpArrStr[3]);
