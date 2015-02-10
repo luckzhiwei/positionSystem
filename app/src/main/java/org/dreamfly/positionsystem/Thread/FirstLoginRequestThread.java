@@ -27,5 +27,5 @@ public class FirstLoginRequestThread extends BaseThread {
 //            this.resultMap.put("failReason", tmpArrStr[3]);
 //        }
         Log.i("lzw","返回字符(firslogin)"+responseString);
-    }
+       }
 }
