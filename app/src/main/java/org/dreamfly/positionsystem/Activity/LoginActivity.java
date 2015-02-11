@@ -204,7 +204,9 @@ public class LoginActivity extends Activity {
                     this.dealAfterLogin(resultMap.get("type"));
 
                 } else if (loginstate.equals("unlogin")) {
-                    ToastUtils.showToast(getApplicationContext(), resultMap.get("failReason") + "");
+                    Log.i("zyl", resultMap.get("failReason"));
+                    Toast.makeText(LoginActivity.this,resultMap.get("failReason"),Toast.LENGTH_LONG).show();
+                    //ToastUtils.showToast(LoginActivity.this, resultMap.get("failReason") + "");
                 }
             }
         }
@@ -218,6 +220,7 @@ public class LoginActivity extends Activity {
                 in = new Intent().setClass(LoginActivity.this, RegulatorActivity.class);
                 startActivity(in);
             }
+
         }
     };
 }
