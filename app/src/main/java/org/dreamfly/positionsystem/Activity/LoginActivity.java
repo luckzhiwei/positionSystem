@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.dreamfly.positionsystem.CommonParameter.ComParameter;
@@ -44,6 +45,7 @@ public class LoginActivity extends Activity {
     private EditText edittextLoginactivityUsername;
     private EditText editextLoginactivityPassword;
     private DefineDialog mIsManagerDialog;
+    private ProgressBar proLoginActivity;
 
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
     private BaseThread loginReuquestThread;
@@ -54,6 +56,12 @@ public class LoginActivity extends Activity {
         this.setContentView(R.layout.login_layout);
         this.initial();
 
+
+    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+        proLoginActivity.setVisibility(View.GONE);
 
     }
 
@@ -70,6 +78,9 @@ public class LoginActivity extends Activity {
                 findViewById(R.id.edtext_loginactivity_username);
         this.editextLoginactivityPassword = (EditText)
                 findViewById(R.id.edtext_loginactivity_password);
+        this.proLoginActivity=(ProgressBar)
+                findViewById(R.id.progressBar_loginactivity);
+        proLoginActivity.setVisibility(View.GONE);
         this.bindListener();
 
 
@@ -115,6 +126,7 @@ public class LoginActivity extends Activity {
         public void onClick(View view) {
             mIsManagerDialog.dismiss();
             sendLoginInfoToServer(true);
+            proLoginActivity.setVisibility(View.VISIBLE);
             ToastUtils.showToast(getApplicationContext(),"正在登录,请稍后");
 
         }
@@ -126,6 +138,7 @@ public class LoginActivity extends Activity {
         public void onClick(View view) {
             mIsManagerDialog.dismiss();
             sendLoginInfoToServer(false);
+            proLoginActivity.setVisibility(View.VISIBLE);
             ToastUtils.showToast(getApplicationContext(),"正在登录,请稍后");
         }
     };
@@ -203,6 +216,7 @@ public class LoginActivity extends Activity {
                             resultMap.get("dataBaseId"),
                             edittextLoginactivityUsername.getText().toString());
                     this.dealAfterLogin(resultMap.get("type"));
+
                 } else if (loginstate.equals("unlogin")) {
                    Log.i("lzw","unlogin_deal");
                   ToastUtils.showToast(getApplication(),resultMap.get("failReason"));

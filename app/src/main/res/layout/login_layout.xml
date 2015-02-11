@@ -81,4 +81,13 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
+    <ProgressBar
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:id="@+id/progressBar_loginactivity"
+        android:indeterminate="false"
+        android:layout_above="@+id/txt_loginactivity_register"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="88dp" />
+
 </RelativeLayout>

@@ -122,10 +122,10 @@ public class DataBase extends SQLiteOpenHelper{
         cv.put(columName,Values);
         long l=db.update(tableName,cv,"id=?",new String[]{id+""});
         if(l==-1){
-            Toast.makeText(context, "修改失败", Toast.LENGTH_SHORT).show();
+          Log.i("zyl","修改成功");
         }
         else {
-            Toast.makeText(context,"修改成功",Toast.LENGTH_SHORT).show();
+            Log.i("zyl","修改失败");
         }
 
     }
