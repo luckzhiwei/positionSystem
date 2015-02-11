@@ -214,11 +214,11 @@ public class LoginActivity extends Activity {
         private void dealAfterLogin(String type) {
             Intent in = null;
             if (type.equals("manager")) {
-//                in = new Intent().setClass(LoginActivity.this, ManagerActivity.class);
-//                startActivity(in);
+                in = new Intent().setClass(LoginActivity.this, ManagerActivity.class);
+                startActivity(in);
             } else if (type.equals("unmanager")) {
-//                in = new Intent().setClass(LoginActivity.this, RegulatorActivity.class);
-//                startActivity(in);
+                in = new Intent().setClass(LoginActivity.this, RegulatorActivity.class);
+                startActivity(in);
             }
 
         }
