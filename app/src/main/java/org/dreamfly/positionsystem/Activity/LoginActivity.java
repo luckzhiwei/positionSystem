@@ -187,6 +187,7 @@ public class LoginActivity extends Activity {
         public void handleMessage(Message msg) {
             if (msg.getData().getInt("firstloginstate") == ComParameter.STATE_RIGHT) {
                 this.dealFirstLogintMessage();
+
             } else if (msg.getData().getInt("firstloginstate") == ComParameter.STATE_ERROR) {
                 ToastUtils.showToast(getApplicationContext(), ComParameter.ERRORINFO);
             }
@@ -202,23 +203,22 @@ public class LoginActivity extends Activity {
                             resultMap.get("dataBaseId"),
                             edittextLoginactivityUsername.getText().toString());
                     this.dealAfterLogin(resultMap.get("type"));
-
                 } else if (loginstate.equals("unlogin")) {
-                    Log.i("zyl", resultMap.get("failReason"));
-                    Toast.makeText(LoginActivity.this,resultMap.get("failReason"),Toast.LENGTH_LONG).show();
-                    //ToastUtils.showToast(LoginActivity.this, resultMap.get("failReason") + "");
+                  ToastUtils.showToast(getApplication(),resultMap.get("failReason"));
                 }
+            }else{
+                Log.i("lzw","null");
             }
         }
 
         private void dealAfterLogin(String type) {
             Intent in = null;
             if (type.equals("manager")) {
-                in = new Intent().setClass(LoginActivity.this, ManagerActivity.class);
-                startActivity(in);
+//                in = new Intent().setClass(LoginActivity.this, ManagerActivity.class);
+//                startActivity(in);
             } else if (type.equals("unmanager")) {
-                in = new Intent().setClass(LoginActivity.this, RegulatorActivity.class);
-                startActivity(in);
+//                in = new Intent().setClass(LoginActivity.this, RegulatorActivity.class);
+//                startActivity(in);
             }
 
         }
