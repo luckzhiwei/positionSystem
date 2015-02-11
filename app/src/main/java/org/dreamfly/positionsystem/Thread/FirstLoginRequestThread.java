@@ -29,6 +29,9 @@ public class FirstLoginRequestThread extends BaseThread {
             this.resultMap.put(tmpArrStr[0], tmpArrStr[1]);
             this.resultMap.put("failReason", tmpArrStr[2]);
         }
-         Log.i("lzw",responseString+"");
+
+        Log.i("lzw",responseString);
+
+
        }
 }
