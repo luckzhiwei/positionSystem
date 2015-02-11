@@ -1,5 +1,6 @@
 package org.dreamfly.positionsystem.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import org.dreamfly.positionsystem.CommonParameter.ComParameter;
@@ -101,14 +102,18 @@ public class RegistActivity extends Activity {
                 String registerState = resultMap.get("registerstate");
                 if (registerState != null) {
                     if (registerState.equals("success")) {
-                        ToastUtils.showToast(getApplicationContext(), "注册成功,可以登录下了");
+                        ToastUtils.showToast(getApplicationContext(), "注册成功!");
                         editRegisterActivityPassword.setText("");
                         editRegisterActivityUsername.setText("");
+                        proRegistActivity.setVisibility(View.GONE);
+                        Intent in = new Intent().setClass(RegistActivity.this, LoginActivity.class);
+                        startActivity(in);
                     } else if (registerState.equals("fail")) {
                         ToastUtils.showToast(getApplicationContext(), "注册失败:" +
                                 resultMap.get("failReason") + "");
                         editRegisterActivityPassword.setText("");
                         editRegisterActivityUsername.setText("");
+                        proRegistActivity.setVisibility(View.GONE);
                     }
                 }
 
