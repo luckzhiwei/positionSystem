@@ -82,19 +82,37 @@ public class RegistActivity extends Activity {
         public void onClick(View view) {
             requestRegisterThread = new RegisterRequestThread
                     (mHandler, "registerstate");
-            String requestURL =ComParameter.HOST+"user_register.action";
-            Map<String, String> params = new HashMap<String, String>();
-            params.put("username", editRegisterActivityUsername.getText().toString());
-            params.put("password", editRegisterActivityPassword.getText().toString());
-            requestRegisterThread.setRequestPrepare(requestURL, params);
-            requestRegisterThread.start();
-            ToastUtils.showToast(getApplication(),"请求服务器中...");
-            proRegistActivity.setVisibility(View.VISIBLE);
+           if( checkoutDataFormat()) {
+               String requestURL = ComParameter.HOST + "user_register.action";
+               Map<String, String> params = new HashMap<String, String>();
+               params.put("username", editRegisterActivityUsername.getText().toString());
+               params.put("password", editRegisterActivityPassword.getText().toString());
+               requestRegisterThread.setRequestPrepare(requestURL, params);
+               requestRegisterThread.start();
+               ToastUtils.showToast(getApplication(), "请求服务器中...");
+               proRegistActivity.setVisibility(View.VISIBLE);
+           }
         }
     };
     /**
      * 关于子线程的交互的handler
      */
+
+    private boolean checkoutDataFormat()
+    {
+         if(this.editRegisterActivityUsername.getText().toString().equals(""))
+         {
+             ToastUtils.showToast(getApplicationContext(),"帐号不能为空");
+             return(false);
+         }else{
+              if(this.editRegisterActivityPassword.getText().toString().equals(""))
+              {
+                    ToastUtils.showToast(getApplicationContext(),"密码不能空");
+                    return (false);
+              }
+         }
+        return(true);
+    }
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
             if (msg.getData().getInt("registerstate") == ComParameter.STATE_RIGHT) {
@@ -105,7 +123,7 @@ public class RegistActivity extends Activity {
                         ToastUtils.showToast(getApplicationContext(), "注册成功!");
                         editRegisterActivityPassword.setText("");
                         editRegisterActivityUsername.setText("");
-                        proRegistActivity.setVisibility(View.GONE);
+
                         Intent in = new Intent().setClass(RegistActivity.this, LoginActivity.class);
                         startActivity(in);
                     } else if (registerState.equals("fail")) {
@@ -113,7 +131,7 @@ public class RegistActivity extends Activity {
                                 resultMap.get("failReason") + "");
                         editRegisterActivityPassword.setText("");
                         editRegisterActivityUsername.setText("");
-                        proRegistActivity.setVisibility(View.GONE);
+
                     }
                 }
 
@@ -121,6 +139,7 @@ public class RegistActivity extends Activity {
             } else if (msg.getData().getInt("registerstate") == ComParameter.STATE_ERROR) {
                 ToastUtils.showToast(getApplicationContext(), ComParameter.ERRORINFO);
             }
+            proRegistActivity.setVisibility(View.GONE);
         }
     };
 }

@@ -104,7 +104,9 @@ public class LoginActivity extends Activity {
         });
         this.btnLoginactivityLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                showIsManagerDialog();
+                if(checkoutInputDataFormat()) {
+                    showIsManagerDialog();
+                }
             }
         });
     }
@@ -125,6 +127,7 @@ public class LoginActivity extends Activity {
     private View.OnClickListener managerClickListener = new View.OnClickListener() {
         public void onClick(View view) {
             mIsManagerDialog.dismiss();
+
             sendLoginInfoToServer(true);
             proLoginActivity.setVisibility(View.VISIBLE);
             ToastUtils.showToast(getApplicationContext(),"正在登录,请稍后");
@@ -175,6 +178,22 @@ public class LoginActivity extends Activity {
         this.loginReuquestThread.start();
     }
 
+    private boolean checkoutInputDataFormat()
+    {
+          if(this.edittextLoginactivityUsername.getText().toString().equals(""))
+          {
+              ToastUtils.showToast(getApplicationContext(),"帐号不能为空");
+              return(false);
+          }else {
+                if(this.editextLoginactivityPassword.getText().toString().equals(""))
+                {
+                        ToastUtils.showToast(getApplicationContext(),"密码不能为空");
+                    return(false);
+                }
+          }
+        return(true);
+    }
+
     private Map prepareLoginParams(boolean isManager) {
         Map<String, String> params = new HashMap<String, String>();
         params.put("username", edittextLoginactivityUsername.getText().toString());
@@ -204,6 +223,8 @@ public class LoginActivity extends Activity {
             } else if (msg.getData().getInt("firstloginstate") == ComParameter.STATE_ERROR) {
                 ToastUtils.showToast(getApplicationContext(), ComParameter.ERRORINFO);
             }
+            proLoginActivity.setVisibility(View.GONE);
+
         }
 
         private void dealFirstLogintMessage() {
@@ -231,9 +252,11 @@ public class LoginActivity extends Activity {
             if (type.equals("manager")) {
                 in = new Intent().setClass(LoginActivity.this, ManagerActivity.class);
                 startActivity(in);
+                finish();
             } else if (type.equals("unmanager")) {
                 in = new Intent().setClass(LoginActivity.this, RegulatorActivity.class);
                 startActivity(in);
+                finish();
             }
 
         }
