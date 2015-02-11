@@ -204,6 +204,7 @@ public class LoginActivity extends Activity {
                             edittextLoginactivityUsername.getText().toString());
                     this.dealAfterLogin(resultMap.get("type"));
                 } else if (loginstate.equals("unlogin")) {
+                   Log.i("lzw","unlogin_deal");
                   ToastUtils.showToast(getApplication(),resultMap.get("failReason"));
                 }
             }else{
