@@ -205,9 +205,9 @@ public class LoginActivity extends Activity {
         }
         params.put("phonenum",this.mInformation.getDeviceTelNum());
 
-        params.put("devId", this.mInformation.getDeviceId());
+        params.put("deviceid", this.mInformation.getDeviceId());
         Log.i("lzw",this.mInformation.getDeviceTelNum());
-        params.put("devName", this.mInformation.getCurrentDeviceName());
+        params.put("devicename", this.mInformation.getCurrentDeviceName());
         return (params);
 
     }
