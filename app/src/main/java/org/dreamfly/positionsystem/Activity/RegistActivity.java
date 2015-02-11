@@ -19,6 +19,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.app.Activity;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.HashMap;
@@ -33,6 +34,7 @@ public class RegistActivity extends Activity {
     private EditText editRegisterActivityUsername;
     private EditText editRegisterActivityPassword;
     private Button btnRegisterActivityRegister;
+    private ProgressBar proRegistActivity;
 
     private DefineDialog mDefineDialog;
 
@@ -45,6 +47,10 @@ public class RegistActivity extends Activity {
         this.initial();
 
     }
+    protected void onResume(){
+        super.onResume();
+        proRegistActivity.setVisibility(View.GONE);
+    }
 
     /**
      * 初始化绑定组件ID
@@ -53,6 +59,7 @@ public class RegistActivity extends Activity {
 
         this.bindID();
         this.bindListener();
+        proRegistActivity.setVisibility(View.GONE);
     }
 
     private void bindID() {
@@ -62,6 +69,8 @@ public class RegistActivity extends Activity {
                 (EditText) this.findViewById(R.id.eidtext_registeractivity_username);
         this.btnRegisterActivityRegister =
                 (Button) this.findViewById(R.id.btn_registeractivity_register);
+        this.proRegistActivity=
+                (ProgressBar)this.findViewById(R.id.progressBar_registactivity);
     }
 
     private void bindListener() {
@@ -79,6 +88,7 @@ public class RegistActivity extends Activity {
             requestRegisterThread.setRequestPrepare(requestURL, params);
             requestRegisterThread.start();
             ToastUtils.showToast(getApplication(),"请求服务器中...");
+            proRegistActivity.setVisibility(View.VISIBLE);
         }
     };
     /**

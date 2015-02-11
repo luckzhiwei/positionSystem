@@ -63,6 +63,7 @@
       <LinearLayout
           android:layout_width="fill_parent"
           android:layout_height="wrap_content">
+
       <Button
           android:layout_width="fill_parent"
           android:layout_height="45dp"
@@ -73,5 +74,15 @@
           android:textColor="@color/white_define"
           android:id="@+id/btn_registeractivity_register"
           android:background="@drawable/registeractivity_btn_state"/>
+
       </LinearLayout>
+
+    <ProgressBar
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="100dp"
+        android:id="@+id/progressBar_registactivity"
+        android:layout_gravity="center_horizontal"
+        android:indeterminate="false" />
+
 </LinearLayout>
