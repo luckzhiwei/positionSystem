@@ -7,6 +7,8 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Layout;
 import android.util.Log;
@@ -31,17 +33,24 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 
 import org.dreamfly.positionsystem.Adapter.ManagerAdapter;
+import org.dreamfly.positionsystem.CommonParameter.ComParameter;
 import org.dreamfly.positionsystem.Custom.DefineDialog;
 import org.dreamfly.positionsystem.Custom.DefineListView;
 import org.dreamfly.positionsystem.Database.DataBase;
+import org.dreamfly.positionsystem.Database.DefinedShared;
 import org.dreamfly.positionsystem.R;
+import org.dreamfly.positionsystem.Thread.ManagerListThread;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 
 import org.dreamfly.positionsystem.Utils.LocationUtils;
 import org.dreamfly.positionsystem.bean.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 /**
  * Created by zhengyl on 15-1-13.
@@ -58,11 +67,13 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
     private User oneManager = new User();
     private User oneRegulator = new User();
     private DefineDialog mDefineDialog;
+    private ManagerListThread managerListThread;
     protected LocationUtils mLocationUtils;
     protected LocationClient locationClient;
     protected String lat;
     protected String lon;
     protected CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
+    protected DefinedShared mdata=new DefinedShared(this);
     protected final static String DEVICE="deviceinformation";
     private boolean isClear = true;
     private boolean isFirstGetLocation=true;
@@ -94,6 +105,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         this.telNumSave(mInformation);
         this.setListViewListener();
         this.locationSave();
+        this.sendIdtoSever();
 
 
     }
@@ -140,6 +152,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         }
         this.setData(mDataBase, list);
         this.changeBackground(list);
+        Log.i("zyl",mdata.getString("tableid",mInformation.getDeviceId()));
         return (list);
     }
 
@@ -318,24 +331,39 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         Log.i("lzw", "您的当前位置" + s + "已被保存");
 
     }
-    /*
-    public class locationRunnable implements Runnable  {
-        @Override
-        public void run() {
-            try {
-                    locationSave();
-                    Log.i("zyl","线程启动");
 
+    /**
+     * 向服务器发送请求
+     */
+    private void sendIdtoSever(){
+        this.managerListThread=new ManagerListThread(mHandler,"managerlistid");
+        String requestURL = ComParameter.HOST + "contect.action";
+        this.managerListThread.setRequestPrepare(requestURL,this.prepareListParams());
+        this.managerListThread.start();
+    }
+
+    /**
+     * 向服务器提供参数
+     * @return
+     */
+    private Map prepareListParams(){
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("id",mdata.getString("tableid",mInformation.getDeviceId()));
+        return params;
+    }
+
+
+    private android.os.Handler mHandler = new android.os.Handler(Looper.getMainLooper()) {
+        public void handleMessage(Message msg) {
+            if (msg.getData().getInt("managerlistid") == ComParameter.STATE_RIGHT) {
+                Map<String, String> resultMap = managerListThread.getResultMap();
+                mdata.putString("errorreport","a",resultMap.get("test"));
             }
-            catch (Exception e){
-                e.printStackTrace();
+            else {
+                Map<String, String> resultMap = managerListThread.getResultMap();
+                mdata.putString("errorreport","a",resultMap.get("test"));
             }
         }
-    }*/
-
-
-
-
-
-
+    };
 }

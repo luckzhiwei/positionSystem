@@ -1,14 +1,10 @@
 package org.dreamfly.positionsystem.Activity;
 
-import android.content.Context;
-import android.location.Location;
 import android.os.Bundle;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v7.app.ActionBarActivity;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -19,17 +15,16 @@ import android.widget.TextView;
 
 import org.dreamfly.positionsystem.CommonParameter.ComParameter;
 import org.dreamfly.positionsystem.Custom.DefineDialog;
+import org.dreamfly.positionsystem.Database.DefinedShared;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Thread.BaseThread;
 import org.dreamfly.positionsystem.Thread.FirstLoginRequestThread;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
-import org.dreamfly.positionsystem.Utils.FileUitls;
 import org.dreamfly.positionsystem.Utils.ToastUtils;
 import org.dreamfly.positionsystem.Utils.UserInfoUtils;
 
 
 import android.app.Activity;
-import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +43,7 @@ public class LoginActivity extends Activity {
     private ProgressBar proLoginActivity;
 
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
+    private DefinedShared mdata=new DefinedShared(this);
     private BaseThread loginReuquestThread;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -237,6 +233,7 @@ public class LoginActivity extends Activity {
                             resultMap.get("dataBaseId"),
                             edittextLoginactivityUsername.getText().toString());
                     this.dealAfterLogin(resultMap.get("type"));
+                    mdata.putString("tableid",mInformation.getDeviceId(),resultMap.get("dataBaseId"));
 
                 } else if (loginstate.equals("unlogin")) {
                    Log.i("lzw","unlogin_deal");
