@@ -108,7 +108,7 @@ public abstract class BaseThread extends Thread {
         }
     }
 
-    protected abstract void dealReponseString(String responseString);
+    protected abstract void dealReponseString(String responseString) throws Exception;
 
     /**
      * 通知主线程加载的状态

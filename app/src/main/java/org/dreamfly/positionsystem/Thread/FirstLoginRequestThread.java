@@ -14,7 +14,7 @@ public class FirstLoginRequestThread extends BaseThread {
         super(mHandler, stateId);
     }
 
-    protected void dealReponseString(String responseString) {
+    protected void dealReponseString(String responseString) throws Exception{
         this.resultMap = new HashMap<String, String>();
         String tmpArrStr[] = responseString.split(":");
         if (tmpArrStr[1].equals("login")) {
