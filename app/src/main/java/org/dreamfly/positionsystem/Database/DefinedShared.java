@@ -30,6 +30,7 @@ public class DefinedShared {
         editor.commit();
     }
 
+
     /**
      * 用sharedpreference对象存储数据
      * @param name 文件名

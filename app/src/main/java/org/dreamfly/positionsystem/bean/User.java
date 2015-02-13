@@ -12,7 +12,7 @@ public class User {
 
     private String   mangerMarks;//备注
 
-    private String  isOnLine;//是否在线(Sqlite 没有布尔类型,用true false String代替 )
+    private String  isOnLine;//是否在线(Sqlite 没有布尔类型,用y n String代替 )
 
     private String  lastLocation;//最近一次定位信息
 

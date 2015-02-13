@@ -3,6 +3,7 @@ package org.dreamfly.positionsystem.Activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
@@ -17,6 +18,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,6 +65,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
     private ManagerAdapter mManagerAdapter;
     private TextView txtManagerActivityTitle, txtManagertgetDeviceName;
     private LinearLayout layout;
+    private ProgressBar proManactivity;
     protected DataBase mDataBase = new DataBase(this);
     private User oneManager = new User();
     private User oneRegulator = new User();
@@ -77,7 +80,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
     protected final static String DEVICE="deviceinformation";
     private boolean isClear = true;
     private boolean isFirstGetLocation=true;
-    private boolean isGetFromServer=true;
+    private boolean isFirstGetFromServer=true;
     com.baidu.mapapi.search.geocode.GeoCoder mcoder;
     private final static String TABLENAME = "regulatoritems";
 
@@ -87,7 +90,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         SDKInitializer.initialize(getApplicationContext());
         String libName = "BaiduMapSDK_v3_2_0_11";
         System.loadLibrary(libName);
-        this.setContentView(R.layout.manager_layout);
+        this.ifFirstConnect();
         this.initial();
 
 
@@ -100,10 +103,10 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         mLocationUtils.LocationInfo();
         mcoder = GeoCoder.newInstance();
         mcoder.setOnGetGeoCodeResultListener(this);
-        this.mManagerAdapter = new ManagerAdapter(this.getData(), this, mDataBase);
-        this.managerActivityListView.setAdapter(this.mManagerAdapter);
+        if(!mdata.getString("isfirstconnect","isfirstconnect").equals("1")) {
+           this.loadList();
+        }
         this.telNumSave(mInformation);
-        this.setListViewListener();
         this.locationSave();
         this.sendIdtoSever();
 
@@ -111,6 +114,8 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
     }
 
     private void bindID() {
+        this.proManactivity=(ProgressBar)
+                this.findViewById(R.id.progressBar_manactivity);
         this.managerActivityListView = (DefineListView)
                 this.findViewById(R.id.delistiview_manageractivity_showmanger);
         this.txtManagerActivityTitle = (TextView)
@@ -141,13 +146,15 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
      */
     private List<User> getData() {
         List<User> list = new ArrayList<User>();
+        //String length=
+        //int k=
         for (int i = 0; i < 7; i++) {
             User r = new User();
             r.setDeviceNma(mInformation.setFirstDeviceName(i));
             r.setLastDateTouch(mInformation.getCurrentTime());
             r.setMangerMarks("null");
             r.setLastLocation(mInformation.setFirstLocation(i));
-            r.setIsOnLine("false");
+            r.setIsOnLine("n");
             list.add(r);
         }
         this.setData(mDataBase, list);
@@ -161,6 +168,9 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
      * @param list
      */
     public void changeBackground(List<User> list){
+        if (mdata.getString("isfirstconnect","isfirstconnect").equals("1")){
+            return;
+        }
         if(list.size()==0){
           layout.setBackgroundResource(R.drawable.manager_background_none);
         }
@@ -283,6 +293,22 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
     }
 
     /**
+     * 判断是否首次启动
+     */
+    private void ifFirstConnect(){
+
+        if(mdata.getString("isfirstconnect","isfirstconnect").equals("0")){
+            this.setContentView(R.layout.manager_layout_first);
+
+         mdata.putString("isfirstconnect","isfirstconnect","1");
+        }
+        else{
+            this.setContentView(R.layout.manager_layout);
+            return;
+        }
+    }
+
+    /**
      * 存储本机号码
      */
     public void telNumSave(CurrentInformationUtils mInformation){
@@ -353,12 +379,18 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         return params;
     }
 
-
+    /**
+     * 处理服务器得到的联系人列表信息
+     */
     private android.os.Handler mHandler = new android.os.Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
+
             if (msg.getData().getInt("managerlistid") == ComParameter.STATE_RIGHT) {
                 Map<String, String> resultMap = managerListThread.getResultMap();
+
+                dealListFromSever(resultMap);
                 mdata.putString("errorreport","a",resultMap.get("test"));
+
             }
             else {
                 Map<String, String> resultMap = managerListThread.getResultMap();
@@ -366,4 +398,33 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
             }
         }
     };
+
+    /**加载list数据
+     *
+     */
+    private void loadList(){
+        this.bindID();
+        this.setListViewListener();
+        this.mManagerAdapter = new ManagerAdapter(this.getData(), this, mDataBase);
+        this.managerActivityListView.setAdapter(this.mManagerAdapter);
+    }
+
+    /**
+     * 处理从服务器获取的数据,加载列表
+     * @param resultMap
+     */
+    private void dealListFromSever(Map<String, String> resultMap){
+        String listState=resultMap.get("connectedstate");
+        if(listState.equals("y")){
+            mdata.putString("itemslength","length",resultMap.get("length"));
+            //如果是首次启动
+            if(mdata.getString("isfirstconnect","isfirstconnect").equals("1"))
+            {
+                setContentView(R.layout.manager_layout);
+                loadList();
+                //记录登陆状态
+                mdata.putString("isfirstconnect","isfirstconnect","2");
+            }
+        }
+    }
 }

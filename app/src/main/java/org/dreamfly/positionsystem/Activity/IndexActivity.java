@@ -110,7 +110,12 @@ public class IndexActivity extends Activity {
     public void dataBaseStart(Context context, DataBase mDataBase) {
 
         db = mDataBase.getWritableDatabase();
-        mDataBase.devicesInsert(0,"null","null","null","null");
+        try {
+            mDataBase.devicesInsert(0, "null", "null", "null", "null");
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
         Log.v(TAG, "creat database");
 
     }

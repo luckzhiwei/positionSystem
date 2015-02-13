@@ -209,7 +209,7 @@ public class ManagerAdapter extends BaseAdapter {
         cur=mDataBase.Selector(position,TABLENAME);
         while (cur.moveToNext()) {
             String connection = cur.getString(cur.getColumnIndex("isconnect"));
-            if (connection.equals("false")) {
+            if (connection.equals("n")) {
                 if ((position % 2) == 0) {
                     holder.imgManagerItemUserHead.setImageResource(R.drawable.manager_protrait2_unconected);
                     holder.imgManagerItemUserHead.getDrawable();
