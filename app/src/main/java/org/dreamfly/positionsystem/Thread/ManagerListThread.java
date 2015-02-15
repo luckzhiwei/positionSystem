@@ -42,7 +42,7 @@ public class ManagerListThread extends BaseThread {
         String dealedString="\""+"{"+"\""+"\""+"A"+"\""+":"+responseString+"\""+"}"+"\"";
         String responseString1="[{\"id\":\"24\",\"subname\":\"xiaomi\",\"isconnect\":\"y\"},{\"id\":\"25\",\"subname\":\"iPhone 6plus\",\"isconnect\":\"y\"},{\"id\":\"26\",\"subname\":\"vertu\",\"isconnect\":\"y\"}]";
         //JSONObject json=new JSONObject(responseString1);
-        JSONArray jsonArray=new JSONArray(responseString1);
+        JSONArray jsonArray=new JSONArray(responseString);
         resultMap.put("connectedstate","y");
         for (int i=0;i<jsonArray.length();i++){
 

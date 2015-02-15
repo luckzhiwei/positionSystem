@@ -45,6 +45,7 @@ import org.dreamfly.positionsystem.Thread.ManagerListThread;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 
 import org.dreamfly.positionsystem.Utils.LocationUtils;
+import org.dreamfly.positionsystem.Utils.ToastUtils;
 import org.dreamfly.positionsystem.bean.User;
 
 import java.util.ArrayList;
@@ -66,6 +67,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
     private TextView txtManagerActivityTitle, txtManagertgetDeviceName;
     private LinearLayout layout;
     private ProgressBar proManactivity;
+    private Cursor cur;
     protected DataBase mDataBase = new DataBase(this);
     private User oneManager = new User();
     private User oneRegulator = new User();
@@ -93,6 +95,21 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         this.ifFirstConnect();
         this.initial();
 
+
+    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+        this.bindID();
+        Log.i("lzw","manage_intial");
+        mLocationUtils = new LocationUtils(this);
+        mLocationUtils.LocationInfo();
+        mcoder = GeoCoder.newInstance();
+        mcoder.setOnGetGeoCodeResultListener(this);
+        if(!mdata.getString("isfirstconnect","isfirstconnect").equals("1")) {
+            this.loadList();
+        }
+        this.telNumSave(mInformation);
 
     }
 
@@ -146,18 +163,26 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
      */
     private List<User> getData() {
         List<User> list = new ArrayList<User>();
-        //String length=
-        //int k=
-        for (int i = 0; i < 7; i++) {
-            User r = new User();
-            r.setDeviceNma(mInformation.setFirstDeviceName(i));
-            r.setLastDateTouch(mInformation.getCurrentTime());
-            r.setMangerMarks("null");
-            r.setLastLocation(mInformation.setFirstLocation(i));
-            r.setIsOnLine("n");
-            list.add(r);
+        String length=mdata.getString("itemslength","length");
+        int k=Integer.parseInt(length);
+        if(mdata.getString("isfirstconnect","isfirstconnect").equals("1")) {
+            mdata.putString("isfirstconnect", "isfirstconnect", "2");
         }
-        this.setData(mDataBase, list);
+        for (int i = 0; i < k; i++) {
+
+                    User r = new User();
+                    r.setDeviceNma(mInformation.setFirstDeviceName(i));
+                    r.setLastDateTouch(mInformation.getCurrentTime());
+                    r.setMangerMarks("null");
+                    r.setLastLocation(mInformation.setFirstLocation(i));
+                    r.setIsOnLine("n");
+                    list.add(r);
+
+
+            }
+
+
+        //this.setData(mDataBase, list);
         this.changeBackground(list);
         Log.i("zyl",mdata.getString("tableid",mInformation.getDeviceId()));
         return (list);
@@ -179,24 +204,6 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         }
     }
 
-    /**
-     * 向数据库中存储数据
-     *
-     * @param mDataBase
-     * @param list
-     */
-    private void setData(DataBase mDataBase, List<User> list) {
-        Cursor cur = mDataBase.Selector(0, TABLENAME);
-        if (!cur.moveToNext()) {
-            for (int i = 0; i < 7; i++) {
-                User regulator = list.get(i);
-                mDataBase.itemsInsert(TABLENAME, i, regulator.getDeviceName(), regulator.getMangerMarks()
-                        , regulator.getLastLocation(), regulator.getLastDateTouch(), regulator.getOnLine());
-
-            }
-        }
-        cur.close();
-    }
 
     /**
      * 实现点击由用户修改备注名的效果
@@ -354,7 +361,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
             editor.putString("address", s);
             editor.commit();
         }
-        Log.i("lzw", "您的当前位置" + s + "已被保存");
+        Log.i("thislzw", "您的当前位置" + s + "已被保存");
 
     }
 
@@ -387,13 +394,15 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
 
             if (msg.getData().getInt("managerlistid") == ComParameter.STATE_RIGHT) {
                 Map<String, String> resultMap = managerListThread.getResultMap();
-
                 dealListFromSever(resultMap);
                 mdata.putString("errorreport","a",resultMap.get("test"));
 
             }
-            else {
+            else if(msg.getData().getInt("managerlistid") ==ComParameter.STATE_ERROR) {
                 Map<String, String> resultMap = managerListThread.getResultMap();
+                ToastUtils.showToast(ManagerActivity.this,"网络连接失败");
+                //如果连接失败,下一次重新请求服务器
+                mdata.putString("isfirstconnect","isfirstconnect","0");
                 mdata.putString("errorreport","a",resultMap.get("test"));
             }
         }
@@ -414,17 +423,61 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
      * @param resultMap
      */
     private void dealListFromSever(Map<String, String> resultMap){
-        String listState=resultMap.get("connectedstate");
-        if(listState.equals("y")){
-            mdata.putString("itemslength","length",resultMap.get("length"));
+
+        mdata.putString("itemslength","length",resultMap.get("length"));
+
             //如果是首次启动
             if(mdata.getString("isfirstconnect","isfirstconnect").equals("1"))
             {
-                setContentView(R.layout.manager_layout);
-                loadList();
-                //记录登陆状态
-                mdata.putString("isfirstconnect","isfirstconnect","2");
+                setDataBase(resultMap);
             }
+            else {
+                dealDataBase(resultMap);
+            }
+            setContentView(R.layout.manager_layout);
+            loadList();
+
+    }
+
+    /**
+     * 第一次从服务器获取的列表,并首次插入数据库
+     * @param resultMap
+     */
+    private void setDataBase(Map<String, String> resultMap){
+        //记录从服务器获取的列表长度
+        String length=mdata.getString("itemslength","length");
+        int k=Integer.parseInt(length);
+        mdata.putString("itemslength","lastlength",length);
+        if(k==0){return;}
+        else {
+            //插入数据库
+            for (int i=0;i<k;i++){
+                mDataBase.itemsInsert(TABLENAME,i,resultMap.get("idname"+i+""),
+                        resultMap.get("subname"+i+""),resultMap.get("subname"+i+""),"暂未获取地理位置",
+                        mInformation.getCurrentTime(),resultMap.get("isconnect"+i+""));
+            }
+        }
+    }
+
+    /**
+     * 不是首次获取,删除原有数据,插入新数据
+     * @param resultMap
+     */
+    private void dealDataBase(Map<String, String> resultMap){
+        //上次和这次的列表长度可能不一样,用xml存储,并记录
+        String lastlenth=mdata.getString("itemslength","lastlength");
+        int last=Integer.parseInt(lastlenth);
+        String lenth=mdata.getString("itemslength","length");
+        int length=Integer.parseInt(lenth);
+        //删除原有条目
+        for (int i=0;i<last;i++){
+            mDataBase.delitems(i,TABLENAME);
+        }
+        //新条目获取
+        for (int i=0;i<length;i++){
+            mDataBase.itemsInsert(TABLENAME,i,resultMap.get("idname"+i+""),
+                    resultMap.get("subname"+i+""),resultMap.get("subname"+i+""),"暂未获取地理位置",
+                    mInformation.getCurrentTime(),resultMap.get("isconnect"+i+""));
         }
     }
 }

@@ -35,7 +35,9 @@ import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 
+import org.dreamfly.positionsystem.CommonParameter.ComParameter;
 import org.dreamfly.positionsystem.Database.DataBase;
+import org.dreamfly.positionsystem.Database.DefinedShared;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Utils.LocationUtils;
 
@@ -48,8 +50,9 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
     private TextView txtPositionLatitute, txtPositionLongitute, txtPositionLocation;
     private Button btnPositionActivityGeo;
     private LocationClient locationClient = null;
-
+    private int position;
     private DataBase mDataBase = new DataBase(this);
+    private DefinedShared mdata=new DefinedShared(this);
     private LocationUtils mLocationUtils;
     private MapView mMapView = null;
     private BaiduMap mBaiduMap;
@@ -96,6 +99,7 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
         mLocationUtils = new LocationUtils(this);
         mLocationUtils.LocationInfo();
         this.locationInfo();
+        this.setDataNum();
         mcoder = GeoCoder.newInstance();
         mcoder.setOnGetGeoCodeResultListener(this);
 
@@ -119,6 +123,14 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
         mMapView = (MapView) this.findViewById(R.id.bmapView);
 
 
+    }
+
+    /**
+     * 向具体哪一个条目增加数据
+     */
+    private void setDataNum(){
+        String temp=mdata.getString("position","position");
+        position=Integer.getInteger(temp);
     }
 
     /**
@@ -225,6 +237,7 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
             return;
         }
         txtPositionLocation.setText(result.getAddress());
+        mDataBase.items_changeValue(ComParameter.TABLENAME,"position",result.getAddress(),position);
         Log.i("lzw", result.getAddress() + "");
 
     }

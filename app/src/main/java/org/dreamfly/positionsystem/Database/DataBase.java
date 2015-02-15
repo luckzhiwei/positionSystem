@@ -30,10 +30,10 @@ public class DataBase extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db){
         try {
-            db.execSQL("CREATE TABLE regulatoritems(" + "id INTEGER primary key ," + "name TEXT," +
-                    "subname TEXT," + "position TEXT," + "time TEXT," +"isconnect  TEXT"+ ");");
+            db.execSQL("CREATE TABLE regulatoritems(" + "id INTEGER primary key ,"
+                    +"subid TEXT,"+ "name TEXT," +"subname TEXT," + "position TEXT," + "time TEXT," +"isconnect  TEXT"+ ");");
             db.execSQL("CREATE TABLE manageritems(" + "id INTEGER primary key ," + "name TEXT," +
-                    "subname TEXT," + "position TEXT," + "time TEXT," +"isconnect  TEXT"+ ");");
+                   "subid TEXT,"+ "subname TEXT," + "position TEXT," + "time TEXT," +"isconnect  TEXT"+ ");");
             db.execSQL("CREATE TABLE deviceinformation("+"id INTEGER primary key,"+
             "telnumber TEXT,"+"location TEXT,"+"latitude TEXT,"+"longitude TEXT"+");");
             Log.v(TAG, "create table ok");
@@ -66,12 +66,13 @@ public class DataBase extends SQLiteOpenHelper{
      * @param time
      * @param isconnect
      */
-    public void itemsInsert(String tableName,int id,String name,String subname,String position,
+    public void itemsInsert(String tableName,int id,String subid,String name,String subname,String position,
                                      String time,String isconnect) {
         try {
             db = this.getWritableDatabase();
             ContentValues cv = new ContentValues();
             cv.put("id", id);
+            cv.put("subid",subid);
             cv.put("name", name);
             cv.put("subname", subname);
             cv.put("position", position);
@@ -139,7 +140,7 @@ public class DataBase extends SQLiteOpenHelper{
     public Cursor Selector(int id,String tableName){
         Cursor cur;
         db=this.getReadableDatabase();
-        cur=db.query(tableName,new String[]{"id","name","subname","position","time","isconnect"},
+        cur=db.query(tableName,new String[]{"id","subid","name","subname","position","time","isconnect"},
                 "id=?",new String[]{id+""},null,null,null);
         return cur;
     }

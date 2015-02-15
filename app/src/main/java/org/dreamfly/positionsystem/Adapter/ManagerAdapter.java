@@ -15,6 +15,7 @@ import java.util.List;
 import org.dreamfly.positionsystem.Activity.PositionActivity;
 import org.dreamfly.positionsystem.Custom.DefineDialog;
 import org.dreamfly.positionsystem.Database.DataBase;
+import org.dreamfly.positionsystem.Database.DefinedShared;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 
@@ -42,6 +43,7 @@ public class ManagerAdapter extends BaseAdapter {
     private DefineDialog mDefineDialog = null;
     private final static String TABLENAME="regulatoritems";
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(mContext);
+    private DefinedShared mdata;
 
     public ManagerAdapter(List<User> mRegulatorList, Context context, DataBase mDataBase) {
         this.mRegulatorList = mRegulatorList;
@@ -134,7 +136,7 @@ public class ManagerAdapter extends BaseAdapter {
             oneRegulator.setLastDateTouch(mInformation.getCurrentTime());
             mDataBase.items_changeValue(TABLENAME,"time", oneRegulator.getLastDateTouch(), pos);
             mDefineDialog.dismiss();
-            sendposition();
+            sendposition(pos);
         }
     }
 
@@ -257,7 +259,7 @@ public class ManagerAdapter extends BaseAdapter {
     /**
      * 得到位置信息的数据,并存储,启动positionactivity
      */
-    protected void sendposition() {
+    protected void sendposition(int pos) {
         /*Location mLocation = mLocationUtils.getLocation(mContext);
 
         if (mLocation != null) {
@@ -271,6 +273,8 @@ public class ManagerAdapter extends BaseAdapter {
 
         Intent in = new Intent(mContext, PositionActivity.class);
         mContext.startActivity(in);
+        this.mdata=new DefinedShared(mContext);
+        mdata.putString("position","position",pos+"");
 
     }
 

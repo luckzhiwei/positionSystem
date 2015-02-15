@@ -133,7 +133,7 @@ public class RegulatorActivity extends ManagerActivity {
         if (!cur.moveToNext()) {
             for (int i = 0; i < 7; i++) {
                 User regulator = list.get(i);
-                mDataBase.itemsInsert(com.MANTABLENAME, i, regulator.getDeviceName(), regulator.getMangerMarks()
+                mDataBase.itemsInsert(com.MANTABLENAME, i,"0", regulator.getDeviceName(), regulator.getMangerMarks()
                         , regulator.getLastLocation(), regulator.getLastDateTouch(), regulator.getOnLine());
 
             }
