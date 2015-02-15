@@ -50,7 +50,7 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
     private TextView txtPositionLatitute, txtPositionLongitute, txtPositionLocation;
     private Button btnPositionActivityGeo;
     private LocationClient locationClient = null;
-    private int position;
+    private int position=0;
     private DataBase mDataBase = new DataBase(this);
     private DefinedShared mdata=new DefinedShared(this);
     private LocationUtils mLocationUtils;
@@ -99,7 +99,7 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
         mLocationUtils = new LocationUtils(this);
         mLocationUtils.LocationInfo();
         this.locationInfo();
-        this.setDataNum();
+
         mcoder = GeoCoder.newInstance();
         mcoder.setOnGetGeoCodeResultListener(this);
 
@@ -125,13 +125,7 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
 
     }
 
-    /**
-     * 向具体哪一个条目增加数据
-     */
-    private void setDataNum(){
-        String temp=mdata.getString("position","position");
-        position=Integer.getInteger(temp);
-    }
+
 
     /**
      * 初始化定位服务信息
@@ -175,6 +169,9 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
         SharedPreferences sharedPreferences = this.getSharedPreferences("address", Context.MODE_PRIVATE);
         String name = sharedPreferences.getString("address", "");
         txtPositionLocation.setText(name);
+
+        mdata.putString("locationback","locationback",name);
+
         this.btnPositionActivityGeo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -237,7 +234,7 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
             return;
         }
         txtPositionLocation.setText(result.getAddress());
-        mDataBase.items_changeValue(ComParameter.TABLENAME,"position",result.getAddress(),position);
+
         Log.i("lzw", result.getAddress() + "");
 
     }

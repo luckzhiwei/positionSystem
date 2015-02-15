@@ -47,6 +47,8 @@ import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 import org.dreamfly.positionsystem.Utils.LocationUtils;
 import org.dreamfly.positionsystem.Utils.ToastUtils;
 import org.dreamfly.positionsystem.bean.User;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -106,6 +108,15 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         mLocationUtils.LocationInfo();
         mcoder = GeoCoder.newInstance();
         mcoder.setOnGetGeoCodeResultListener(this);
+
+        if (!mdata.getString("isfirstconnect","isfirstclick").equals("0")){
+            String temp=mdata.getString("pos","pos");
+            int pos=Integer.parseInt(temp);
+            mDataBase.items_changeValue(TABLENAME,"position",mdata.getString("locationback","locationback")
+            ,pos);
+            this.loadList();
+        }
+
         if(!mdata.getString("isfirstconnect","isfirstconnect").equals("1")) {
             this.loadList();
         }
@@ -125,7 +136,13 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         }
         this.telNumSave(mInformation);
         this.locationSave();
-        this.sendIdtoSever();
+        //this.sendIdtoSever();
+        try {
+            this.testDealresponse();
+        }
+        catch (Exception e){
+
+        }
 
 
     }
@@ -480,4 +497,28 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
                     mInformation.getCurrentTime(),resultMap.get("isconnect"+i+""));
         }
     }
+
+    private void testDealresponse() throws Exception{
+        Map<String,String> resultMap=new HashMap<String,String>();
+        String responseString1="[{\"id\":\"24\",\"subname\":\"xiaomi\",\"isconnect\":\"y\"},{\"id\":\"25\",\"subname\":\"iPhone 6plus\",\"isconnect\":\"y\"},{\"id\":\"26\",\"subname\":\"vertu\",\"isconnect\":\"y\"}]";
+        JSONArray jsonArray=new JSONArray(responseString1);
+        for (int i=0;i<jsonArray.length();i++){
+
+            JSONObject obj=(JSONObject)jsonArray.get(i);
+            String cast=i+"";
+            resultMap.put("idname"+cast,(String)obj.get("id"));
+            Log.i("zyl", resultMap.get("idname" + cast));
+            resultMap.put("subname" + cast, (String) obj.get("subname"));
+            Log.i("zyl",resultMap.get("subname"+cast));
+            resultMap.put("isconnect"+cast+"",(String)obj.get("isconnect"));
+            Log.i("zyl",resultMap.get("isconnect"+cast));
+
+        }
+        resultMap.put("length",""+jsonArray.length());
+        Log.i("zyl",resultMap.get("length"));
+        dealListFromSever(resultMap);
+
+
+    }
+
 }

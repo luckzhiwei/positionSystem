@@ -274,7 +274,8 @@ public class ManagerAdapter extends BaseAdapter {
         Intent in = new Intent(mContext, PositionActivity.class);
         mContext.startActivity(in);
         this.mdata=new DefinedShared(mContext);
-        mdata.putString("position","position",pos+"");
+        mdata.putString("pos","pos",pos+"");
+        mdata.putString("isfirstconnect","isfirstclick","1");
 
     }
 
