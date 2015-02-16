@@ -158,4 +158,12 @@ public abstract class BaseThread extends Thread {
             Log.i("lzw",entry.getValue());
         }
     }
+
+    /**
+     * 关闭http请求
+     */
+    public void closeHttp(){
+        HttpUtils.shutDownConnection();
+    }
+
 }

@@ -13,6 +13,7 @@ import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Layout;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -123,6 +124,15 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         this.telNumSave(mInformation);
 
     }
+    @Override
+    public boolean onKeyDown(int keyCode,KeyEvent event){
+        if(keyCode ==KeyEvent.KEYCODE_BACK){
+            ManagerActivity.this.finish();
+            managerListThread.closeHttp();
+            //managerListThread.interrupt();
+        }
+        return false;
+    }
 
     private void initial() {
         this.bindID();
@@ -137,6 +147,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         this.telNumSave(mInformation);
         this.locationSave();
         this.sendIdtoSever();
+        //this.sendIdtoSever();
         try {
             //this.testDealresponse();
         }
@@ -416,9 +427,11 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
             }
             else if(msg.getData().getInt("managerlistid") ==ComParameter.STATE_ERROR) {
                 Map<String, String> resultMap = managerListThread.getResultMap();
-                ToastUtils.showToast(ManagerActivity.this,"网络连接失败");
-                //如果连接失败,下一次重新请求服务器
-                mdata.putString("isfirstconnect","isfirstconnect","0");
+                Log.i("zyl","网络连接停止");
+                if(mdata.getString("isfirstconnect","isfirstconnect").equals("1")) {
+                    //如果第一次连接失败,下一次重新请求服务器
+                    mdata.putString("isfirstconnect", "isfirstconnect", "0");
+                }
                 mdata.putString("errorreport","a",resultMap.get("test"));
             }
         }

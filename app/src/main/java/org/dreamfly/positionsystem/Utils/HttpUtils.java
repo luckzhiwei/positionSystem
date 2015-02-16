@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownServiceException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -32,7 +33,7 @@ import java.io.UnsupportedEncodingException;
  * 关于网络处理请求的工具类
  */
 public class HttpUtils {
-
+    private static HttpClient mHttpClient=null;
     /**
      * 请求服务器的接口函数
      * @param requestPath//服务器路径
@@ -48,7 +49,8 @@ public class HttpUtils {
         List<NameValuePair> list = getRequestParams(requestParams);
         if (list != null) {
             HttpPost post = bulidHttpPost(list, requestPath);
-            HttpClient mHttpClient = CustomHttpclient.getSigleTonInstance();
+             mHttpClient = CustomHttpclient.getSigleTonInstance();
+
             if(mHttpClient!=null) {
                 InputStream ServerInputStream = getServetReponse(mHttpClient, post);
                 if (ServerInputStream != null)
@@ -151,7 +153,7 @@ public class HttpUtils {
                 HttpEntity mEntity = mResponse.getEntity();
                 return (mEntity.getContent());
 
-        } catch (ConnectTimeoutException e) {
+        } catch (SocketTimeoutException e) {
             //请求超时异常捕捉
             Log.i("lzw","connection_timeout");
             e.printStackTrace();
@@ -161,5 +163,14 @@ public class HttpUtils {
             Log.i("lzw","IOException");
         }
         return (null);
-}
+    }
+
+    /**
+     * 断开连接,取消http请求
+     */
+    public static void shutDownConnection(){
+        mHttpClient.getConnectionManager().shutdown();
+        Log.i("lzw","关闭http请求");
+    }
+
 }
