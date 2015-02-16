@@ -136,9 +136,9 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         }
         this.telNumSave(mInformation);
         this.locationSave();
-        //this.sendIdtoSever();
+        this.sendIdtoSever();
         try {
-            this.testDealresponse();
+            //this.testDealresponse();
         }
         catch (Exception e){
 
@@ -323,8 +323,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
 
         if(mdata.getString("isfirstconnect","isfirstconnect").equals("0")){
             this.setContentView(R.layout.manager_layout_first);
-
-         mdata.putString("isfirstconnect","isfirstconnect","1");
+            mdata.putString("isfirstconnect","isfirstconnect","1");
         }
         else{
             this.setContentView(R.layout.manager_layout);
@@ -486,18 +485,20 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         int last=Integer.parseInt(lastlenth);
         String lenth=mdata.getString("itemslength","length");
         int length=Integer.parseInt(lenth);
-        //删除原有条目
-        for (int i=0;i<last;i++){
-            mDataBase.delitems(i,TABLENAME);
-        }
         //新条目获取
-        for (int i=0;i<length;i++){
+        for (int i=last;i<length;i++){
             mDataBase.itemsInsert(TABLENAME,i,resultMap.get("idname"+i+""),
                     resultMap.get("subname"+i+""),resultMap.get("subname"+i+""),"暂未获取地理位置",
                     mInformation.getCurrentTime(),resultMap.get("isconnect"+i+""));
         }
+        //将这次的长度作为下一次更新的"上次长度"
+        mdata.putString("itemslength","lastlength",lenth);
     }
 
+    /**
+     * Json字符串本地测试方法
+     * @throws Exception
+     */
     private void testDealresponse() throws Exception{
         Map<String,String> resultMap=new HashMap<String,String>();
         String responseString1="[{\"id\":\"24\",\"subname\":\"xiaomi\",\"isconnect\":\"y\"},{\"id\":\"25\",\"subname\":\"iPhone 6plus\",\"isconnect\":\"y\"},{\"id\":\"26\",\"subname\":\"vertu\",\"isconnect\":\"y\"}]";
