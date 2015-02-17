@@ -246,8 +246,10 @@ public class LoginActivity extends Activity {
 
         private void dealAfterLogin(String type) {
             Intent in = null;
-            mdata.putString("isfirstconnect","isfirstconnect","0");
-            mdata.putString("isfirstconnect","isfirstclick","0");
+            mdata.putString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE,
+                    ComParameter.STATE_FIRST);
+            mdata.putString(ComParameter.LOADING_STATE,ComParameter.CLICKING_STATE,
+                    ComParameter.STATE_FIRST);
             if (type.equals("manager")) {
                 in = new Intent().setClass(LoginActivity.this, ManagerActivity.class);
                 startActivity(in);

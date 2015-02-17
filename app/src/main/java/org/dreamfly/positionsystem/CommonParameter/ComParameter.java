@@ -29,4 +29,16 @@ public class ComParameter {
 
           public final static String PACKAGE_NAME="org.dreamfly.positionsystem";
 
+          public final static String LOADING_STATE="isfirstconnect";
+
+          public final static String CLICKING_STATE="isfirstclick";
+
+          public final static String STATE_FIRST="0";
+
+          public final static String STATE_SECOND="1";
+
+          public final static String STATE_THIRD="2";
+
+
+
 }

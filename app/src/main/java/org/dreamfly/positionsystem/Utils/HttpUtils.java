@@ -1,5 +1,6 @@
 package org.dreamfly.positionsystem.Utils;
 
+import android.content.Entity;
 import android.util.Log;
 
 import org.apache.http.HttpEntity;
@@ -14,6 +15,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.apache.http.util.EntityUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,6 +36,7 @@ import java.io.UnsupportedEncodingException;
  */
 public class HttpUtils {
     private static HttpClient mHttpClient=null;
+    private static HttpEntity mEntity=null;
     /**
      * 请求服务器的接口函数
      * @param requestPath//服务器路径
@@ -150,7 +153,7 @@ public class HttpUtils {
         try {
             HttpResponse mResponse = mHttpCLient.execute(post);
             //向服务器做请求连接
-                HttpEntity mEntity = mResponse.getEntity();
+                mEntity = mResponse.getEntity();
                 return (mEntity.getContent());
 
         } catch (SocketTimeoutException e) {
@@ -169,8 +172,18 @@ public class HttpUtils {
      * 断开连接,取消http请求
      */
     public static void shutDownConnection(){
-        mHttpClient.getConnectionManager().shutdown();
-        Log.i("lzw","关闭http请求");
+
+        synchronized (mHttpClient){
+            try {
+                if(mEntity!=null)
+                {mEntity.consumeContent();}
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+
+        }
+        Log.i("lzw", "关闭http请求");
     }
 
 }

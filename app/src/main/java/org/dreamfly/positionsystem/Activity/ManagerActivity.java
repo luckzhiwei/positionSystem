@@ -3,15 +3,10 @@ package org.dreamfly.positionsystem.Activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.res.Resources;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v7.app.ActionBarActivity;
-import android.text.Layout;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -22,11 +17,9 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.mapapi.SDKInitializer;
-import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
@@ -34,7 +27,6 @@ import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
-
 import org.dreamfly.positionsystem.Adapter.ManagerAdapter;
 import org.dreamfly.positionsystem.CommonParameter.ComParameter;
 import org.dreamfly.positionsystem.Custom.DefineDialog;
@@ -44,9 +36,7 @@ import org.dreamfly.positionsystem.Database.DefinedShared;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Thread.ManagerListThread;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
-
 import org.dreamfly.positionsystem.Utils.LocationUtils;
-import org.dreamfly.positionsystem.Utils.ToastUtils;
 import org.dreamfly.positionsystem.bean.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -55,8 +45,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
+
 
 /**
  * Created by zhengyl on 15-1-13.
@@ -70,25 +59,26 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
     private TextView txtManagerActivityTitle, txtManagertgetDeviceName;
     private LinearLayout layout;
     private ProgressBar proManactivity;
-    private Cursor cur;
-    protected DataBase mDataBase = new DataBase(this);
     private User oneManager = new User();
     private User oneRegulator = new User();
     private DefineDialog mDefineDialog;
     private ManagerListThread managerListThread;
+    private boolean isClear = true;
+    private final static String TABLENAME = "regulatoritems";
     protected LocationUtils mLocationUtils;
     protected LocationClient locationClient;
     protected String lat;
     protected String lon;
     protected CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
     protected DefinedShared mdata=new DefinedShared(this);
+    protected DataBase mDataBase = new DataBase(this);
     protected final static String DEVICE="deviceinformation";
-    private boolean isClear = true;
-    private boolean isFirstGetLocation=true;
-    private boolean isFirstGetFromServer=true;
-    com.baidu.mapapi.search.geocode.GeoCoder mcoder;
-    private final static String TABLENAME = "regulatoritems";
+    protected com.baidu.mapapi.search.geocode.GeoCoder mcoder;
 
+    /**
+     * 重写onCreate方法,完成数据初始化,加载操作
+     * @param savedInstanceState
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -97,43 +87,54 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         System.loadLibrary(libName);
         this.ifFirstConnect();
         this.initial();
-
-
     }
     @Override
+    /**
+     * 重写onResume方法,重新获得焦点时更新列表
+     */
     protected void onResume(){
         super.onResume();
         this.bindID();
         Log.i("lzw","manage_intial");
-        mLocationUtils = new LocationUtils(this);
-        mLocationUtils.LocationInfo();
-        mcoder = GeoCoder.newInstance();
-        mcoder.setOnGetGeoCodeResultListener(this);
-
-        if (!mdata.getString("isfirstconnect","isfirstclick").equals("0")){
+        //从数据库读取上一次的地理位置
+        if (!mdata.getString(ComParameter.LOADING_STATE,ComParameter.CLICKING_STATE)
+                .equals(ComParameter.STATE_FIRST)){
             String temp=mdata.getString("pos","pos");
             int pos=Integer.parseInt(temp);
             mDataBase.items_changeValue(TABLENAME,"position",mdata.getString("locationback","locationback")
             ,pos);
             this.loadList();
         }
-
-        if(!mdata.getString("isfirstconnect","isfirstconnect").equals("1")) {
+        //控制程序在第一次启动时不在这里加载列表数据(第一次请求的数据从网络获得)
+        if(!mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE)
+                .equals(ComParameter.STATE_SECOND)) {
             this.loadList();
         }
-        this.telNumSave(mInformation);
-
     }
     @Override
+    /**
+     * 重写onStop()方法
+     */
+    protected void onStop(){
+        super.onStop();
+    }
+    @Override
+    /**
+     * 重写父类onKeyDown()方法
+     */
     public boolean onKeyDown(int keyCode,KeyEvent event){
-        if(keyCode ==KeyEvent.KEYCODE_BACK){
+        if (keyCode==KeyEvent.KEYCODE_BACK){
             ManagerActivity.this.finish();
-            managerListThread.closeHttp();
-            //managerListThread.interrupt();
+            //释放httpEntity请求空间
+            this.managerListThread.closeHttp();
+            //确保第一次启动时在请求成功前处于数据加载界面
+            if(mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE).
+                    equals(ComParameter.STATE_SECOND)){
+                mdata.putString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE,ComParameter.STATE_FIRST);
+            }
         }
         return false;
     }
-
     private void initial() {
         this.bindID();
         Log.i("lzw","manage_intial");
@@ -141,21 +142,19 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         mLocationUtils.LocationInfo();
         mcoder = GeoCoder.newInstance();
         mcoder.setOnGetGeoCodeResultListener(this);
-        if(!mdata.getString("isfirstconnect","isfirstconnect").equals("1")) {
+        if(!mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE).
+                equals(ComParameter.STATE_SECOND)) {
+            //如果是第一次启动,不在这里加载列表数据(第一次请求的数据从网络获得)
            this.loadList();
         }
         this.telNumSave(mInformation);
         this.locationSave();
         this.sendIdtoSever();
-        //this.sendIdtoSever();
+        //本地测试
         try {
             //this.testDealresponse();
         }
-        catch (Exception e){
-
-        }
-
-
+        catch (Exception e){}
     }
 
     private void bindID() {
@@ -193,11 +192,13 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         List<User> list = new ArrayList<User>();
         String length=mdata.getString("itemslength","length");
         int k=Integer.parseInt(length);
-        if(mdata.getString("isfirstconnect","isfirstconnect").equals("1")) {
-            mdata.putString("isfirstconnect", "isfirstconnect", "2");
+        if(mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE).
+                equals(ComParameter.STATE_SECOND)) {
+            //记录登陆状态
+            mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE,
+                    ComParameter.STATE_THIRD);
         }
         for (int i = 0; i < k; i++) {
-
                     User r = new User();
                     r.setDeviceNma(mInformation.setFirstDeviceName(i));
                     r.setLastDateTouch(mInformation.getCurrentTime());
@@ -205,12 +206,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
                     r.setLastLocation(mInformation.setFirstLocation(i));
                     r.setIsOnLine("n");
                     list.add(r);
-
-
             }
-
-
-        //this.setData(mDataBase, list);
         this.changeBackground(list);
         Log.i("zyl",mdata.getString("tableid",mInformation.getDeviceId()));
         return (list);
@@ -221,7 +217,8 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
      * @param list
      */
     public void changeBackground(List<User> list){
-        if (mdata.getString("isfirstconnect","isfirstconnect").equals("1")){
+        if (mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE).
+                equals(ComParameter.STATE_SECOND)){
             return;
         }
         if(list.size()==0){
@@ -283,6 +280,9 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         }
     }
 
+    /**
+     * 百度定位接口
+     */
     public class BDListener implements com.baidu.location.BDLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location) {
@@ -309,11 +309,6 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         }
     }
 
-
-    public DataBase getDataBase() {
-        return mDataBase;
-    }
-
     /**
      * 调用百度定位Sdk,并存储定位数据
      */
@@ -331,10 +326,12 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
      * 判断是否首次启动
      */
     private void ifFirstConnect(){
-
-        if(mdata.getString("isfirstconnect","isfirstconnect").equals("0")){
+        //用sharedpreference存储登陆状态
+        if(mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE)
+                .equals(ComParameter.STATE_FIRST)){
             this.setContentView(R.layout.manager_layout_first);
-            mdata.putString("isfirstconnect","isfirstconnect","1");
+            mdata.putString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE,
+                    ComParameter.STATE_SECOND);
         }
         else{
             this.setContentView(R.layout.manager_layout);
@@ -418,20 +415,20 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
      */
     private android.os.Handler mHandler = new android.os.Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
-
             if (msg.getData().getInt("managerlistid") == ComParameter.STATE_RIGHT) {
                 Map<String, String> resultMap = managerListThread.getResultMap();
                 dealListFromSever(resultMap);
-                mdata.putString("errorreport","a",resultMap.get("test"));
-
             }
             else if(msg.getData().getInt("managerlistid") ==ComParameter.STATE_ERROR) {
                 Map<String, String> resultMap = managerListThread.getResultMap();
                 Log.i("zyl","网络连接停止");
-                if(mdata.getString("isfirstconnect","isfirstconnect").equals("1")) {
+                if(mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE).
+                        equals(ComParameter.STATE_SECOND)) {
                     //如果第一次连接失败,下一次重新请求服务器
-                    mdata.putString("isfirstconnect", "isfirstconnect", "0");
+                    mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE,
+                            ComParameter.STATE_FIRST);
                 }
+                //获取错误报告
                 mdata.putString("errorreport","a",resultMap.get("test"));
             }
         }
@@ -456,7 +453,8 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         mdata.putString("itemslength","length",resultMap.get("length"));
 
             //如果是首次启动
-            if(mdata.getString("isfirstconnect","isfirstconnect").equals("1"))
+            if(mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE).
+                    equals(ComParameter.STATE_SECOND))
             {
                 setDataBase(resultMap);
             }
@@ -489,7 +487,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
     }
 
     /**
-     * 不是首次获取,删除原有数据,插入新数据
+     * 不是首次获取,再原有数据基础上插入新数据
      * @param resultMap
      */
     private void dealDataBase(Map<String, String> resultMap){
@@ -498,7 +496,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         int last=Integer.parseInt(lastlenth);
         String lenth=mdata.getString("itemslength","length");
         int length=Integer.parseInt(lenth);
-        //新条目获取
+        //新条目插入
         for (int i=last;i<length;i++){
             mDataBase.itemsInsert(TABLENAME,i,resultMap.get("idname"+i+""),
                     resultMap.get("subname"+i+""),resultMap.get("subname"+i+""),"暂未获取地理位置",
@@ -512,27 +510,25 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
      * Json字符串本地测试方法
      * @throws Exception
      */
-    private void testDealresponse() throws Exception{
-        Map<String,String> resultMap=new HashMap<String,String>();
-        String responseString1="[{\"id\":\"24\",\"subname\":\"xiaomi\",\"isconnect\":\"y\"},{\"id\":\"25\",\"subname\":\"iPhone 6plus\",\"isconnect\":\"y\"},{\"id\":\"26\",\"subname\":\"vertu\",\"isconnect\":\"y\"}]";
-        JSONArray jsonArray=new JSONArray(responseString1);
-        for (int i=0;i<jsonArray.length();i++){
-
-            JSONObject obj=(JSONObject)jsonArray.get(i);
-            String cast=i+"";
-            resultMap.put("idname"+cast,(String)obj.get("id"));
-            Log.i("zyl", resultMap.get("idname" + cast));
-            resultMap.put("subname" + cast, (String) obj.get("subname"));
-            Log.i("zyl",resultMap.get("subname"+cast));
-            resultMap.put("isconnect"+cast+"",(String)obj.get("isconnect"));
-            Log.i("zyl",resultMap.get("isconnect"+cast));
-
-        }
-        resultMap.put("length",""+jsonArray.length());
-        Log.i("zyl",resultMap.get("length"));
-        dealListFromSever(resultMap);
-
-
-    }
+//    private void testDealresponse() throws Exception{
+//        Map<String,String> resultMap=new HashMap<String,String>();
+//        String responseString1="[{\"id\":\"24\",\"subname\":\"xiaomi\",\"isconnect\":\"y\"},{\"id\":\"25\",\"subname\":\"iPhone 6plus\",\"isconnect\":\"y\"},{\"id\":\"26\",\"subname\":\"vertu\",\"isconnect\":\"y\"}]";
+//        JSONArray jsonArray=new JSONArray(responseString1);
+//        for (int i=0;i<jsonArray.length();i++){
+//
+//            JSONObject obj=(JSONObject)jsonArray.get(i);
+//            String cast=i+"";
+//            resultMap.put("idname"+cast,(String)obj.get("id"));
+//            Log.i("zyl", resultMap.get("idname" + cast));
+//            resultMap.put("subname" + cast, (String) obj.get("subname"));
+//            Log.i("zyl",resultMap.get("subname"+cast));
+//            resultMap.put("isconnect"+cast+"",(String)obj.get("isconnect"));
+//            Log.i("zyl",resultMap.get("isconnect"+cast));
+//
+//        }
+//        resultMap.put("length",""+jsonArray.length());
+//        Log.i("zyl",resultMap.get("length"));
+//        dealListFromSever(resultMap);
+//    }
 
 }
