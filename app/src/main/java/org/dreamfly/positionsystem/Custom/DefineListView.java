@@ -57,48 +57,52 @@ public class DefineListView extends ListView {
      * @param event
      * @return
      */
-    public boolean onTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            this.touchY = event.getRawY();
-        } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            float detalY = event.getRawY() - this.touchY;
-            this.touchY = event.getRawY();
-            this.dynSetHeadViewHeight(this.calDistance(detalY));
-        } else if (event.getAction() == MotionEvent.ACTION_UP) {
-            if (this.getFirstVisiblePosition() == 0
-                    && this.userTouchDistance > MINDISTANCE) {
-                this.dynSetHeadViewHeight(250);
-                this.userTouchDistance = 0;
-            }
-
-            //用户划过的距离必须超过最小才行，对顶部设置一个合适的大小来显示
-            else if (this.userTouchDistance < MINDISTANCE) {
-                this.dynSetHeadViewHeight(0);
-            }
-            //如果用户实际划过的距离小于最小距离,那么listview的头部是不会显示的
-            this.userTouchDistance = 0;
-            //每次划过之后都将用户的实际划过的距离清零
-        }
-
-        return (super.onTouchEvent(event));
-    }
+//    public boolean onTouchEvent(MotionEvent event) {
+//        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+//            this.touchY = event.getRawY();
+//        } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+//            float detalY = event.getRawY() - this.touchY;
+//            this.touchY = event.getRawY();
+//            this.dynSetHeadViewHeight(this.calDistance(detalY));
+//        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+//            if (this.getFirstVisiblePosition() == 0
+//                    && this.userTouchDistance > MINDISTANCE) {
+//                this.dynSetHeadViewHeight(250);
+//                this.userTouchDistance = 0;
+//            }
+//
+//            //用户划过的距离必须超过最小才行，对顶部设置一个合适的大小来显示
+//            else if (this.userTouchDistance < MINDISTANCE) {
+//                this.dynSetHeadViewHeight(0);
+//            }
+//            //如果用户实际划过的距离小于最小距离,那么listview的头部是不会显示的
+//            this.userTouchDistance = 0;
+//            //每次划过之后都将用户的实际划过的距离清零
+//        }
+//
+//        return (super.onTouchEvent(event));
+//    }
 
     /**
      * 动态设置设置listview头顶部的长度
      *
      * @param height
      */
-    private void dynSetHeadViewHeight(int height) {
+    public void dynSetHeadViewHeight(int height) {
         this.mListViewHeader.setDynHeight(height);
     }
 
+    public int getUserTouchDistance(){
+        return this.userTouchDistance;
+    }
     /**
      * 参数表示计算划长度过的距离,累加算法来计算下来的
      *
      * @param deltaY
      * @return
      */
-    private int calDistance(float deltaY) {
+
+    public int calDistance(float deltaY) {
         int realDistance = 0;
         if (deltaY > 0 && this.getFirstVisiblePosition() == 0) {
             realDistance = (int) deltaY + this.mListViewHeader.getCurrentHeight();

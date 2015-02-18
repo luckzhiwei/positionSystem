@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -37,6 +38,7 @@ import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Thread.ManagerListThread;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 import org.dreamfly.positionsystem.Utils.LocationUtils;
+import org.dreamfly.positionsystem.Utils.ToastUtils;
 import org.dreamfly.positionsystem.bean.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -65,6 +67,8 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
     private ManagerListThread managerListThread;
     private boolean isClear = true;
     private final static String TABLENAME = "regulatoritems";
+    private int userTouchDistance;
+    private float touchY;
     protected LocationUtils mLocationUtils;
     protected LocationClient locationClient;
     protected String lat;
@@ -180,7 +184,36 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
                 setDialogShow(position);
             }
         });
+        //设置下拉事件监听,请求服务器刷新列表
+        this.managerActivityListView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                 userTouchDistance=managerActivityListView.getUserTouchDistance();
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    touchY = event.getRawY();
+                } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    float detalY = event.getRawY() - touchY;
+                    touchY = event.getRawY();
+                    managerActivityListView.dynSetHeadViewHeight(managerActivityListView.calDistance(detalY));
+                }
+                 if (event.getAction() == MotionEvent.ACTION_UP) {
+                     if (managerActivityListView.getFirstVisiblePosition() == 0
+                             && userTouchDistance > 250) {
+                         managerActivityListView.dynSetHeadViewHeight(250);
+                         sendIdtoSever();Log.v("zyl","请求服务器中");
+                         userTouchDistance = 0;
+                     }
 
+                     //用户划过的距离必须超过最小才行，对顶部设置一个合适的大小来显示
+                     else if (userTouchDistance < 250) {
+                         managerActivityListView.dynSetHeadViewHeight(0);
+                     }  //如果用户实际划过的距离小于最小距离,那么listview的头部是不会显示的
+                     userTouchDistance = 0;
+                     //每次划过之后都将用户的实际划过的距离清零
+                }
+                return false;
+            }
+        });
     }
 
     /**
@@ -430,6 +463,10 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
                 }
                 //获取错误报告
                 mdata.putString("errorreport","a",resultMap.get("test"));
+                ToastUtils.showToast(ManagerActivity.this,"请求失败");
+                managerActivityListView = (DefineListView)
+                        findViewById(R.id.delistiview_manageractivity_showmanger);
+                managerActivityListView.dynSetHeadViewHeight(0);
             }
         }
     };
@@ -463,6 +500,10 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
             }
             setContentView(R.layout.manager_layout);
             loadList();
+            managerActivityListView.dynSetHeadViewHeight(0);
+            userTouchDistance=0;
+
+
 
     }
 
@@ -510,25 +551,25 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
      * Json字符串本地测试方法
      * @throws Exception
      */
-//    private void testDealresponse() throws Exception{
-//        Map<String,String> resultMap=new HashMap<String,String>();
-//        String responseString1="[{\"id\":\"24\",\"subname\":\"xiaomi\",\"isconnect\":\"y\"},{\"id\":\"25\",\"subname\":\"iPhone 6plus\",\"isconnect\":\"y\"},{\"id\":\"26\",\"subname\":\"vertu\",\"isconnect\":\"y\"}]";
-//        JSONArray jsonArray=new JSONArray(responseString1);
-//        for (int i=0;i<jsonArray.length();i++){
-//
-//            JSONObject obj=(JSONObject)jsonArray.get(i);
-//            String cast=i+"";
-//            resultMap.put("idname"+cast,(String)obj.get("id"));
-//            Log.i("zyl", resultMap.get("idname" + cast));
-//            resultMap.put("subname" + cast, (String) obj.get("subname"));
-//            Log.i("zyl",resultMap.get("subname"+cast));
-//            resultMap.put("isconnect"+cast+"",(String)obj.get("isconnect"));
-//            Log.i("zyl",resultMap.get("isconnect"+cast));
-//
-//        }
-//        resultMap.put("length",""+jsonArray.length());
-//        Log.i("zyl",resultMap.get("length"));
-//        dealListFromSever(resultMap);
-//    }
+    private void testDealresponse() throws Exception{
+        Map<String,String> resultMap=new HashMap<String,String>();
+        String responseString1="[{\"id\":\"24\",\"subname\":\"xiaomi\",\"isconnect\":\"y\"},{\"id\":\"25\",\"subname\":\"iPhone 6plus\",\"isconnect\":\"y\"},{\"id\":\"26\",\"subname\":\"vertu\",\"isconnect\":\"y\"}]";
+        JSONArray jsonArray=new JSONArray(responseString1);
+        for (int i=0;i<jsonArray.length();i++){
+
+            JSONObject obj=(JSONObject)jsonArray.get(i);
+            String cast=i+"";
+            resultMap.put("idname"+cast,(String)obj.get("id"));
+            Log.i("zyl", resultMap.get("idname" + cast));
+            resultMap.put("subname" + cast, (String) obj.get("subname"));
+            Log.i("zyl",resultMap.get("subname"+cast));
+            resultMap.put("isconnect"+cast+"",(String)obj.get("isconnect"));
+            Log.i("zyl",resultMap.get("isconnect"+cast));
+
+        }
+        resultMap.put("length",""+jsonArray.length());
+        Log.i("zyl",resultMap.get("length"));
+        dealListFromSever(resultMap);
+    }
 
 }

@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.dreamfly.positionsystem.R;
@@ -19,6 +20,7 @@ public class DefineListViewHeader extends LinearLayout {
     private LinearLayout mLinearLayout;
 
     private TextView lastFreshTime;
+    private ProgressBar proListView;
 
     public DefineListViewHeader(Context context) {
         super(context);
@@ -40,7 +42,7 @@ public class DefineListViewHeader extends LinearLayout {
         this.mLaytParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);//初始化高度
         this.mLinearLayout =
                 (LinearLayout) LayoutInflater.from(this.mContext).inflate(R.layout.listviewhead_layout, null);
-        this.lastFreshTime = (TextView) this.mLinearLayout.findViewById(R.id.txt_listviewhead_lastfreshtime);
+        this.proListView = (ProgressBar) this.mLinearLayout.findViewById(R.id.progressBar_listview);
         this.mLinearLayout.setLayoutParams(this.mLaytParams);
         this.addView(this.mLinearLayout);
     }
