@@ -130,7 +130,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         if (keyCode==KeyEvent.KEYCODE_BACK){
             ManagerActivity.this.finish();
             //释放httpEntity请求空间
-            this.managerListThread.closeHttp();
+           // this.managerListThread.closeHttp();
             //确保第一次启动时在请求成功前处于数据加载界面
             if(mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE).
                     equals(ComParameter.STATE_SECOND)){
@@ -153,10 +153,10 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         }
         this.telNumSave(mInformation);
         this.locationSave();
-        this.sendIdtoSever();
+        //this.sendIdtoSever();
         //本地测试
         try {
-            //this.testDealresponse();
+            this.testDealresponse();
         }
         catch (Exception e){}
     }
@@ -464,9 +464,12 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
                 //获取错误报告
                 mdata.putString("errorreport","a",resultMap.get("test"));
                 ToastUtils.showToast(ManagerActivity.this,"请求失败");
-                managerActivityListView = (DefineListView)
-                        findViewById(R.id.delistiview_manageractivity_showmanger);
-                managerActivityListView.dynSetHeadViewHeight(0);
+                if(mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE).
+                        equals(ComParameter.STATE_THIRD)) {
+                    managerActivityListView = (DefineListView)
+                            findViewById(R.id.delistiview_manageractivity_showmanger);
+                    managerActivityListView.dynSetHeadViewHeight(0);
+                }
             }
         }
     };
