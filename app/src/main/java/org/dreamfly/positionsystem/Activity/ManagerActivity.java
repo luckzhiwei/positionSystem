@@ -153,10 +153,10 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         }
         this.telNumSave(mInformation);
         this.locationSave();
-        //this.sendIdtoSever();
+        this.sendIdtoSever();
         //本地测试
         try {
-            this.testDealresponse();
+            //this.testDealresponse();
         }
         catch (Exception e){}
     }
@@ -375,7 +375,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
     /**
      * 存储本机号码
      */
-    public void telNumSave(CurrentInformationUtils mInformation){
+    protected void telNumSave(CurrentInformationUtils mInformation){
         Log.i("zyl",mInformation.getDeviceTelNum());
         mDataBase.items_changeValue(DEVICE,"telnumber",mInformation.getDeviceTelNum(),0);
     }
@@ -425,7 +425,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
     /**
      * 向服务器发送请求
      */
-    private void sendIdtoSever(){
+    protected void sendIdtoSever(){
         this.managerListThread=new ManagerListThread(mHandler,"managerlistid");
         String requestURL = ComParameter.HOST + "contect.action";
         this.managerListThread.setRequestPrepare(requestURL,this.prepareListParams());
@@ -436,7 +436,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
      * 向服务器提供参数
      * @return
      */
-    private Map prepareListParams(){
+    protected Map prepareListParams(){
 
         Map<String, String> params = new HashMap<String, String>();
         params.put("id",mdata.getString("tableid",mInformation.getDeviceId()));
@@ -488,7 +488,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
      * 处理从服务器获取的数据,加载列表
      * @param resultMap
      */
-    private void dealListFromSever(Map<String, String> resultMap){
+    protected void dealListFromSever(Map<String, String> resultMap){
 
         mdata.putString("itemslength","length",resultMap.get("length"));
 

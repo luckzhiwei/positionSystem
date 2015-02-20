@@ -256,7 +256,7 @@ public class LoginActivity extends Activity {
                 startActivity(in);
                 finish();
             } else if (type.equals("unmanager")) {
-                mdata.putString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE_REG,
+                mdata.putString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE,
                         ComParameter.STATE_FIRST);
                 in = new Intent().setClass(LoginActivity.this, RegulatorActivity.class);
                 startActivity(in);
