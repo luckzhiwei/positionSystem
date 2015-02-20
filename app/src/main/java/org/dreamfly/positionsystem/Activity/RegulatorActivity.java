@@ -55,7 +55,7 @@ public class RegulatorActivity extends ManagerActivity {
         SDKInitializer.initialize(getApplicationContext());
         String libName = "BaiduMapSDK_v3_2_0_11";
         System.loadLibrary(libName);
-        this.setContentView(R.layout.regulator_layout);
+        this.isFirstConnect();
         this.initial();
     }
 
@@ -70,9 +70,6 @@ public class RegulatorActivity extends ManagerActivity {
 
         this.telNumSave(mInformation);
 
-        this.mRegulatordapter = new RegulatorAdapter(this.getData(), this, mDataBase);
-        this.listViewRegulatorActivityReglutorList.setAdapter(mRegulatordapter);
-        this.setCLickListener();
 
 
     }
@@ -174,6 +171,28 @@ public class RegulatorActivity extends ManagerActivity {
             mDialog.dismiss();
         }
     }
+
+    private void isFirstConnect(){
+        if(mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE_REG)
+                .equals(ComParameter.STATE_FIRST)){
+            this.setContentView(R.layout.manager_layout_first);
+            mdata.putString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE_REG,
+                    ComParameter.STATE_SECOND);
+        }
+        else {
+            this.setContentView(R.layout.regulator_layout);
+            return;
+        }
+
+    }
+
+    private void loadList(){
+        this.bindID();
+        this.mRegulatordapter = new RegulatorAdapter(this.getData(), this, mDataBase);
+        this.listViewRegulatorActivityReglutorList.setAdapter(mRegulatordapter);
+        this.setCLickListener();
+    }
+
 }
 
 

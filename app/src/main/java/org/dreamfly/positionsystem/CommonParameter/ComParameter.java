@@ -31,6 +31,8 @@ public class ComParameter {
 
           public final static String LOADING_STATE="isfirstconnect";
 
+          public final static String LOADING_STATE_REG="regfirstconnect";
+
           public final static String CLICKING_STATE="isfirstclick";
 
           public final static String STATE_FIRST="0";

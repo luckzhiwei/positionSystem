@@ -246,15 +246,18 @@ public class LoginActivity extends Activity {
 
         private void dealAfterLogin(String type) {
             Intent in = null;
-            mdata.putString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE,
-                    ComParameter.STATE_FIRST);
+
             mdata.putString(ComParameter.LOADING_STATE,ComParameter.CLICKING_STATE,
                     ComParameter.STATE_FIRST);
             if (type.equals("manager")) {
+                mdata.putString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE,
+                        ComParameter.STATE_FIRST);
                 in = new Intent().setClass(LoginActivity.this, ManagerActivity.class);
                 startActivity(in);
                 finish();
             } else if (type.equals("unmanager")) {
+                mdata.putString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE_REG,
+                        ComParameter.STATE_FIRST);
                 in = new Intent().setClass(LoginActivity.this, RegulatorActivity.class);
                 startActivity(in);
                 finish();
