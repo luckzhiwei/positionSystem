@@ -299,6 +299,7 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
     }
 
     private void isFirstConnect(){
+        mdata.putString(ComParameter.LOADING_STATE,ComParameter.IDENTITY_STATE,"regulator");
         if(mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE)
                 .equals(ComParameter.STATE_FIRST)){
             this.setContentView(R.layout.manager_layout_first);

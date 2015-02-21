@@ -1,10 +1,14 @@
 package org.dreamfly.positionsystem.Activity;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
@@ -17,17 +21,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.mapapi.SDKInitializer;
-import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.search.core.SearchResult;
-import com.baidu.mapapi.search.geocode.GeoCodeResult;
-import com.baidu.mapapi.search.geocode.GeoCoder;
-import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
-import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
-import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import org.dreamfly.positionsystem.Adapter.ManagerAdapter;
 import org.dreamfly.positionsystem.CommonParameter.ComParameter;
 import org.dreamfly.positionsystem.Custom.DefineDialog;
@@ -35,6 +30,8 @@ import org.dreamfly.positionsystem.Custom.DefineListView;
 import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.Database.DefinedShared;
 import org.dreamfly.positionsystem.R;
+import org.dreamfly.positionsystem.Services.BaiduLocationService;
+import org.dreamfly.positionsystem.Services.Services;
 import org.dreamfly.positionsystem.Thread.ManagerListThread;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 import org.dreamfly.positionsystem.Utils.LocationUtils;
@@ -53,7 +50,7 @@ import java.util.Map;
  * Created by zhengyl on 15-1-13.
  * 管理者界面Activity类
  */
-public class ManagerActivity extends Activity implements OnGetGeoCoderResultListener {
+public class ManagerActivity extends Activity {
 
 
     private DefineListView managerActivityListView;
@@ -78,6 +75,7 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
     protected DataBase mDataBase = new DataBase(this);
     protected final static String DEVICE="deviceinformation";
     protected com.baidu.mapapi.search.geocode.GeoCoder mcoder;
+    protected Services mService;
 
     /**
      * 重写onCreate方法,完成数据初始化,加载操作
@@ -142,21 +140,19 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
     private void initial() {
         this.bindID();
         Log.i("lzw","manage_intial");
-        mLocationUtils = new LocationUtils(this);
-        mLocationUtils.LocationInfo();
-        mcoder = GeoCoder.newInstance();
-        mcoder.setOnGetGeoCodeResultListener(this);
+
+        BaiduLocationService mLocation=new BaiduLocationService(this);
         if(!mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE).
                 equals(ComParameter.STATE_SECOND)) {
             //如果是第一次启动,不在这里加载列表数据(第一次请求的数据从网络获得)
            this.loadList();
         }
         this.telNumSave(mInformation);
-        this.locationSave();
-        this.sendIdtoSever();
+        mLocation.locationSave();
+        //this.sendIdtoSever();
         //本地测试
         try {
-            //this.testDealresponse();
+            this.testDealresponse();
         }
         catch (Exception e){}
     }
@@ -313,53 +309,13 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         }
     }
 
-    /**
-     * 百度定位接口
-     */
-    public class BDListener implements com.baidu.location.BDLocationListener {
-        @Override
-        public void onReceiveLocation(BDLocation location) {
-            if (location == null) {
-                return;
-            }
-
-            lat = location.getLatitude() + "";
-
-            lon = location.getLongitude() + "";
-            mDataBase.items_changeValue(DEVICE,"latitude",lat,0);
-            mDataBase.items_changeValue(DEVICE,"longitude",lon,0);
-            reverseCode(lat, lon);
-            Log.i("lzw",lat+"");
-            Log.i("lzw",lon+"");
-            locationClient.stop();
-            Log.i("lzw","unlink");
-
-        }
-
-        @Override
-        public void onReceivePoi(BDLocation bdLocation) {
-
-        }
-    }
-
-    /**
-     * 调用百度定位Sdk,并存储定位数据
-     */
-    public void locationSave() {
-
-          locationClient = mLocationUtils.getLocationClient();
-          locationClient.start();
-          locationClient.requestLocation();
-          BDListener bdListener = new BDListener();
-          locationClient.registerLocationListener(bdListener);
-          Log.i("lzw","locationSDKwork");
-    }
 
     /**
      * 判断是否首次启动
      */
     private void ifFirstConnect(){
         //用sharedpreference存储登陆状态
+        mdata.putString(ComParameter.LOADING_STATE,ComParameter.IDENTITY_STATE,"manager");
         if(mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE)
                 .equals(ComParameter.STATE_FIRST)){
             this.setContentView(R.layout.manager_layout_first);
@@ -380,47 +336,6 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         mDataBase.items_changeValue(DEVICE,"telnumber",mInformation.getDeviceTelNum(),0);
     }
 
-    /**
-     * 调用经纬度编码转换函数并用Sharepreference保存
-     *
-     * @param lat
-     * @param lon
-     */
-    public void reverseCode(String lat, String lon) {
-        LatLng ptCenter = new LatLng(
-                (Float.valueOf(lat)),
-                Float.valueOf(lon));
-        mcoder.reverseGeoCode(new ReverseGeoCodeOption().location(ptCenter));
-
-    }
-
-    @Override
-    public void onGetGeoCodeResult(GeoCodeResult result) {
-
-    }
-
-    @Override
-    public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
-        if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
-            Toast.makeText(ManagerActivity.this, "抱歉，未能找到结果", Toast.LENGTH_LONG)
-                    .show();
-            return;
-        }
-        String s = result.getAddress();
-        mDataBase.items_changeValue(DEVICE,"location",s,0);
-        //将获得的地址保存
-        SharedPreferences mpreference = getSharedPreferences("address", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = mpreference.edit();
-        editor.putString("address", s);
-        editor.commit();
-        if (isClear) {
-            editor.clear();
-            editor.putString("address", s);
-            editor.commit();
-        }
-        Log.i("thislzw", "您的当前位置" + s + "已被保存");
-
-    }
 
     /**
      * 向服务器发送请求
@@ -574,5 +489,48 @@ public class ManagerActivity extends Activity implements OnGetGeoCoderResultList
         Log.i("zyl",resultMap.get("length"));
         dealListFromSever(resultMap);
     }
+
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            mService = ((Services.MBinder)service).getService();
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            mService = null;
+        }
+    };
+    /**
+     * 开启service
+     */
+    private void startLocationService(){
+        Log.i("service","[SERVICE]start");
+        startService(new Intent(ManagerActivity.this, Services.class));
+    }
+    /**
+     * 停止service
+     */
+    private void stopLocationService(){
+        Log.i("service","[SERVICE]stop");
+        stopService(new Intent(ManagerActivity.this,Services.class));
+    }
+
+    /**
+     * 绑定service
+     */
+    private void bindLocationService() {
+        Log.i("service", "[SERVICE] beBinded");
+        bindService(new Intent(ManagerActivity.this,
+                Services.class), mConnection, Context.BIND_AUTO_CREATE + Context.BIND_DEBUG_UNBIND);
+    }
+
+    /**
+     * 接触绑定service
+     */
+    private void unbindLocationService() {
+        Log.i("service", "[SERVICE] Unbind");
+        unbindService(mConnection);
+    }
+
 
 }

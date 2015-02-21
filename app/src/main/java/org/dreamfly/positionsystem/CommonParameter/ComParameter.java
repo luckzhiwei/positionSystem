@@ -33,6 +33,8 @@ public class ComParameter {
 
           public final static String LOADING_STATE="isfirstconnect";
 
+          public final static String IDENTITY_STATE="identitystate";
+
           public final static String LOADING_STATE_REG="regfirstconnect";
 
           public final static String CLICKING_STATE="isfirstclick";
@@ -42,6 +44,8 @@ public class ComParameter {
           public final static String STATE_SECOND="1";
 
           public final static String STATE_THIRD="2";
+
+
 
 
 
