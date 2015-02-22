@@ -14,6 +14,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -564,16 +565,16 @@ public class ManagerActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu){
         super.onCreateOptionsMenu(menu);
         menu.clear();
-        menu.add(Menu.NONE,Menu.FIRST+1,1,"注销").setIcon(R.drawable.ic_launcher);
-        menu.add(Menu.NONE,Menu.FIRST+2,2,"退出").setIcon(R.drawable.ic_launcher);
+        MenuInflater inflater=this.getMenuInflater();
+        inflater.inflate(R.menu.menu_main,menu);
         return true;
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case Menu.FIRST + 1:
+            case R.id.manageractivity_logout:
                 break;
-            case Menu.FIRST + 2:
+            case R.id.manageractivity_exit:
 
                 this.stopLocationService();
                 //this.unbindLocationService();

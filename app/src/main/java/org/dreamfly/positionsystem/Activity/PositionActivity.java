@@ -7,6 +7,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -237,6 +240,31 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
 
         Log.i("lzw", result.getAddress() + "");
 
+    }
+    @Override
+    /**
+     * 添加菜单操作
+     */
+    public boolean onCreateOptionsMenu(Menu menu){
+        super.onCreateOptionsMenu(menu);
+        menu.clear();
+        MenuInflater inflater=this.getMenuInflater();
+        inflater.inflate(R.menu.menu_main,menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.manageractivity_logout:
+                break;
+            case R.id.manageractivity_exit:
+
+                //this.stopLocationService();
+                //this.unbindLocationService();
+                //ManagerActivity.this.finish();
+
+        }
+        return false;
     }
 
 }
