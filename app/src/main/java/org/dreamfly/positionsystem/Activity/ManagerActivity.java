@@ -12,7 +12,9 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,8 +22,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.baidu.location.LocationClient;
@@ -65,6 +69,7 @@ public class ManagerActivity extends Activity {
     private User oneRegulator = new User();
     private DefineDialog mDefineDialog;
     private ManagerListThread managerListThread;
+    private View contentview;
     private boolean isClear = true;
     private final static String TABLENAME = "regulatoritems";
     private int userTouchDistance;
@@ -150,8 +155,11 @@ public class ManagerActivity extends Activity {
                     equals(ComParameter.STATE_SECOND)){
                 mdata.putString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE,ComParameter.STATE_FIRST);
             }
-        }
 
+        }
+        if(keyCode==KeyEvent.KEYCODE_MENU){
+            this.showPopwindow(this, contentview);
+        }
         return false;
     }
     private void initial() {
@@ -163,6 +171,7 @@ public class ManagerActivity extends Activity {
             //如果是第一次启动,不在这里加载列表数据(第一次请求的数据从网络获得)
            this.loadList();
         }
+        contentview=this.findViewById(R.id.manageractivity_layout);
         this.telNumSave(mInformation);
         mLocation.locationSave();
         //this.sendIdtoSever();
@@ -517,6 +526,49 @@ public class ManagerActivity extends Activity {
         dealListFromSever(resultMap);
     }
 
+    /**
+     * 显示popwindow替代菜单栏效果
+     * @param context
+     * @param parent
+     */
+    private void showPopwindow(Context context,View parent){
+        LayoutInflater inflater = (LayoutInflater)
+                context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View mPopwindow=inflater.inflate(R.layout.man_popwindow,null,false);
+        final PopupWindow popWindow=new PopupWindow(mPopwindow,700,300,true);
+        bindButtonID(mPopwindow,popWindow);
+        popWindow.showAtLocation(parent, Gravity.BOTTOM, 0, 0);
+    }
+
+    /**
+     * 为按钮绑定监听并设置监听事件
+     * @param mPopwindow
+     * @param popWindow
+     */
+    private void bindButtonID(View mPopwindow, final PopupWindow popWindow){
+        Button logoutButton=(Button)mPopwindow.findViewById(R.id.btn_menu_logout);
+        Button exitButon=(Button)mPopwindow.findViewById(R.id.btn_menu_exit);
+        Button cancelButton=(Button)mPopwindow.findViewById(R.id.btn_menu_cancel);
+        logoutButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+
+            }
+        });
+        exitButon.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                popWindow.dismiss();
+                ManagerActivity.this.finish();
+                stopLocationService();
+            }
+        });
+        cancelButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                popWindow.dismiss();
+            }
+        });
+    }
+
+
 
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
@@ -557,31 +609,6 @@ public class ManagerActivity extends Activity {
     private void unbindLocationService() {
         Log.i("service", "[SERVICE] Unbind");
         unbindService(mConnection);
-    }
-    @Override
-    /**
-     * 添加菜单操作
-     */
-    public boolean onCreateOptionsMenu(Menu menu){
-        super.onCreateOptionsMenu(menu);
-        menu.clear();
-        MenuInflater inflater=this.getMenuInflater();
-        inflater.inflate(R.menu.menu_main,menu);
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.manageractivity_logout:
-                break;
-            case R.id.manageractivity_exit:
-
-                this.stopLocationService();
-                //this.unbindLocationService();
-                ManagerActivity.this.finish();
-
-        }
-        return false;
     }
 
 }

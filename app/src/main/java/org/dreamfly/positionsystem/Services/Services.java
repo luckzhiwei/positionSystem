@@ -23,6 +23,7 @@ public class Services  extends Service {
     private final IBinder mBinder=new MBinder();
     private static String TAG="zylservice";
     private DefinedShared mdata;
+    private NotificationManager manager;
 
     /**
      * Binder
@@ -50,6 +51,7 @@ public class Services  extends Service {
         //记录service状态
         mdata.putString(ComParameter.LOADING_STATE,ComParameter.SERVICE_STATE,
                 ComParameter.STATE_FIRST);
+        manager.cancelAll();
 
     }
     private void initial(){
@@ -57,6 +59,7 @@ public class Services  extends Service {
         //记录service状态
         mdata.putString(ComParameter.LOADING_STATE,ComParameter.SERVICE_STATE,
                 ComParameter.STATE_SECOND);
+        manager=(NotificationManager)this.getSystemService(NOTIFICATION_SERVICE);
         this.showNotification();
     }
 
@@ -65,7 +68,7 @@ public class Services  extends Service {
      */
     private void showNotification(){
         CharSequence text="亲子安全卫士";
-        NotificationManager manager=(NotificationManager)this.getSystemService(NOTIFICATION_SERVICE);
+
         Notification notification = new Notification();
         notification.icon= R.drawable.positionsystemlogo;
         Intent i=new Intent();
