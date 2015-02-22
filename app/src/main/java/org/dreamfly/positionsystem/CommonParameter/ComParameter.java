@@ -33,6 +33,8 @@ public class ComParameter {
 
           public final static String LOADING_STATE="isfirstconnect";
 
+          public final static String SERVICE_STATE="servicestate";
+
           public final static String IDENTITY_STATE="identitystate";
 
           public final static String LOADING_STATE_REG="regfirstconnect";

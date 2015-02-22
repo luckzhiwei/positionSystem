@@ -38,9 +38,9 @@
                 <action android:name="com.baidu.location.service_v2.4" />
             </intent-filter>
         </service>
-        <service android:name="org.dreamfly.positionsystem.Services.Services">
-        <intent-filter android:priority="1000"></intent-filter>
-        </service>
+        <service android:name="org.dreamfly.positionsystem.Services.Services"/>
+
+
     
    </application>
     <uses-permission android:name="android.permission.MOUNT_FORMAT_FILESYSTEMS"><!--SD读取的权限-->

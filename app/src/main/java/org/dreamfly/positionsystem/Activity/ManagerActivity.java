@@ -13,6 +13,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -97,7 +99,8 @@ public class ManagerActivity extends Activity {
     protected void onResume(){
         super.onResume();
         this.bindID();
-        Log.i("lzw","manage_intial");
+        this.serviceIntital();
+        Log.i("lzw", "manage_intial");
         //从数据库读取上一次的地理位置
         if (!mdata.getString(ComParameter.LOADING_STATE,ComParameter.CLICKING_STATE)
                 .equals(ComParameter.STATE_FIRST)){
@@ -119,11 +122,23 @@ public class ManagerActivity extends Activity {
      */
     protected void onStop(){
         super.onStop();
+        this.unbindLocationService();
+    }
+    @Override
+    /**
+     * 重写onDestory方法
+     */
+    protected void onDestroy(){
+        super.onDestroy();
+        Log.i("zylactivity","ondestroy");
+        //this.stopLocationService();
+
     }
     @Override
     /**
      * 重写父类onKeyDown()方法
      */
+
     public boolean onKeyDown(int keyCode,KeyEvent event){
         if (keyCode==KeyEvent.KEYCODE_BACK){
             ManagerActivity.this.finish();
@@ -135,12 +150,12 @@ public class ManagerActivity extends Activity {
                 mdata.putString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE,ComParameter.STATE_FIRST);
             }
         }
+
         return false;
     }
     private void initial() {
         this.bindID();
         Log.i("lzw","manage_intial");
-
         BaiduLocationService mLocation=new BaiduLocationService(this);
         if(!mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE).
                 equals(ComParameter.STATE_SECOND)) {
@@ -169,6 +184,17 @@ public class ManagerActivity extends Activity {
         this.layout=(LinearLayout)
                 this.findViewById(R.id.manageractivity_layout);
 
+    }
+
+    private void serviceIntital(){
+        if(!mdata.getString(ComParameter.LOADING_STATE,ComParameter.SERVICE_STATE)
+                .equals(ComParameter.STATE_SECOND)) {
+            this.startLocationService();
+            this.bindLocationService();
+        }
+        else {
+            this.bindLocationService();
+        }
     }
 
     /**
@@ -525,12 +551,36 @@ public class ManagerActivity extends Activity {
     }
 
     /**
-     * 接触绑定service
+     * 解除绑定service
      */
     private void unbindLocationService() {
         Log.i("service", "[SERVICE] Unbind");
         unbindService(mConnection);
     }
+    @Override
+    /**
+     * 添加菜单操作
+     */
+    public boolean onCreateOptionsMenu(Menu menu){
+        super.onCreateOptionsMenu(menu);
+        menu.clear();
+        menu.add(Menu.NONE,Menu.FIRST+1,1,"注销").setIcon(R.drawable.ic_launcher);
+        menu.add(Menu.NONE,Menu.FIRST+2,2,"退出").setIcon(R.drawable.ic_launcher);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case Menu.FIRST + 1:
+                break;
+            case Menu.FIRST + 2:
 
+                this.stopLocationService();
+                //this.unbindLocationService();
+                ManagerActivity.this.finish();
+
+        }
+        return false;
+    }
 
 }

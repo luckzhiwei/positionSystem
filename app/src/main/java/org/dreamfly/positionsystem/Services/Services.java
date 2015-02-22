@@ -35,7 +35,7 @@ public class Services  extends Service {
     @Override
     public IBinder onBind(Intent  intent)
     {
-        Log.i(TAG,"[SERVICE]unbind");
+        Log.i(TAG,"[SERVICE]onbind");
        return mBinder;
     }
     @Override
@@ -47,9 +47,16 @@ public class Services  extends Service {
     @Override
     public void onDestroy(){
         Log.i(TAG,"[SERVICE]onDestroy");
+        //记录service状态
+        mdata.putString(ComParameter.LOADING_STATE,ComParameter.SERVICE_STATE,
+                ComParameter.STATE_FIRST);
+
     }
     private void initial(){
         mdata=new DefinedShared(this);
+        //记录service状态
+        mdata.putString(ComParameter.LOADING_STATE,ComParameter.SERVICE_STATE,
+                ComParameter.STATE_SECOND);
         this.showNotification();
     }
 
