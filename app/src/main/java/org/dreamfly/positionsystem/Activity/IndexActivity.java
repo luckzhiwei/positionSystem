@@ -13,7 +13,9 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.dreamfly.positionsystem.CommonParameter.ComParameter;
 import org.dreamfly.positionsystem.Database.DataBase;
+import org.dreamfly.positionsystem.Database.DefinedShared;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Utils.UserInfoUtils;
 
@@ -29,6 +31,7 @@ public class IndexActivity extends Activity {
     TextView txt_indexactivity_textwelcome;
     SQLiteDatabase db;
     private String TAG = "dataDase";
+    private DefinedShared mdata;
 
     int alpha = 10;//声明控制渐变时间的变量
     int b = 0;//声明子线程控制标志的变量
@@ -45,6 +48,7 @@ public class IndexActivity extends Activity {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.setContentView(R.layout.index_layout);
+        mdata=new DefinedShared(this);
         DataBase mDataBase = new DataBase(this);
         dataBaseStart(this, mDataBase);
         imv_indexactivity_background = (ImageView) findViewById(R.id.imv_indexactivity_background);
@@ -129,6 +133,7 @@ public class IndexActivity extends Activity {
         UserInfoUtils mUserInfoUtils = new UserInfoUtils(IndexActivity.this);
         if (!mUserInfoUtils.isLogin()) {
             in = new Intent(IndexActivity.this, LoginActivity.class);
+            mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOGIN_STATE, ComParameter.STATE_FIRST);
         } else {
             if (mUserInfoUtils.isManager()) {
                 in = new Intent(IndexActivity.this, ManagerActivity.class);

@@ -22,6 +22,7 @@ public class LoginRequestThread extends BaseThread {
         String tmpArrStr[] = responseString.split(":");
         if (tmpArrStr[1].equals("login")) {
             this.resultMap.put(tmpArrStr[0], tmpArrStr[1]);
+            this.resultMap.put("type",tmpArrStr[2]);
 
         } else if (tmpArrStr.equals("unlogin")) {
             this.resultMap.put(tmpArrStr[0], tmpArrStr[1]);

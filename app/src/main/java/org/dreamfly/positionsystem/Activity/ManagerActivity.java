@@ -535,7 +535,7 @@ public class ManagerActivity extends Activity {
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View mPopwindow=inflater.inflate(R.layout.man_popwindow,null,false);
-        final PopupWindow popWindow=new PopupWindow(mPopwindow,700,300,true);
+        final PopupWindow popWindow=new PopupWindow(mPopwindow,700,350,true);
         bindButtonID(mPopwindow,popWindow);
         popWindow.showAtLocation(parent, Gravity.BOTTOM, 0, 0);
     }
@@ -551,6 +551,9 @@ public class ManagerActivity extends Activity {
         Button cancelButton=(Button)mPopwindow.findViewById(R.id.btn_menu_cancel);
         logoutButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
+                popWindow.dismiss();
+                ManagerActivity.this.finish();
+                callServerLogout();
 
             }
         });
@@ -566,6 +569,15 @@ public class ManagerActivity extends Activity {
                 popWindow.dismiss();
             }
         });
+    }
+
+    private void callServerLogout(){
+        dealAfterlogout();
+    }
+
+    private void dealAfterlogout(){
+        mdata.putString(ComParameter.LOADING_STATE,ComParameter.LOGIN_STATE,ComParameter.STATE_THIRD);
+        this.startActivity(new Intent(ManagerActivity.this,LoginActivity.class));
     }
 
 

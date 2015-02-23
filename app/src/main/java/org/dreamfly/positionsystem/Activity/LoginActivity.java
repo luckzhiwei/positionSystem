@@ -13,12 +13,14 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.apache.http.client.HttpClient;
 import org.dreamfly.positionsystem.CommonParameter.ComParameter;
 import org.dreamfly.positionsystem.Custom.DefineDialog;
 import org.dreamfly.positionsystem.Database.DefinedShared;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Thread.BaseThread;
 import org.dreamfly.positionsystem.Thread.FirstLoginRequestThread;
+import org.dreamfly.positionsystem.Thread.LoginRequestThread;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 import org.dreamfly.positionsystem.Utils.ToastUtils;
 import org.dreamfly.positionsystem.Utils.UserInfoUtils;
@@ -43,8 +45,9 @@ public class LoginActivity extends Activity {
     private ProgressBar proLoginActivity;
 
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
-    private DefinedShared mdata=new DefinedShared(this);
+    private DefinedShared mdata = new DefinedShared(this);
     private BaseThread loginReuquestThread;
+    private BaseThread secLoginRequestThread;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,8 +57,9 @@ public class LoginActivity extends Activity {
 
 
     }
+
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         proLoginActivity.setVisibility(View.GONE);
 
@@ -74,10 +78,11 @@ public class LoginActivity extends Activity {
                 findViewById(R.id.edtext_loginactivity_username);
         this.editextLoginactivityPassword = (EditText)
                 findViewById(R.id.edtext_loginactivity_password);
-        this.proLoginActivity=(ProgressBar)
+        this.proLoginActivity = (ProgressBar)
                 findViewById(R.id.progressBar_loginactivity);
         proLoginActivity.setVisibility(View.GONE);
         this.bindListener();
+
 
 
     }
@@ -100,8 +105,14 @@ public class LoginActivity extends Activity {
         });
         this.btnLoginactivityLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                if(checkoutInputDataFormat()) {
-                    showIsManagerDialog();
+                if (checkoutInputDataFormat()) {
+                    if (!mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOGIN_STATE
+                    ).equals(ComParameter.STATE_THIRD)) {
+                        showIsManagerDialog();
+                    } else {
+                        proLoginActivity.setVisibility(View.VISIBLE);
+                        sendSecLoginInfoToServer();
+                    }
                 }
             }
         });
@@ -111,6 +122,7 @@ public class LoginActivity extends Activity {
      * 提示未登录用户的在登录成功的情况下选择管理者和被管理者对话框
      */
     private void showIsManagerDialog() {
+        mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOGIN_STATE, ComParameter.STATE_SECOND);
         this.mIsManagerDialog = new DefineDialog(LoginActivity.this).buiider(false).
                 setTitle("是否成为管理者").setPosBtnTxt("是").setNegBtnTxt("否")
                 .setNegBtnClickListenr(regulatorClickListener).setPosBtnClickListener(managerClickListener)
@@ -126,7 +138,7 @@ public class LoginActivity extends Activity {
 
             sendLoginInfoToServer(true);
             proLoginActivity.setVisibility(View.VISIBLE);
-            ToastUtils.showToast(getApplicationContext(),"正在登录,请稍后");
+            ToastUtils.showToast(getApplicationContext(), "正在登录,请稍后");
 
         }
     };
@@ -138,7 +150,7 @@ public class LoginActivity extends Activity {
             mIsManagerDialog.dismiss();
             sendLoginInfoToServer(false);
             proLoginActivity.setVisibility(View.VISIBLE);
-            ToastUtils.showToast(getApplicationContext(),"正在登录,请稍后");
+            ToastUtils.showToast(getApplicationContext(), "正在登录,请稍后");
         }
     };
 
@@ -174,20 +186,40 @@ public class LoginActivity extends Activity {
         this.loginReuquestThread.start();
     }
 
-    private boolean checkoutInputDataFormat()
-    {
-          if(this.edittextLoginactivityUsername.getText().toString().equals(""))
-          {
-              ToastUtils.showToast(getApplicationContext(),"帐号不能为空");
-              return(false);
-          }else {
-                if(this.editextLoginactivityPassword.getText().toString().equals(""))
-                {
-                        ToastUtils.showToast(getApplicationContext(),"密码不能为空");
-                    return(false);
-                }
-          }
-        return(true);
+    /**
+     * 二次登陆向服务器请求
+     */
+    private void sendSecLoginInfoToServer() {
+        this.secLoginRequestThread = new LoginRequestThread(secHandler, "loginstate");
+        String requestURL = ComParameter.HOST + "user_login.action";
+        this.secLoginRequestThread.setRequestPrepare(requestURL, this.prepareSecLoginParams());
+        this.secLoginRequestThread.start();
+    }
+
+    private boolean checkoutInputDataFormat() {
+        if (this.edittextLoginactivityUsername.getText().toString().equals("")) {
+            ToastUtils.showToast(getApplicationContext(), "帐号不能为空");
+            return (false);
+        } else {
+            if (this.editextLoginactivityPassword.getText().toString().equals("")) {
+                ToastUtils.showToast(getApplicationContext(), "密码不能为空");
+                return (false);
+            }
+        }
+        return (true);
+    }
+
+    /**
+     * 二次登陆的服务器请求参数
+     *
+     * @return
+     */
+    private Map prepareSecLoginParams() {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("username", edittextLoginactivityUsername.getText().toString());
+        params.put("password", editextLoginactivityPassword.getText().toString());
+        params.put("id", mdata.getString("tableid", mInformation.getDeviceId()));
+        return (params);
     }
 
     private Map prepareLoginParams(boolean isManager) {
@@ -199,10 +231,10 @@ public class LoginActivity extends Activity {
         } else {
             params.put("type", "user");
         }
-        params.put("phonenum",this.mInformation.getDeviceTelNum());
+        params.put("phonenum", this.mInformation.getDeviceTelNum());
 
         params.put("deviceid", this.mInformation.getDeviceId());
-        Log.i("lzw",this.mInformation.getDeviceTelNum());
+        Log.i("lzw", this.mInformation.getDeviceTelNum());
         params.put("devicename", this.mInformation.getCurrentDeviceName());
         return (params);
 
@@ -233,36 +265,79 @@ public class LoginActivity extends Activity {
                             resultMap.get("dataBaseId"),
                             edittextLoginactivityUsername.getText().toString());
                     this.dealAfterLogin(resultMap.get("type"));
-                    mdata.putString("tableid",mInformation.getDeviceId(),resultMap.get("dataBaseId"));
+                    mdata.putString("tableid", mInformation.getDeviceId(), resultMap.get("dataBaseId"));
 
                 } else if (loginstate.equals("unlogin")) {
-                   Log.i("lzw","unlogin_deal");
-                  ToastUtils.showToast(getApplication(),resultMap.get("failReason"));
+                    Log.i("lzw", "unlogin_deal");
+                    ToastUtils.showToast(getApplication(), resultMap.get("failReason"));
                 }
-            }else{
-                Log.i("lzw","null");
+            } else {
+                Log.i("lzw", "null");
             }
         }
 
         private void dealAfterLogin(String type) {
             Intent in = null;
 
-            mdata.putString(ComParameter.LOADING_STATE,ComParameter.CLICKING_STATE,
+            mdata.putString(ComParameter.LOADING_STATE, ComParameter.CLICKING_STATE,
                     ComParameter.STATE_FIRST);
             if (type.equals("manager")) {
-                mdata.putString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE,
+                mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE,
                         ComParameter.STATE_FIRST);
                 in = new Intent().setClass(LoginActivity.this, ManagerActivity.class);
                 startActivity(in);
                 finish();
             } else if (type.equals("unmanager")) {
-                mdata.putString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE,
+                mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE,
                         ComParameter.STATE_FIRST);
                 in = new Intent().setClass(LoginActivity.this, RegulatorActivity.class);
                 startActivity(in);
                 finish();
             }
 
+        }
+    };
+
+    private Handler secHandler = new Handler(Looper.getMainLooper()) {
+        public void handleMessage(Message msg) {
+            if (msg.getData().getInt("loginstate") == ComParameter.STATE_RIGHT) {
+                this.dealSecLogintMessage();
+
+            } else if (msg.getData().getInt("loginstate") == ComParameter.STATE_ERROR) {
+                ToastUtils.showToast(getApplicationContext(), ComParameter.ERRORINFO);
+            }
+            proLoginActivity.setVisibility(View.GONE);
+
+        }
+
+        private void dealSecLogintMessage() {
+            Map<String, String> resultMap = secLoginRequestThread.getResultMap();
+            String loginstate = resultMap.get("loginstate");
+            if (loginstate != null) {
+                if (loginstate.equals("login")) {
+                    this.dealAfterLogin(resultMap.get("type"));
+                }
+                else if (loginstate.equals("unlogin")) {
+                    Log.i("lzw", "unlogin_deal");
+                    ToastUtils.showToast(getApplication(), resultMap.get("failReason"));
+                }
+            }
+            else {
+                Log.i("zyl","请求失败");
+            }
+        }
+
+        private void dealAfterLogin(String type) {
+            if (type.equals("manager")) {
+                Intent in = new Intent().setClass(LoginActivity.this, ManagerActivity.class);
+                startActivity(in);
+                finish();
+            }
+            else if (type.equals("unmanager")) {
+                Intent in = new Intent().setClass(LoginActivity.this, RegulatorActivity.class);
+                startActivity(in);
+                finish();
+            }
         }
     };
 }
