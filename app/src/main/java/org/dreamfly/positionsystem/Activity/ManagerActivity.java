@@ -410,7 +410,7 @@ public class ManagerActivity extends Activity {
     protected Map prepareNameListParams(int pos,EditText mEditText){
         Map<String, String> params = new HashMap<String, String>();
         params.put("fromid",mdata.getString("tableid",mInformation.getDeviceId()));
-        Cursor cur=mDataBase.Selector(pos,TABLENAME);
+        Cursor cur=mDataBase.Selector(pos-1,TABLENAME);
         if(cur.moveToNext()){
             params.put("toid",cur.getString(cur.getColumnIndex("subid")));
         }
