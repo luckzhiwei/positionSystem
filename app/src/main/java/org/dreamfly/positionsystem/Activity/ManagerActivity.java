@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
@@ -40,6 +41,7 @@ import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Services.BaiduLocationService;
 import org.dreamfly.positionsystem.Services.Services;
 import org.dreamfly.positionsystem.Thread.ManagerListThread;
+import org.dreamfly.positionsystem.Thread.RenameThread;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 import org.dreamfly.positionsystem.Utils.LocationUtils;
 import org.dreamfly.positionsystem.Utils.ToastUtils;
@@ -69,6 +71,7 @@ public class ManagerActivity extends Activity {
     private User oneRegulator = new User();
     private DefineDialog mDefineDialog;
     private ManagerListThread managerListThread;
+    private RenameThread renameThread;
     private View contentview;
     private boolean isClear = true;
     private final static String TABLENAME = "regulatoritems";
@@ -174,10 +177,10 @@ public class ManagerActivity extends Activity {
         contentview=this.findViewById(R.id.manageractivity_layout);
         this.telNumSave(mInformation);
         mLocation.locationSave();
-        //this.sendIdtoSever();
+        this.sendIdtoSever();
         //本地测试
         try {
-            this.testDealresponse();
+           // this.testDealresponse();
         }
         catch (Exception e){}
     }
@@ -306,7 +309,7 @@ public class ManagerActivity extends Activity {
                 setNegBtnTxt("取消").show();
         PositiveButtonListener mPositiveButtonListener =
 
-                new PositiveButtonListener(position, oneRegulator, mDataBase,
+                new PositiveButtonListener(position, mDataBase,
                         this.mDefineDialog.getEditText(), this.mDefineDialog);
         mDefineDialog.setPosBtnClickListener(mPositiveButtonListener);
 
@@ -323,10 +326,9 @@ public class ManagerActivity extends Activity {
         protected int pos;
         protected DefineDialog mDialog;
 
-        public PositiveButtonListener(int pos, final User regulator,
+        public PositiveButtonListener(int pos,
                                       DataBase mDataBase, EditText mEdittext, DefineDialog mDialog) {
             this.pos = pos;
-            this.regulator = regulator;
             this.mDataBase = mDataBase;
             this.mEditText = mEdittext;
             this.mDialog = mDialog;
@@ -338,9 +340,10 @@ public class ManagerActivity extends Activity {
          * @param view
          */
         public void onClick(View view) {
-            regulator.setMangerMarks(mEditText.getText().toString());
-            Log.v("textstring", regulator.getMangerMarks());
-            mDataBase.items_changeValue(TABLENAME, "subname", regulator.getMangerMarks(), (pos - 1));
+            oneRegulator.setMangerMarks(mEditText.getText().toString());
+            Log.v("textstring", oneRegulator.getMangerMarks());
+            tellSeverRename(pos,mEditText);
+            oneRegulator.setDataBaseID(pos-1);
             mDialog.dismiss();
         }
     }
@@ -384,6 +387,17 @@ public class ManagerActivity extends Activity {
     }
 
     /**
+     * 发送修改备注名请求
+     * @param pos 表示第几个条目
+     */
+    protected void tellSeverRename(int pos,EditText mEditText){
+        this.renameThread=new RenameThread(renameHandler,"renamestate");
+        String requestURL=ComParameter.HOST+"rename.action";
+        this.renameThread.setRequestPrepare(requestURL,this.prepareNameListParams(pos,mEditText));
+        this.renameThread.start();
+    }
+
+    /**
      * 向服务器提供参数
      * @return
      */
@@ -391,6 +405,17 @@ public class ManagerActivity extends Activity {
 
         Map<String, String> params = new HashMap<String, String>();
         params.put("id",mdata.getString("tableid",mInformation.getDeviceId()));
+        return params;
+    }
+    protected Map prepareNameListParams(int pos,EditText mEditText){
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("fromid",mdata.getString("tableid",mInformation.getDeviceId()));
+        Cursor cur=mDataBase.Selector(pos,TABLENAME);
+        if(cur.moveToNext()){
+            params.put("toid",cur.getString(cur.getColumnIndex("subid")));
+        }
+        params.put("name",mEditText.getText().toString());
+        cur.close();
         return params;
     }
 
@@ -424,6 +449,37 @@ public class ManagerActivity extends Activity {
             }
         }
     };
+
+    private Handler renameHandler = new Handler(Looper.getMainLooper()) {
+        public void handleMessage(Message msg) {
+            if (msg.getData().getInt("renamestate") == ComParameter.STATE_RIGHT) {
+                dealRenameMessage();
+
+            } else if (msg.getData().getInt("renamestate") == ComParameter.STATE_ERROR) {
+                ToastUtils.showToast(getApplicationContext(), ComParameter.ERRORINFO);
+            }
+        }
+    };
+
+        private void dealRenameMessage() {
+            Map<String, String> resultMap = renameThread.getResultMap();
+            String state = resultMap.get("state");
+            if (state != null) {
+                if (state.equals("success")) {
+                    ToastUtils.showToast(getApplication(),"修改成功");
+                    mDataBase.items_changeValue(TABLENAME, "subname", oneRegulator.getMangerMarks(),oneRegulator.getDataBaseID());
+                    loadList();
+                }
+                else if (state.equals("fail")) {
+                    Log.i("lzw", "rename_failed");
+                    ToastUtils.showToast(getApplication(), resultMap.get("failReason"));
+                }
+            }
+            else {
+                Log.i("zyl","请求失败");
+            }
+        }
+
 
     /**加载list数据
      *
