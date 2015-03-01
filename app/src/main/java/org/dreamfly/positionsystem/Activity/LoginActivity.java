@@ -112,6 +112,14 @@ public class LoginActivity extends Activity {
                         proLoginActivity.setVisibility(View.VISIBLE);
                         sendSecLoginInfoToServer();
                     }
+//                      UserInfoUtils secLoginUtils=new UserInfoUtils(LoginActivity.this);
+//                      if(secLoginUtils.isSecLogin())
+//                      {
+//                          showIsManagerDialog();
+//                      }else{
+//                         proLoginActivity.setVisibility(View.VISIBLE);
+//                        sendSecLoginInfoToServer();
+//                      }
                 }
             }
         });
@@ -178,6 +186,11 @@ public class LoginActivity extends Activity {
         mUserInfoUitls.updateUserInfo(hashmap);
     }
 
+    /**
+     * 首次登录的参数请求准备
+     *
+     * @param isManager
+     */
     private void sendLoginInfoToServer(boolean isManager) {
         this.loginReuquestThread = new FirstLoginRequestThread(mHandler, "firstloginstate");
         String requestURL = ComParameter.HOST + "user_firslogin.action";
@@ -238,7 +251,7 @@ public class LoginActivity extends Activity {
         params.put("phonenum", this.mInformation.getDeviceTelNum());
 
         params.put("deviceid", this.mInformation.getDeviceId());
-        Log.i("lzw", this.mInformation.getDeviceTelNum());
+
         params.put("devicename", this.mInformation.getCurrentDeviceName());
         return (params);
 

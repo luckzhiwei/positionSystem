@@ -33,6 +33,7 @@ public class UserInfoUtils {
 
     private String userInfoTag = "loginstate:unlogin#";//初始化的个人信息
 
+
     private Map<String, String> userInfoMap;
 
     /**
@@ -154,24 +155,25 @@ public class UserInfoUtils {
     }
 
     /**
-     * 返回类的成员的哈希表数组,如果数组为空，则返回空引用
+     * 返回类的成员的哈希表,如果数组为空，则返回空引用
      *
      * @return
      */
-    public Map<String, String> getUserInfoArray() {
-        if (this.userInfoMap != null) {
-            return (this.userInfoMap);
-        } else {
-            return null;
+    public Map<String, String> getUserInfoMap() {
+        String userInfo=this.getUserInfo();
+        if(userInfo!=null)
+        {
+            return(this.buildUserInfoMap(userInfo));
         }
+        return(null);
     }
-
     /**
      * 注销登录状态,将文件改成未登录状态
      */
-    public void clearUserInfo() {
+    public void clearUserInfo(){
         this.initialUserInfo();
-        this.userInfoMap = null;//释放资源
+        this.userInfoMap = null;
+        //释放资源
     }
 
     /**
@@ -192,7 +194,6 @@ public class UserInfoUtils {
 
     /**
      * 判断是否是管理者
-     *
      * @return
      */
     public boolean isManager() {
@@ -212,5 +213,47 @@ public class UserInfoUtils {
             }
         }
         return (ismanager);
+    }
+
+    /**
+     * 获取服务器给你的ID号码
+     * @return
+     */
+    public int getServerId()
+    {
+          int severId=-1;
+          String userinfo=this.getUserInfo();
+          if(userinfo!=null)
+          {
+              Map<String,String> tmpMap = this.buildUserInfoMap(userinfo);
+              String databaseId=tmpMap.get("userrID");
+              if(databaseId!=null)
+              {
+                    severId=Integer.parseInt(databaseId);
+              }
+          }
+        return(severId);
+    }
+
+    /**
+     * 判断是否二次登录
+     * @return
+     */
+    public boolean isSecLogin()
+    {
+          boolean issecLogin=false;
+          String userInfo=this.getUserInfo();
+          if(userInfo!=null)
+          {
+                Map<String,String> tmpMap=this.buildUserInfoMap(userInfo);
+                String loginstate=tmpMap.get("loginstate");
+                if(loginstate.equals("seclogin"))
+                {
+                    issecLogin=true;
+                }else{
+                    issecLogin=false;
+                }
+          }
+        return(issecLogin);
     }
 }

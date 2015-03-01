@@ -125,7 +125,7 @@ public class IndexActivity extends Activity {
 
     /**
      * 读取本地缓存的文件,决定是否登录的状态
-     * 如果已经是登录状态的时候,则看下是管理者状态还是被管理着状态
+     * 如果已经是登录状态的时候,则决定是下是管理者状态还是被管理着状态
      */
     private Intent chooseAcitityGoTo() {
         Intent in = null;

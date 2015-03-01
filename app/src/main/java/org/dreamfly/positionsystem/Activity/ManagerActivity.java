@@ -47,6 +47,7 @@ import org.dreamfly.positionsystem.Thread.RenameThread;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 import org.dreamfly.positionsystem.Utils.LocationUtils;
 import org.dreamfly.positionsystem.Utils.ToastUtils;
+import org.dreamfly.positionsystem.Utils.UserInfoUtils;
 import org.dreamfly.positionsystem.bean.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -89,6 +90,8 @@ public class ManagerActivity extends Activity {
     protected final static String DEVICE = "deviceinformation";
     protected com.baidu.mapapi.search.geocode.GeoCoder mcoder;
     protected Services mService;
+
+    private UserInfoUtils logoutUserInfoUtils;
 
     /**
      * 重写onCreate方法,完成数据初始化,加载操作
@@ -241,8 +244,7 @@ public class ManagerActivity extends Activity {
                     if (managerActivityListView.getFirstVisiblePosition() == 0
                             && userTouchDistance > 250) {
                         managerActivityListView.dynSetHeadViewHeight(250);
-                        if(!managerActivityListView.getIsFreshing())
-                        {
+                        if (!managerActivityListView.getIsFreshing()) {
                             sendIdtoSever();
                             managerActivityListView.setIsFreshing(true);
                         }
@@ -633,9 +635,8 @@ public class ManagerActivity extends Activity {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 popWindow.dismiss();
-                ManagerActivity.this.finish();
                 callServerLogout();
-
+                ManagerActivity.this.finish();
             }
         });
         //注销登录按钮的事件监听
@@ -661,6 +662,15 @@ public class ManagerActivity extends Activity {
 
     private void dealAfterlogout() {
         mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOGIN_STATE, ComParameter.STATE_THIRD);
+        this.logoutUserInfoUtils = new UserInfoUtils(this);
+        Map<String, String> tmpMap = this.logoutUserInfoUtils.getUserInfoMap();
+        tmpMap.remove("username");
+        tmpMap.remove("password");
+        tmpMap.remove("type");
+        //注销清楚本地缓存的文件信息
+        tmpMap.put("loginstate", "seclogin");
+        this.logoutUserInfoUtils.updateUserInfo(tmpMap);
+        //写入二次登录的时候的情况
         this.startActivity(new Intent(ManagerActivity.this, LoginActivity.class));
     }
 
