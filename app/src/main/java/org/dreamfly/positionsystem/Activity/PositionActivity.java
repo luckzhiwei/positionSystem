@@ -53,9 +53,9 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
     private TextView txtPositionLatitute, txtPositionLongitute, txtPositionLocation;
     private Button btnPositionActivityGeo;
     private LocationClient locationClient = null;
-    private int position=0;
+    private int position = 0;
     private DataBase mDataBase = new DataBase(this);
-    private DefinedShared mdata=new DefinedShared(this);
+    private DefinedShared mdata = new DefinedShared(this);
     private LocationUtils mLocationUtils;
     private MapView mMapView = null;
     private BaiduMap mBaiduMap;
@@ -129,7 +129,6 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
     }
 
 
-
     /**
      * 初始化定位服务信息
      */
@@ -173,7 +172,7 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
         String name = sharedPreferences.getString("address", "");
         txtPositionLocation.setText(name);
 
-        mdata.putString("locationback","locationback",name);
+        mdata.putString("locationback", "locationback", name);
 
         this.btnPositionActivityGeo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -241,17 +240,19 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
         Log.i("lzw", result.getAddress() + "");
 
     }
+
     @Override
     /**
      * 添加菜单操作
      */
-    public boolean onCreateOptionsMenu(Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         menu.clear();
-        MenuInflater inflater=this.getMenuInflater();
-        inflater.inflate(R.menu.menu_main,menu);
+        MenuInflater inflater = this.getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

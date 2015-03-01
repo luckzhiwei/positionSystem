@@ -48,7 +48,8 @@ public class RegistActivity extends Activity {
         this.initial();
 
     }
-    protected void onResume(){
+
+    protected void onResume() {
         super.onResume();
         proRegistActivity.setVisibility(View.GONE);
     }
@@ -70,8 +71,8 @@ public class RegistActivity extends Activity {
                 (EditText) this.findViewById(R.id.eidtext_registeractivity_username);
         this.btnRegisterActivityRegister =
                 (Button) this.findViewById(R.id.btn_registeractivity_register);
-        this.proRegistActivity=
-                (ProgressBar)this.findViewById(R.id.progressBar_registactivity);
+        this.proRegistActivity =
+                (ProgressBar) this.findViewById(R.id.progressBar_registactivity);
     }
 
     private void bindListener() {
@@ -82,37 +83,36 @@ public class RegistActivity extends Activity {
         public void onClick(View view) {
             requestRegisterThread = new RegisterRequestThread
                     (mHandler, "registerstate");
-           if( checkoutDataFormat()) {
-               String requestURL = ComParameter.HOST + "user_register.action";
-               Map<String, String> params = new HashMap<String, String>();
-               params.put("username", editRegisterActivityUsername.getText().toString());
-               params.put("password", editRegisterActivityPassword.getText().toString());
-               requestRegisterThread.setRequestPrepare(requestURL, params);
-               requestRegisterThread.start();
-               ToastUtils.showToast(getApplication(), "请求服务器中...");
-               proRegistActivity.setVisibility(View.VISIBLE);
-           }
+            if (checkoutDataFormat()) {
+                String requestURL = ComParameter.HOST + "user_register.action";
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("username", editRegisterActivityUsername.getText().toString());
+                params.put("password", editRegisterActivityPassword.getText().toString());
+                requestRegisterThread.setRequestPrepare(requestURL, params);
+                requestRegisterThread.start();
+                ToastUtils.showToast(getApplication(), "请求服务器中...");
+                proRegistActivity.setVisibility(View.VISIBLE);
+            }
         }
     };
+
     /**
      * 关于子线程的交互的handler
      */
 
-    private boolean checkoutDataFormat()
-    {
-         if(this.editRegisterActivityUsername.getText().toString().equals(""))
-         {
-             ToastUtils.showToast(getApplicationContext(),"帐号不能为空");
-             return(false);
-         }else{
-              if(this.editRegisterActivityPassword.getText().toString().equals(""))
-              {
-                    ToastUtils.showToast(getApplicationContext(),"密码不能空");
-                    return (false);
-              }
-         }
-        return(true);
+    private boolean checkoutDataFormat() {
+        if (this.editRegisterActivityUsername.getText().toString().equals("")) {
+            ToastUtils.showToast(getApplicationContext(), "帐号不能为空");
+            return (false);
+        } else {
+            if (this.editRegisterActivityPassword.getText().toString().equals("")) {
+                ToastUtils.showToast(getApplicationContext(), "密码不能空");
+                return (false);
+            }
+        }
+        return (true);
     }
+
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
             if (msg.getData().getInt("registerstate") == ComParameter.STATE_RIGHT) {

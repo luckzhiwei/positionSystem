@@ -22,6 +22,7 @@ public class DefineListView extends ListView {
 
     private static final int MINDISTANCE = 250;
     private static final int MAXDISTATNCE = 600;
+    private boolean isFreshing;
 
     public DefineListView(Context context) {
         super(context);
@@ -45,6 +46,7 @@ public class DefineListView extends ListView {
      */
     private void initial(Context mContext) {
         this.mContext = mContext;
+        this.isFreshing = false;
         this.mListViewHeader = new DefineListViewHeader(this.mContext);
         this.addHeaderView(this.mListViewHeader);
         this.touchY = 0.0f;
@@ -92,9 +94,10 @@ public class DefineListView extends ListView {
         this.mListViewHeader.setDynHeight(height);
     }
 
-    public int getUserTouchDistance(){
+    public int getUserTouchDistance() {
         return this.userTouchDistance;
     }
+
     /**
      * 参数表示计算划长度过的距离,累加算法来计算下来的
      *
@@ -113,6 +116,14 @@ public class DefineListView extends ListView {
 
         }
         return (realDistance);
+    }
+
+    public void setIsFreshing(boolean isFreshing) {
+        this.isFreshing = isFreshing;
+    }
+
+    public boolean getIsFreshing(){
+         return (this.isFreshing);
     }
 
 }

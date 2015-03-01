@@ -48,7 +48,7 @@ public class IndexActivity extends Activity {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.setContentView(R.layout.index_layout);
-        mdata=new DefinedShared(this);
+        mdata = new DefinedShared(this);
         DataBase mDataBase = new DataBase(this);
         dataBaseStart(this, mDataBase);
         imv_indexactivity_background = (ImageView) findViewById(R.id.imv_indexactivity_background);
@@ -116,8 +116,7 @@ public class IndexActivity extends Activity {
         db = mDataBase.getWritableDatabase();
         try {
             mDataBase.devicesInsert(0, "null", "null", "null", "null");
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         Log.v(TAG, "creat database");

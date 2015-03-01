@@ -86,7 +86,6 @@ public abstract class BaseThread extends Thread {
      */
     public void run() {
         this.checkRequestMap();
-//        Log.i("lzw","URL="+this.requestURL);
         try {
             String responseStr =
                     HttpUtils.requestHttpServer(this.requestURL, this.requestParams,
@@ -94,8 +93,8 @@ public abstract class BaseThread extends Thread {
             if (!this.dealRequestState(responseStr)) {
                 this.setLoadState(this.stateId, ComParameter.STATE_ERROR);
                 this.mHandler.sendMessage(this.msg);
-
                 return;
+                //结束线程中的方法
             }
             this.dealReponseString(responseStr);
             //这个方法放在子类中进行
@@ -120,6 +119,7 @@ public abstract class BaseThread extends Thread {
         this.msg = new Message();
         Bundle bd = new Bundle();
         bd.putInt(key, state);
+
         this.msg.setData(bd);
     }
 
@@ -136,6 +136,8 @@ public abstract class BaseThread extends Thread {
             } else if (str.equals("singleTonException")) {
                 return (false);
             } else if (str.equals("InterNetException")) {
+                this.setLoadState("NetWorkException",ComParameter.STATE_ERROR_NETWORK);
+                this.mHandler.sendMessage(this.msg);
                 return (false);
             } else if (str.equals("switchException")) {
                 return (false);
@@ -154,7 +156,7 @@ public abstract class BaseThread extends Thread {
         while(it.hasNext())
         {
             Map.Entry<String,String> entry=(Map.Entry<String,String>)it.next();
-           Log.i("lzw",entry.getKey());
+            Log.i("lzw",entry.getKey());
             Log.i("lzw",entry.getValue());
         }
     }

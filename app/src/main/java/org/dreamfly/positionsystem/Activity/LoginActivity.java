@@ -84,7 +84,6 @@ public class LoginActivity extends Activity {
         this.bindListener();
 
 
-
     }
 
     /**
@@ -196,6 +195,11 @@ public class LoginActivity extends Activity {
         this.secLoginRequestThread.start();
     }
 
+    /**
+     * 防止输入为空的情况发生
+     *
+     * @return
+     */
     private boolean checkoutInputDataFormat() {
         if (this.edittextLoginactivityUsername.getText().toString().equals("")) {
             ToastUtils.showToast(getApplicationContext(), "帐号不能为空");
@@ -255,6 +259,11 @@ public class LoginActivity extends Activity {
 
         }
 
+        /**
+         * 处理首次登录情况的函数
+         * 如果登录成功，就根据服务器返回的类型来跳转
+         * 如果登录不成功,直接提醒用户的不成功的问题
+         */
         private void dealFirstLogintMessage() {
             Map<String, String> resultMap = loginReuquestThread.getResultMap();
             String loginstate = resultMap.get("loginstate");
@@ -302,7 +311,6 @@ public class LoginActivity extends Activity {
         public void handleMessage(Message msg) {
             if (msg.getData().getInt("loginstate") == ComParameter.STATE_RIGHT) {
                 this.dealSecLogintMessage();
-
             } else if (msg.getData().getInt("loginstate") == ComParameter.STATE_ERROR) {
                 ToastUtils.showToast(getApplicationContext(), ComParameter.ERRORINFO);
             }
@@ -316,14 +324,12 @@ public class LoginActivity extends Activity {
             if (loginstate != null) {
                 if (loginstate.equals("login")) {
                     this.dealAfterLogin(resultMap.get("type"));
-                }
-                else if (loginstate.equals("unlogin")) {
+                } else if (loginstate.equals("unlogin")) {
                     Log.i("lzw", "unlogin_deal");
                     ToastUtils.showToast(getApplication(), resultMap.get("failReason"));
                 }
-            }
-            else {
-                Log.i("zyl","请求失败");
+            } else {
+                Log.i("zyl", "请求失败");
             }
         }
 
@@ -332,8 +338,7 @@ public class LoginActivity extends Activity {
                 Intent in = new Intent().setClass(LoginActivity.this, ManagerActivity.class);
                 startActivity(in);
                 finish();
-            }
-            else if (type.equals("unmanager")) {
+            } else if (type.equals("unmanager")) {
                 Intent in = new Intent().setClass(LoginActivity.this, RegulatorActivity.class);
                 startActivity(in);
                 finish();

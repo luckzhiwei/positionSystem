@@ -68,7 +68,7 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
     protected LocationUtils mLocationUtils;
     protected LocationClient locationClient;
     protected CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
-    protected DefinedShared mdata=new DefinedShared(this);
+    protected DefinedShared mdata = new DefinedShared(this);
     protected DataBase mDataBase = new DataBase(this);
     protected com.baidu.mapapi.search.geocode.GeoCoder mcoder;
     protected String lat;
@@ -83,47 +83,49 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
         this.isFirstConnect();
         this.initial();
     }
-    protected void onResume(){
+
+    protected void onResume() {
         super.onResume();
         this.bindID();
-        Log.i("lzw","manage_intial");
+        Log.i("lzw", "manage_intial");
         //从数据库读取上一次的地理位置
-        if (!mdata.getString(ComParameter.LOADING_STATE,ComParameter.CLICKING_STATE)
-                .equals(ComParameter.STATE_FIRST)){
-            String temp=mdata.getString("pos","pos");
-            int pos=Integer.parseInt(temp);
-            mDataBase.items_changeValue(ComParameter.MANTABLENAME,"position",mdata.getString("locationback","locationback")
-                    ,pos);
+        if (!mdata.getString(ComParameter.LOADING_STATE, ComParameter.CLICKING_STATE)
+                .equals(ComParameter.STATE_FIRST)) {
+            String temp = mdata.getString("pos", "pos");
+            int pos = Integer.parseInt(temp);
+            mDataBase.items_changeValue(ComParameter.MANTABLENAME, "position", mdata.getString("locationback", "locationback")
+                    , pos);
             this.loadList();
         }
         //控制程序在第一次启动时不在这里加载列表数据(第一次请求的数据从网络获得)
-        if(!mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE)
+        if (!mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE)
                 .equals(ComParameter.STATE_SECOND)) {
             this.loadList();
         }
     }
-    public boolean onKeyDown(int keyCode,KeyEvent event){
-        if (keyCode==KeyEvent.KEYCODE_BACK){
+
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             RegulatorActivity.this.finish();
             //释放httpEntity请求空间
             // this.managerListThread.closeHttp();
             //确保第一次启动时在请求成功前处于数据加载界面
-            if(mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE).
-                    equals(ComParameter.STATE_SECOND)){
-                mdata.putString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE,ComParameter.STATE_FIRST);
+            if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
+                    equals(ComParameter.STATE_SECOND)) {
+                mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE, ComParameter.STATE_FIRST);
             }
         }
         return false;
     }
 
     private void initial() {
-        Log.i("lzw","unmanager_init");
+        Log.i("lzw", "unmanager_init");
         this.bindID();
         mLocationUtils = new LocationUtils(this);
         mLocationUtils.LocationInfo();
         mcoder = GeoCoder.newInstance();
         mcoder.setOnGetGeoCodeResultListener(this);
-        if(!mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE).
+        if (!mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
                 equals(ComParameter.STATE_SECOND)) {
             //如果是第一次启动,不在这里加载列表数据(第一次请求的数据从网络获得)
             this.loadList();
@@ -132,14 +134,14 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
         this.locationSave();
         this.sendIdtoSever();
 
-     }
+    }
 
     private void bindID() {
         this.listViewRegulatorActivityReglutorList = (DefineListView)
                 this.findViewById(R.id.listivew_regulatoractivity_regulatorlist);
         this.txtRegulatorActivityTitle = (TextView)
                 this.findViewById(R.id.txt_regulatoractivity_title);
-        this.layout=(LinearLayout)
+        this.layout = (LinearLayout)
                 this.findViewById(R.id.myregulator_activity_layout);
 
     }
@@ -154,7 +156,7 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
         this.listViewRegulatorActivityReglutorList.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                userTouchDistance=listViewRegulatorActivityReglutorList.getUserTouchDistance();
+                userTouchDistance = listViewRegulatorActivityReglutorList.getUserTouchDistance();
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     touchY = event.getRawY();
                 } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
@@ -166,7 +168,8 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
                     if (listViewRegulatorActivityReglutorList.getFirstVisiblePosition() == 0
                             && userTouchDistance > 250) {
                         listViewRegulatorActivityReglutorList.dynSetHeadViewHeight(250);
-                        sendIdtoSever();Log.v("zyl","请求服务器中");
+                        sendIdtoSever();
+                        Log.v("zyl", "请求服务器中");
                         userTouchDistance = 0;
                     }
 
@@ -184,9 +187,9 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
 
     public List<User> getData() {
         List<User> list = new ArrayList<User>();
-        String length=mdata.getString("itemslength","length");
-        int k=Integer.parseInt(length);
-        if(mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE).
+        String length = mdata.getString("itemslength", "length");
+        int k = Integer.parseInt(length);
+        if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
                 equals(ComParameter.STATE_SECOND)) {
             //记录登陆状态
             mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE,
@@ -206,11 +209,11 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
         Log.v("textlist", "" + list.size());
         return list;
     }
-    public void changeRegBackground(List<User> list){
-        if(list.size()==0){
+
+    public void changeRegBackground(List<User> list) {
+        if (list.size() == 0) {
             layout.setBackgroundResource(R.drawable.regulator_background);
-        }
-        else{
+        } else {
             layout.setBackgroundResource(R.color.white_layout);
         }
     }
@@ -244,13 +247,14 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
         protected DefineDialog mDialog;
 
         public RegPositiveButtonListener(int pos, final User regulator,
-        DataBase mDataBase, EditText mEdittext, DefineDialog mDialog) {
+                                         DataBase mDataBase, EditText mEdittext, DefineDialog mDialog) {
             this.pos = pos;
             this.regulator = regulator;
             this.mDataBase = mDataBase;
             this.mEditText = mEdittext;
             this.mDialog = mDialog;
         }
+
         @Override
         public void onClick(View view) {
             regulator.setMangerMarks(mEditText.getText().toString());
@@ -259,6 +263,7 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
             mDialog.dismiss();
         }
     }
+
     /**
      * 百度定位接口
      */
@@ -272,13 +277,13 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
             lat = location.getLatitude() + "";
 
             lon = location.getLongitude() + "";
-            mDataBase.items_changeValue(ComParameter.DEVICE,"latitude",lat,0);
-            mDataBase.items_changeValue(ComParameter.DEVICE,"longitude",lon,0);
+            mDataBase.items_changeValue(ComParameter.DEVICE, "latitude", lat, 0);
+            mDataBase.items_changeValue(ComParameter.DEVICE, "longitude", lon, 0);
             reverseCode(lat, lon);
-            Log.i("lzw",lat+"");
-            Log.i("lzw",lon+"");
+            Log.i("lzw", lat + "");
+            Log.i("lzw", lon + "");
             locationClient.stop();
-            Log.i("lzw","unlink");
+            Log.i("lzw", "unlink");
 
         }
 
@@ -295,49 +300,49 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
         locationClient.requestLocation();
         BDListener bdListener = new BDListener();
         locationClient.registerLocationListener(bdListener);
-        Log.i("lzw","locationSDKwork");
+        Log.i("lzw", "locationSDKwork");
     }
 
-    private void isFirstConnect(){
-        mdata.putString(ComParameter.LOADING_STATE,ComParameter.IDENTITY_STATE,"regulator");
-        if(mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE)
-                .equals(ComParameter.STATE_FIRST)){
+    private void isFirstConnect() {
+        mdata.putString(ComParameter.LOADING_STATE, ComParameter.IDENTITY_STATE, "regulator");
+        if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE)
+                .equals(ComParameter.STATE_FIRST)) {
             this.setContentView(R.layout.manager_layout_first);
-            mdata.putString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE,
+            mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE,
                     ComParameter.STATE_SECOND);
-        }
-        else {
+        } else {
             this.setContentView(R.layout.regulator_layout);
             return;
         }
 
     }
 
-    private void loadList(){
+    private void loadList() {
         this.bindID();
         this.mRegulatordapter = new RegulatorAdapter(this.getData(), this, mDataBase);
         this.listViewRegulatorActivityReglutorList.setAdapter(mRegulatordapter);
         this.setCLickListener();
     }
-    protected void telNumSave(CurrentInformationUtils mInformation){
-        Log.i("zyl",mInformation.getDeviceTelNum());
-        mDataBase.items_changeValue(ComParameter.DEVICE,"telnumber",mInformation.getDeviceTelNum(),0);
+
+    protected void telNumSave(CurrentInformationUtils mInformation) {
+        Log.i("zyl", mInformation.getDeviceTelNum());
+        mDataBase.items_changeValue(ComParameter.DEVICE, "telnumber", mInformation.getDeviceTelNum(), 0);
     }
 
     /**
      * 向服务器发送请求
      */
-    protected void sendIdtoSever(){
-        this.managerListThread=new ManagerListThread(mHandler,"managerlistid");
+    protected void sendIdtoSever() {
+        this.managerListThread = new ManagerListThread(mHandler, "managerlistid");
         String requestURL = ComParameter.HOST + "contect.action";
-        this.managerListThread.setRequestPrepare(requestURL,this.prepareListParams());
+        this.managerListThread.setRequestPrepare(requestURL, this.prepareListParams());
         this.managerListThread.start();
     }
 
-    protected Map prepareListParams(){
+    protected Map prepareListParams() {
 
         Map<String, String> params = new HashMap<String, String>();
-        params.put("id",mdata.getString("tableid",mInformation.getDeviceId()));
+        params.put("id", mdata.getString("tableid", mInformation.getDeviceId()));
         return params;
     }
 
@@ -346,20 +351,19 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
             if (msg.getData().getInt("managerlistid") == ComParameter.STATE_RIGHT) {
                 Map<String, String> resultMap = managerListThread.getResultMap();
                 dealListFromSever(resultMap);
-            }
-            else if(msg.getData().getInt("managerlistid") ==ComParameter.STATE_ERROR) {
+            } else if (msg.getData().getInt("managerlistid") == ComParameter.STATE_ERROR) {
                 Map<String, String> resultMap = managerListThread.getResultMap();
-                Log.i("zyl","网络连接停止");
-                if(mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE).
+                Log.i("zyl", "网络连接停止");
+                if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
                         equals(ComParameter.STATE_SECOND)) {
                     //如果第一次连接失败,下一次重新请求服务器
                     mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE,
                             ComParameter.STATE_FIRST);
                 }
                 //获取错误报告
-                mdata.putString("errorreport","a",resultMap.get("test"));
+                mdata.putString("errorreport", "a", resultMap.get("test"));
                 ToastUtils.showToast(RegulatorActivity.this, "请求失败");
-                if(mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE).
+                if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
                         equals(ComParameter.STATE_THIRD)) {
                     listViewRegulatorActivityReglutorList = (DefineListView)
                             findViewById(R.id.listivew_regulatoractivity_regulatorlist);
@@ -371,65 +375,67 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
 
     /**
      * 处理从服务器获取的数据,加载列表
+     *
      * @param resultMap
      */
-    protected void dealListFromSever(Map<String, String> resultMap){
+    protected void dealListFromSever(Map<String, String> resultMap) {
 
-        mdata.putString("itemslength","length",resultMap.get("length"));
+        mdata.putString("itemslength", "length", resultMap.get("length"));
 
         //如果是首次启动
-        if(mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE).
-                equals(ComParameter.STATE_SECOND))
-        {
+        if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
+                equals(ComParameter.STATE_SECOND)) {
             setDataBase(resultMap);
-        }
-        else {
+        } else {
             dealDataBase(resultMap);
         }
         setContentView(R.layout.regulator_layout);
         loadList();
         listViewRegulatorActivityReglutorList.dynSetHeadViewHeight(0);
-        userTouchDistance=0;
+        userTouchDistance = 0;
     }
 
     /**
      * 第一次从服务器获取的列表,并首次插入数据库
+     *
      * @param resultMap
      */
-    private void setDataBase(Map<String, String> resultMap){
+    private void setDataBase(Map<String, String> resultMap) {
         //记录从服务器获取的列表长度
-        String length=mdata.getString("itemslength","length");
-        int k=Integer.parseInt(length);
-        mdata.putString("itemslength","lastlength",length);
-        if(k==0){return;}
-        else {
+        String length = mdata.getString("itemslength", "length");
+        int k = Integer.parseInt(length);
+        mdata.putString("itemslength", "lastlength", length);
+        if (k == 0) {
+            return;
+        } else {
             //插入数据库
-            for (int i=0;i<k;i++){
-                mDataBase.itemsInsert(ComParameter.MANTABLENAME,i,resultMap.get("idname"+i+""),
-                        resultMap.get("subname"+i+""),resultMap.get("subname"+i+""),"暂未获取地理位置",
-                        mInformation.getCurrentTime(),resultMap.get("isconnect"+i+""));
+            for (int i = 0; i < k; i++) {
+                mDataBase.itemsInsert(ComParameter.MANTABLENAME, i, resultMap.get("idname" + i + ""),
+                        resultMap.get("subname" + i + ""), resultMap.get("subname" + i + ""), "暂未获取地理位置",
+                        mInformation.getCurrentTime(), resultMap.get("isconnect" + i + ""));
             }
         }
     }
 
     /**
      * 不是首次获取,再原有数据基础上插入新数据
+     *
      * @param resultMap
      */
-    private void dealDataBase(Map<String, String> resultMap){
+    private void dealDataBase(Map<String, String> resultMap) {
         //上次和这次的列表长度可能不一样,用xml存储,并记录
-        String lastlenth=mdata.getString("itemslength","lastlength");
-        int last=Integer.parseInt(lastlenth);
-        String lenth=mdata.getString("itemslength","length");
-        int length=Integer.parseInt(lenth);
+        String lastlenth = mdata.getString("itemslength", "lastlength");
+        int last = Integer.parseInt(lastlenth);
+        String lenth = mdata.getString("itemslength", "length");
+        int length = Integer.parseInt(lenth);
         //新条目插入
-        for (int i=last;i<length;i++){
-            mDataBase.itemsInsert(ComParameter.MANTABLENAME,i,resultMap.get("idname"+i+""),
-                    resultMap.get("subname"+i+""),resultMap.get("subname"+i+""),"暂未获取地理位置",
-                    mInformation.getCurrentTime(),resultMap.get("isconnect"+i+""));
+        for (int i = last; i < length; i++) {
+            mDataBase.itemsInsert(ComParameter.MANTABLENAME, i, resultMap.get("idname" + i + ""),
+                    resultMap.get("subname" + i + ""), resultMap.get("subname" + i + ""), "暂未获取地理位置",
+                    mInformation.getCurrentTime(), resultMap.get("isconnect" + i + ""));
         }
         //将这次的长度作为下一次更新的"上次长度"
-        mdata.putString("itemslength","lastlength",lenth);
+        mdata.putString("itemslength", "lastlength", lenth);
     }
 
     /**
@@ -459,7 +465,7 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
             return;
         }
         String s = result.getAddress();
-        mDataBase.items_changeValue(ComParameter.DEVICE,"location",s,0);
+        mDataBase.items_changeValue(ComParameter.DEVICE, "location", s, 0);
         //将获得的地址保存
         SharedPreferences mpreference = getSharedPreferences("address", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = mpreference.edit();
@@ -473,8 +479,6 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
         Log.i("thislzw", "您的当前位置" + s + "已被保存");
 
     }
-
-
 
 
 }
