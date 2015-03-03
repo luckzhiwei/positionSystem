@@ -65,18 +65,25 @@ import java.util.Map;
 public class ManagerActivity extends Activity {
 
 
+
+
+
     private DefineListView managerActivityListView;
-    private ManagerAdapter mManagerAdapter;
     private TextView txtManagerActivityTitle, txtManagertgetDeviceName;
     private LinearLayout layout;
     private ProgressBar proManactivity;
+    private DefineDialog mDefineDialog;
+    private View contentview;
+
     private User oneManager = new User();
     private User oneRegulator = new User();
-    private DefineDialog mDefineDialog;
+
+
     private ManagerListThread managerListThread;
     private RenameThread renameThread;
-    private View contentview;
+
     private boolean isClear = true;
+    private ManagerAdapter mManagerAdapter;
     private final static String TABLENAME = "regulatoritems";
     private int userTouchDistance;
     private float touchY;
@@ -188,11 +195,13 @@ public class ManagerActivity extends Activity {
         this.telNumSave(mInformation);
         mLocation.locationSave();
         this.sendIdtoSever();
-        //本地测试
+        //发送请求至服务器，获取服务器上的联系人列表
+
         try {
             // this.testDealresponse();
         } catch (Exception e) {
         }
+        //本地测试
     }
 
     private void bindID() {
@@ -362,7 +371,7 @@ public class ManagerActivity extends Activity {
 
 
     /**
-     * 判断是否首次启动
+     * 判断是否首次启动，用于设置activity的布局
      */
     private void ifFirstConnect() {
         //用sharedpreference存储登陆状态
@@ -522,13 +531,15 @@ public class ManagerActivity extends Activity {
 
         mdata.putString("itemslength", "length", resultMap.get("length"));
 
-        //如果是首次启动
+
         if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
                 equals(ComParameter.STATE_SECOND)) {
             setDataBase(resultMap);
         } else {
             dealDataBase(resultMap);
         }
+        //每一次启动对本地数据库的操作是不一样的
+
         this.setContentView(R.layout.manager_layout);
         loadList();
         managerActivityListView.dynSetHeadViewHeight(0);
@@ -664,12 +675,14 @@ public class ManagerActivity extends Activity {
         mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOGIN_STATE, ComParameter.STATE_THIRD);
         this.logoutUserInfoUtils = new UserInfoUtils(this);
         Map<String, String> tmpMap = this.logoutUserInfoUtils.getUserInfoMap();
-        tmpMap.remove("username");
-        tmpMap.remove("password");
-        tmpMap.remove("type");
-        //注销清楚本地缓存的文件信息
-        tmpMap.put("loginstate", "seclogin");
-        this.logoutUserInfoUtils.updateUserInfo(tmpMap);
+        if(tmpMap!=null) {
+            tmpMap.remove("username");
+            tmpMap.remove("password");
+            tmpMap.remove("type");
+            //注销清楚本地缓存的文件信息
+            tmpMap.put("loginstate", "seclogin");
+            this.logoutUserInfoUtils.updateUserInfo(tmpMap);
+        }
         //写入二次登录的时候的情况
         this.startActivity(new Intent(ManagerActivity.this, LoginActivity.class));
     }

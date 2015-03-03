@@ -9,6 +9,7 @@ import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Thread.BaseThread;
 import org.dreamfly.positionsystem.Thread.RegisterRequestThread;
 import org.dreamfly.positionsystem.Utils.ToastUtils;
+import org.dreamfly.positionsystem.Utils.UserInfoUtils;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -40,6 +41,7 @@ public class RegistActivity extends Activity {
     private DefineDialog mDefineDialog;
 
     private BaseThread requestRegisterThread;
+    private UserInfoUtils userInfoUtils;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +64,7 @@ public class RegistActivity extends Activity {
         this.bindID();
         this.bindListener();
         proRegistActivity.setVisibility(View.GONE);
+        this.userInfoUtils=new UserInfoUtils(this);
     }
 
     private void bindID() {

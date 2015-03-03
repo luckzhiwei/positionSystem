@@ -105,21 +105,21 @@ public class LoginActivity extends Activity {
         this.btnLoginactivityLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 if (checkoutInputDataFormat()) {
-                    if (!mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOGIN_STATE
-                    ).equals(ComParameter.STATE_THIRD)) {
-                        showIsManagerDialog();
-                    } else {
-                        proLoginActivity.setVisibility(View.VISIBLE);
-                        sendSecLoginInfoToServer();
-                    }
-//                      UserInfoUtils secLoginUtils=new UserInfoUtils(LoginActivity.this);
-//                      if(secLoginUtils.isSecLogin())
-//                      {
-//                          showIsManagerDialog();
-//                      }else{
-//                         proLoginActivity.setVisibility(View.VISIBLE);
+//                    if (!mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOGIN_STATE
+//                    ).equals(ComParameter.STATE_THIRD)) {
+//                        showIsManagerDialog();
+//                    } else {
+//                        proLoginActivity.setVisibility(View.VISIBLE);
 //                        sendSecLoginInfoToServer();
-//                      }
+//                    }
+                      UserInfoUtils secLoginUtils=new UserInfoUtils(LoginActivity.this);
+                      if(!secLoginUtils.isSecLogin())
+                      {
+                          showIsManagerDialog();
+                      }else{
+                         proLoginActivity.setVisibility(View.VISIBLE);
+                        sendSecLoginInfoToServer();
+                      }
                 }
             }
         });
@@ -235,7 +235,9 @@ public class LoginActivity extends Activity {
         Map<String, String> params = new HashMap<String, String>();
         params.put("username", edittextLoginactivityUsername.getText().toString());
         params.put("password", editextLoginactivityPassword.getText().toString());
-        params.put("id", mdata.getString("tableid", mInformation.getDeviceId()));
+//        params.put("id", mdata.getString("tableid", mInformation.getDeviceId()));
+        UserInfoUtils severIdUtils=new UserInfoUtils(this);
+        params.put("id",severIdUtils.getServerId()+"");
         return (params);
     }
 

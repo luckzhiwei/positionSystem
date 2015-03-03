@@ -23,7 +23,7 @@ import java.util.Map;
 public class UserInfoUtils {
 
 
-    private File userInfoFile=null;
+    private File userInfoFile = null;
 
     private FileUitls mFileUitls;
 
@@ -41,9 +41,8 @@ public class UserInfoUtils {
      */
     public UserInfoUtils(Context mContext) {
         this.mFileUitls = new FileUitls(mContext);
-        File cachedir=this.mFileUitls.getCacheFileDir();
-        if(cachedir!=null)
-        {
+        File cachedir = this.mFileUitls.getCacheFileDir();
+        if (cachedir != null) {
             this.userInfoFile = new File(cachedir, "userinfo.txt");
             if (!this.userInfoFile.exists()) {
                 try {
@@ -53,8 +52,8 @@ public class UserInfoUtils {
                 }
                 this.initialUserInfo();//没有文件的时候才写入未登录状态,没有就不写
             }
-        }else{
-             this.userInfoFile=null;
+        } else {
+            this.userInfoFile = null;
         }
     }
 
@@ -83,18 +82,18 @@ public class UserInfoUtils {
         StringBuffer mStrBuf = new StringBuffer();
         String tmpStr;
         try {
-           if(this.userInfoFile!=null) {//针对文件建立不成功的情况
-               this.readUserInfo = new FileInputStream(this.userInfoFile);
-               BufferedReader bufReader = new BufferedReader(new InputStreamReader(this.readUserInfo));
-               //字节流传化为字符流
-               while ((tmpStr = bufReader.readLine()) != null) {
-                   mStrBuf.append(tmpStr);
-               }
-               this.readUserInfo.close();
-               bufReader.close();
-           }else{
-               return null;
-           }
+            if (this.userInfoFile != null) {//针对文件建立不成功的情况
+                this.readUserInfo = new FileInputStream(this.userInfoFile);
+                BufferedReader bufReader = new BufferedReader(new InputStreamReader(this.readUserInfo));
+                //字节流传化为字符流
+                while ((tmpStr = bufReader.readLine()) != null) {
+                    mStrBuf.append(tmpStr);
+                }
+                this.readUserInfo.close();
+                bufReader.close();
+            } else {
+                return null;
+            }
             return (mStrBuf.toString());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -138,7 +137,7 @@ public class UserInfoUtils {
     public boolean isLogin() {
         boolean islogin = false;
         String userinfo = this.getUserInfo();
-        if(userinfo!=null) {
+        if (userinfo != null) {
             this.userInfoMap = this.buildUserInfoMap(userinfo);
             if (this.userInfoMap != null) {
                 String loginstate = this.userInfoMap.get("loginstate");
@@ -160,17 +159,17 @@ public class UserInfoUtils {
      * @return
      */
     public Map<String, String> getUserInfoMap() {
-        String userInfo=this.getUserInfo();
-        if(userInfo!=null)
-        {
-            return(this.buildUserInfoMap(userInfo));
+        String userInfo = this.getUserInfo();
+        if (userInfo != null) {
+            return (this.buildUserInfoMap(userInfo));
         }
-        return(null);
+        return (null);
     }
+
     /**
      * 注销登录状态,将文件改成未登录状态
      */
-    public void clearUserInfo(){
+    public void clearUserInfo() {
         this.initialUserInfo();
         this.userInfoMap = null;
         //释放资源
@@ -194,12 +193,13 @@ public class UserInfoUtils {
 
     /**
      * 判断是否是管理者
+     *
      * @return
      */
     public boolean isManager() {
         boolean ismanager = true;
         String userinfo = this.getUserInfo();
-        if(userinfo!=null) {
+        if (userinfo != null) {
             this.userInfoMap = this.buildUserInfoMap(userinfo);
             if (this.userInfoMap != null) {
                 String managerstate = this.userInfoMap.get("managerstate");
@@ -217,43 +217,39 @@ public class UserInfoUtils {
 
     /**
      * 获取服务器给你的ID号码
+     *
      * @return
      */
-    public int getServerId()
-    {
-          int severId=-1;
-          String userinfo=this.getUserInfo();
-          if(userinfo!=null)
-          {
-              Map<String,String> tmpMap = this.buildUserInfoMap(userinfo);
-              String databaseId=tmpMap.get("userrID");
-              if(databaseId!=null)
-              {
-                    severId=Integer.parseInt(databaseId);
-              }
-          }
-        return(severId);
+    public int getServerId() {
+        int severId = -1;
+        String userinfo = this.getUserInfo();
+        if (userinfo != null) {
+            Map<String, String> tmpMap = this.buildUserInfoMap(userinfo);
+            String databaseId = tmpMap.get("userrID");
+            if (databaseId != null) {
+                severId = Integer.parseInt(databaseId);
+            }
+        }
+        return (severId);
     }
 
     /**
      * 判断是否二次登录
+     *
      * @return
      */
-    public boolean isSecLogin()
-    {
-          boolean issecLogin=false;
-          String userInfo=this.getUserInfo();
-          if(userInfo!=null)
-          {
-                Map<String,String> tmpMap=this.buildUserInfoMap(userInfo);
-                String loginstate=tmpMap.get("loginstate");
-                if(loginstate.equals("seclogin"))
-                {
-                    issecLogin=true;
-                }else{
-                    issecLogin=false;
-                }
-          }
-        return(issecLogin);
+    public boolean isSecLogin() {
+        boolean issecLogin = false;
+        String userInfo = this.getUserInfo();
+        if (userInfo != null) {
+            Map<String, String> tmpMap = this.buildUserInfoMap(userInfo);
+            String loginstate = tmpMap.get("loginstate");
+            if (loginstate.equals("seclogin")) {
+                issecLogin = true;
+            } else {
+                issecLogin = false;
+            }
+        }
+        return (issecLogin);
     }
 }
