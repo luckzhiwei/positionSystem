@@ -1,19 +1,28 @@
 package org.dreamfly.positionsystem.Activity;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import
         android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -35,10 +44,14 @@ import org.dreamfly.positionsystem.Custom.DefineListView;
 import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.Database.DefinedShared;
 import org.dreamfly.positionsystem.R;
+import org.dreamfly.positionsystem.Services.BaiduLocationService;
+import org.dreamfly.positionsystem.Services.Services;
 import org.dreamfly.positionsystem.Thread.ManagerListThread;
+import org.dreamfly.positionsystem.Thread.RenameThread;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 import org.dreamfly.positionsystem.Utils.LocationUtils;
 import org.dreamfly.positionsystem.Utils.ToastUtils;
+import org.dreamfly.positionsystem.Utils.UserInfoUtils;
 import org.dreamfly.positionsystem.bean.User;
 import org.dreamfly.positionsystem.CommonParameter.ComParameter;
 
@@ -51,7 +64,7 @@ import java.util.Map;
  * Created by zhengyl on 15-1-13.
  * 被管理者界面Activity类
  */
-public class RegulatorActivity extends Activity implements OnGetGeoCoderResultListener {
+public class RegulatorActivity extends Activity  {
 
     private DefineListView listViewRegulatorActivityReglutorList;
     private TextView txtRegulatorActivityTitle;
@@ -62,14 +75,18 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
     private ManagerActivity manager = new ManagerActivity();
     private ComParameter com = new ComParameter();
     private int userTouchDistance;
+    private View contentview;
     private float touchY;
+    private UserInfoUtils logoutUserInfoUtils;
     private boolean isClear = true;
     private ManagerListThread managerListThread;
+    private RenameThread renameThread;
     protected LocationUtils mLocationUtils;
     protected LocationClient locationClient;
     protected CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
     protected DefinedShared mdata = new DefinedShared(this);
     protected DataBase mDataBase = new DataBase(this);
+    protected Services mService;
     protected com.baidu.mapapi.search.geocode.GeoCoder mcoder;
     protected String lat;
     protected String lon;
@@ -83,10 +100,19 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
         this.isFirstConnect();
         this.initial();
     }
+    @Override
+    /**
+     * 重写onStop()方法
+     */
+    protected void onStop() {
+        super.onStop();
+        this.unbindLocationService();
+    }
 
     protected void onResume() {
         super.onResume();
         this.bindID();
+        this.serviceIntital();
         Log.i("lzw", "manage_intial");
         //从数据库读取上一次的地理位置
         if (!mdata.getString(ComParameter.LOADING_STATE, ComParameter.CLICKING_STATE)
@@ -115,23 +141,24 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
                 mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE, ComParameter.STATE_FIRST);
             }
         }
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            this.showPopwindow(this, contentview);
+        }
         return false;
     }
 
     private void initial() {
         Log.i("lzw", "unmanager_init");
         this.bindID();
-        mLocationUtils = new LocationUtils(this);
-        mLocationUtils.LocationInfo();
-        mcoder = GeoCoder.newInstance();
-        mcoder.setOnGetGeoCodeResultListener(this);
+        BaiduLocationService mLocation = new BaiduLocationService(this);
+        contentview=this.findViewById(R.id.myregulator_activity_layout);
         if (!mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
                 equals(ComParameter.STATE_SECOND)) {
             //如果是第一次启动,不在这里加载列表数据(第一次请求的数据从网络获得)
             this.loadList();
         }
         this.telNumSave(mInformation);
-        this.locationSave();
+        mLocation.locationSave();
         this.sendIdtoSever();
 
     }
@@ -145,6 +172,17 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
                 this.findViewById(R.id.myregulator_activity_layout);
 
     }
+
+    private void serviceIntital() {
+        if (!mdata.getString(ComParameter.LOADING_STATE, ComParameter.SERVICE_STATE)
+                .equals(ComParameter.STATE_SECOND)) {
+            this.startLocationService();
+            this.bindLocationService();
+        } else {
+            this.bindLocationService();
+        }
+    }
+
 
     private void setCLickListener() {
         this.listViewRegulatorActivityReglutorList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -232,7 +270,7 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
 
         RegPositiveButtonListener mPositiveButtonListener =
 
-                new RegPositiveButtonListener(position, oneRegulator, mDataBase,
+                new RegPositiveButtonListener(position, mDataBase,
                         this.mDefineDialog.getEditText(), this.mDefineDialog);
         mDefineDialog.setPosBtnClickListener(mPositiveButtonListener);
 
@@ -240,16 +278,15 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
 
     public class RegPositiveButtonListener implements View.OnClickListener {
         protected EditText mEditText;
-        protected User regulator;
+
         protected DataBase mDataBase;
         protected Context mcontext;
         protected int pos;
         protected DefineDialog mDialog;
 
-        public RegPositiveButtonListener(int pos, final User regulator,
+        public RegPositiveButtonListener(int pos,
                                          DataBase mDataBase, EditText mEdittext, DefineDialog mDialog) {
             this.pos = pos;
-            this.regulator = regulator;
             this.mDataBase = mDataBase;
             this.mEditText = mEdittext;
             this.mDialog = mDialog;
@@ -257,52 +294,13 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
 
         @Override
         public void onClick(View view) {
-            regulator.setMangerMarks(mEditText.getText().toString());
-            Log.v("textstring", regulator.getMangerMarks());
-            mDataBase.items_changeValue(com.MANTABLENAME, "subname", regulator.getMangerMarks(), (pos - 1));
+            oneRegulator.setMangerMarks(mEditText.getText().toString());
+            Log.v("textstring", oneRegulator.getMangerMarks());
+            tellSeverRename(pos, mEditText);
+            oneRegulator.setDataBaseID(pos-1);
             mDialog.dismiss();
         }
     }
-
-    /**
-     * 百度定位接口
-     */
-    public class BDListener implements com.baidu.location.BDLocationListener {
-        @Override
-        public void onReceiveLocation(BDLocation location) {
-            if (location == null) {
-                return;
-            }
-
-            lat = location.getLatitude() + "";
-
-            lon = location.getLongitude() + "";
-            mDataBase.items_changeValue(ComParameter.DEVICE, "latitude", lat, 0);
-            mDataBase.items_changeValue(ComParameter.DEVICE, "longitude", lon, 0);
-            reverseCode(lat, lon);
-            Log.i("lzw", lat + "");
-            Log.i("lzw", lon + "");
-            locationClient.stop();
-            Log.i("lzw", "unlink");
-
-        }
-
-        @Override
-        public void onReceivePoi(BDLocation bdLocation) {
-
-        }
-    }
-
-    public void locationSave() {
-
-        locationClient = mLocationUtils.getLocationClient();
-        locationClient.start();
-        locationClient.requestLocation();
-        BDListener bdListener = new BDListener();
-        locationClient.registerLocationListener(bdListener);
-        Log.i("lzw", "locationSDKwork");
-    }
-
     private void isFirstConnect() {
         mdata.putString(ComParameter.LOADING_STATE, ComParameter.IDENTITY_STATE, "regulator");
         if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE)
@@ -339,6 +337,18 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
         this.managerListThread.start();
     }
 
+    /**
+     * 发送修改备注名请求
+     *
+     * @param pos 表示第几个条目
+     */
+    protected void tellSeverRename(int pos, EditText mEditText) {
+        this.renameThread = new RenameThread(renameHandler, "renamestate");
+        String requestURL = ComParameter.HOST + "rename.action";
+        this.renameThread.setRequestPrepare(requestURL, this.prepareNameListParams(pos, mEditText));
+        this.renameThread.start();
+    }
+
     protected Map prepareListParams() {
 
         Map<String, String> params = new HashMap<String, String>();
@@ -346,31 +356,77 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
         return params;
     }
 
+    protected Map prepareNameListParams(int pos, EditText mEditText) {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("fromid", mdata.getString("tableid", mInformation.getDeviceId()));
+        Cursor cur = mDataBase.Selector(pos - 1, ComParameter.MANTABLENAME);
+        if (cur.moveToNext()) {
+            params.put("toid", cur.getString(cur.getColumnIndex("subid")));
+        }
+        params.put("name", mEditText.getText().toString());
+        cur.close();
+        return params;
+    }
+    private Handler renameHandler = new Handler(Looper.getMainLooper()) {
+        public void handleMessage(Message msg) {
+            if (msg.getData().getInt("renamestate") == ComParameter.STATE_RIGHT) {
+                dealRenameMessage();
+
+            } else if (msg.getData().getInt("renamestate") == ComParameter.STATE_ERROR) {
+                ToastUtils.showToast(getApplicationContext(), ComParameter.ERRORINFO);
+            }
+        }
+    };
+
+    private void dealRenameMessage() {
+        Map<String, String> resultMap = renameThread.getResultMap();
+        String state = resultMap.get("state");
+        if (state != null) {
+            if (state.equals("success")) {
+                ToastUtils.showToast(getApplication(), "修改成功");
+                mDataBase.items_changeValue(ComParameter.MANTABLENAME, "subname", oneRegulator.getMangerMarks(), oneRegulator.getDataBaseID());
+                loadList();
+            } else if (state.equals("fail")) {
+                Log.i("lzw", "rename_failed");
+                ToastUtils.showToast(getApplication(), resultMap.get("failReason"));
+            }
+        } else {
+            Log.i("zyl", "请求失败");
+        }
+    }
+
     private android.os.Handler mHandler = new android.os.Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
             if (msg.getData().getInt("managerlistid") == ComParameter.STATE_RIGHT) {
                 Map<String, String> resultMap = managerListThread.getResultMap();
                 dealListFromSever(resultMap);
-            } else if (msg.getData().getInt("managerlistid") == ComParameter.STATE_ERROR) {
-                Map<String, String> resultMap = managerListThread.getResultMap();
-                Log.i("zyl", "网络连接停止");
-                if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
-                        equals(ComParameter.STATE_SECOND)) {
-                    //如果第一次连接失败,下一次重新请求服务器
-                    mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE,
-                            ComParameter.STATE_FIRST);
-                }
-                //获取错误报告
-                mdata.putString("errorreport", "a", resultMap.get("test"));
-                ToastUtils.showToast(RegulatorActivity.this, "请求失败");
-                if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
-                        equals(ComParameter.STATE_THIRD)) {
+            } else {
+                this.dealErrorMsg(msg);
+                //处理错误信息
+            }
+                 listViewRegulatorActivityReglutorList.setIsFreshing(false);
+        }
+        private void dealErrorMsg(Message msg) {
+            if (msg.getData().getInt("managerlistid") == ComParameter.STATE_ERROR) {
+                ToastUtils.showToast(getApplicationContext(), "请求失败，请尝试重新获取");
+            } else if (msg.getData().getInt("NetWorkException") == ComParameter.STATE_ERROR_NETWORK) {
+                ToastUtils.showToast(getApplicationContext(), "网络连接超时，请稍候尝试");
+            }
+            if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
+                    equals(ComParameter.STATE_SECOND)) {
+                //如果第一次连接失败,下一次重新请求服务器
+                mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE,
+                        ComParameter.STATE_FIRST);
+            }
+            if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
+                    equals(ComParameter.STATE_THIRD)) {
                     listViewRegulatorActivityReglutorList = (DefineListView)
-                            findViewById(R.id.listivew_regulatoractivity_regulatorlist);
+                        findViewById(R.id.delistiview_manageractivity_showmanger);
                     listViewRegulatorActivityReglutorList.dynSetHeadViewHeight(0);
-                }
+                //第二次请求失败，列表上部的视图消失
             }
         }
+
     };
 
     /**
@@ -437,49 +493,112 @@ public class RegulatorActivity extends Activity implements OnGetGeoCoderResultLi
         //将这次的长度作为下一次更新的"上次长度"
         mdata.putString("itemslength", "lastlength", lenth);
     }
+    /**
+     * 显示popwindow替代菜单栏效果
+     *
+     * @param context
+     * @param parent
+     */
+    private void showPopwindow(Context context, View parent) {
+        LayoutInflater inflater = (LayoutInflater)
+                context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View mPopwindow = inflater.inflate(R.layout.man_popwindow, null, false);
+        final PopupWindow popWindow = new PopupWindow(mPopwindow, 700, 350, true);
+        bindButtonID(mPopwindow, popWindow);
+        popWindow.showAtLocation(parent, Gravity.BOTTOM, 0, 0);
+    }
+    /**
+     * 为按钮绑定监听并设置监听事件
+     *
+     * @param mPopwindow
+     * @param popWindow
+     */
+    private void bindButtonID(View mPopwindow, final PopupWindow popWindow) {
+        Button logoutButton = (Button) mPopwindow.findViewById(R.id.btn_menu_logout);
+        Button exitButon = (Button) mPopwindow.findViewById(R.id.btn_menu_exit);
+        Button cancelButton = (Button) mPopwindow.findViewById(R.id.btn_menu_cancel);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                popWindow.dismiss();
+                callServerLogout();
+                finish();
+            }
+        });
+        //注销登录按钮的事件监听
+        exitButon.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                popWindow.dismiss();
+                finish();
+                stopLocationService();
+            }
+        });
+        //退出按钮的时间监听
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                popWindow.dismiss();
+            }
+        });
+        //popwindow消除
+    }
+
+    private void callServerLogout() {
+        dealAfterlogout();
+    }
+
+    private void dealAfterlogout() {
+        mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOGIN_STATE, ComParameter.STATE_THIRD);
+        this.logoutUserInfoUtils = new UserInfoUtils(this);
+        Map<String, String> tmpMap = this.logoutUserInfoUtils.getUserInfoMap();
+        tmpMap.remove("username");
+        tmpMap.remove("password");
+        tmpMap.remove("type");
+        //注销清楚本地缓存的文件信息
+        tmpMap.put("loginstate", "seclogin");
+        this.logoutUserInfoUtils.updateUserInfo(tmpMap);
+        startActivity(new Intent(RegulatorActivity.this, LoginActivity.class));
+    }
+    private ServiceConnection mConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            mService = ((Services.MBinder) service).getService();
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            mService = null;
+        }
+    };
 
     /**
-     * 调用经纬度编码转换函数并用Sharepreference保存
-     *
-     * @param lat
-     * @param lon
+     * 开启service
      */
-    public void reverseCode(String lat, String lon) {
-        LatLng ptCenter = new LatLng(
-                (Float.valueOf(lat)),
-                Float.valueOf(lon));
-        mcoder.reverseGeoCode(new ReverseGeoCodeOption().location(ptCenter));
-
+    private void startLocationService() {
+        Log.i("service", "[SERVICE]start");
+        startService(new Intent(RegulatorActivity.this, Services.class));
     }
 
-    @Override
-    public void onGetGeoCodeResult(GeoCodeResult result) {
-
+    /**
+     * 停止service
+     */
+    private void stopLocationService() {
+        Log.i("service", "[SERVICE]stop");
+        stopService(new Intent(RegulatorActivity.this, Services.class));
     }
 
-    @Override
-    public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
-        if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
-            Toast.makeText(RegulatorActivity.this, "抱歉，未能找到结果", Toast.LENGTH_LONG)
-                    .show();
-            return;
-        }
-        String s = result.getAddress();
-        mDataBase.items_changeValue(ComParameter.DEVICE, "location", s, 0);
-        //将获得的地址保存
-        SharedPreferences mpreference = getSharedPreferences("address", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = mpreference.edit();
-        editor.putString("address", s);
-        editor.commit();
-        if (isClear) {
-            editor.clear();
-            editor.putString("address", s);
-            editor.commit();
-        }
-        Log.i("thislzw", "您的当前位置" + s + "已被保存");
-
+    /**
+     * 绑定service
+     */
+    private void bindLocationService() {
+        Log.i("service", "[SERVICE] beBinded");
+        bindService(new Intent(RegulatorActivity.this,
+                Services.class), mConnection, Context.BIND_AUTO_CREATE + Context.BIND_DEBUG_UNBIND);
     }
 
+    /**
+     * 解除绑定service
+     */
+    private void unbindLocationService() {
+        Log.i("service", "[SERVICE] Unbind");
+        unbindService(mConnection);
+    }
 
 }
 
