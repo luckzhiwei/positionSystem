@@ -35,10 +35,10 @@ import android.widget.Toast;
 
 public class ManagerAdapter extends BaseAdapter {
 
-    Context mContext;
-    List<User> mRegulatorList;//适配器中应该含有的容器,
-    DataBase mDataBase;
-    User regulator;
+    private  Context mContext;
+    private List<User> mRegulatorList;//适配器中应该含有的容器,
+    private  DataBase mDataBase;
+    private  User regulator;
     private Cursor cur;
     private DefineDialog mDefineDialog = null;
     private final static String TABLENAME="regulatoritems";
@@ -195,7 +195,6 @@ public class ManagerAdapter extends BaseAdapter {
         mDefineDialog = new DefineDialog(mContext).buiider(false).setDefineDialogCanceable(true)
                 .setTitle("是否获取地理位置").show();
         PositiveButtonListener mPositiveButtonListener =
-
                 new PositiveButtonListener(pos, oneRegulator, mDataBase,mDefineDialog);
 
         mDefineDialog.setPosBtnClickListener(mPositiveButtonListener);

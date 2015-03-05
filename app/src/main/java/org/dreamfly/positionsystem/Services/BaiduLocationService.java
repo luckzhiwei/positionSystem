@@ -38,17 +38,19 @@ public class BaiduLocationService implements OnGetGeoCoderResultListener {
 
     /**
      * 构造函数
+     *
      * @param context
      */
-    public BaiduLocationService(Context context){
-        this.context=context;
-        mdata=new DefinedShared(context);
+    public BaiduLocationService(Context context) {
+        this.context = context;
+        mdata = new DefinedShared(context);
         mDataBase = new DataBase(context);
-        mLocationUtils=new LocationUtils(context);
+        mLocationUtils = new LocationUtils(context);
         mLocationUtils.LocationInfo();
         mcoder = GeoCoder.newInstance();
 
     }
+
     /**
      * 调用百度定位Sdk,并存储定位数据
      */
@@ -76,13 +78,17 @@ public class BaiduLocationService implements OnGetGeoCoderResultListener {
             lat = location.getLatitude() + "";
 
             lon = location.getLongitude() + "";
-            mDataBase.items_changeValue(ComParameter.DEVICE,"latitude",lat,0);
-            mDataBase.items_changeValue(ComParameter.DEVICE,"longitude",lon,0);
+            mDataBase.items_changeValue(ComParameter.DEVICE, "latitude", lat, 0);
+            mDataBase.items_changeValue(ComParameter.DEVICE, "longitude", lon, 0);
+            DefinedShared mDefineShare = new DefinedShared(context);
+            mDefineShare.putString("longitude", "longitude", lat + "");
+            mDefineShare.putString("latitude", "latitude", lon + "");
+            //把从百度SDK获取到的经纬度并且存储至share中
             reverseCode(lat, lon);
-            Log.i("lzw",lat+"");
-            Log.i("lzw",lon+"");
+            Log.i("lzw", lat + "");
+            Log.i("lzw", lon + "");
             locationClient.stop();
-            Log.i("lzw","unlink");
+            Log.i("lzw", "unlink");
 
         }
 
@@ -91,6 +97,7 @@ public class BaiduLocationService implements OnGetGeoCoderResultListener {
 
         }
     }
+
     /**
      * 调用经纬度编码转换函数并用Sharepreference保存
      *
@@ -118,7 +125,7 @@ public class BaiduLocationService implements OnGetGeoCoderResultListener {
             return;
         }
         String s = result.getAddress();
-        mDataBase.items_changeValue(ComParameter.DEVICE,"location",s,0);
+        mDataBase.items_changeValue(ComParameter.DEVICE, "location", s, 0);
         //将获得的地址保存
         SharedPreferences mpreference = context.getSharedPreferences("address", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = mpreference.edit();

@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 
 /**
  * Created by zhengyl on 15-2-12.
+ * 自己定义的sharePrefereence的工具类
  */
 public class DefinedShared {
 
