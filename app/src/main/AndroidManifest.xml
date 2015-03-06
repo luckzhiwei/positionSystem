@@ -39,6 +39,7 @@
             </intent-filter>
         </service>
         <service android:name="org.dreamfly.positionsystem.Services.Services"/>
+        <service android:name="org.dreamfly.positionsystem.Services.QueryService"/>
 
 
     

@@ -45,6 +45,8 @@ import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.Database.DefinedShared;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Services.BaiduLocationService;
+import org.dreamfly.positionsystem.Services.QuerySerivcesBinder;
+import org.dreamfly.positionsystem.Services.QueryService;
 import org.dreamfly.positionsystem.Services.Services;
 import org.dreamfly.positionsystem.Thread.ManagerListThread;
 import org.dreamfly.positionsystem.Thread.RenameThread;
@@ -86,7 +88,7 @@ public class RegulatorActivity extends Activity  {
     protected CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
     protected DefinedShared mdata = new DefinedShared(this);
     protected DataBase mDataBase = new DataBase(this);
-    protected Services mService;
+    protected QueryService mService;
     protected com.baidu.mapapi.search.geocode.GeoCoder mcoder;
     protected String lat;
     protected String lon;
@@ -150,20 +152,21 @@ public class RegulatorActivity extends Activity  {
     private void initial() {
         Log.i("lzw", "unmanager_init");
         this.bindID();
-        BaiduLocationService mLocation = new BaiduLocationService(this);
-        contentview=this.findViewById(R.id.myregulator_activity_layout);
+
+
         if (!mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
                 equals(ComParameter.STATE_SECOND)) {
             //如果是第一次启动,不在这里加载列表数据(第一次请求的数据从网络获得)
             this.loadList();
         }
         this.telNumSave(mInformation);
-        mLocation.locationSave();
+
         this.sendIdtoSever();
 
     }
 
     private void bindID() {
+        contentview=this.findViewById(R.id.myregulator_activity_layout);
         this.listViewRegulatorActivityReglutorList = (DefineListView)
                 this.findViewById(R.id.listivew_regulatoractivity_regulatorlist);
         this.txtRegulatorActivityTitle = (TextView)
@@ -404,7 +407,7 @@ public class RegulatorActivity extends Activity  {
                 this.dealErrorMsg(msg);
                 //处理错误信息
             }
-                 listViewRegulatorActivityReglutorList.setIsFreshing(false);
+
         }
         private void dealErrorMsg(Message msg) {
             if (msg.getData().getInt("managerlistid") == ComParameter.STATE_ERROR) {
@@ -420,8 +423,9 @@ public class RegulatorActivity extends Activity  {
             }
             if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
                     equals(ComParameter.STATE_THIRD)) {
+
                     listViewRegulatorActivityReglutorList = (DefineListView)
-                        findViewById(R.id.delistiview_manageractivity_showmanger);
+                        findViewById(R.id.listivew_regulatoractivity_regulatorlist);
                     listViewRegulatorActivityReglutorList.dynSetHeadViewHeight(0);
                 //第二次请求失败，列表上部的视图消失
             }
@@ -449,6 +453,7 @@ public class RegulatorActivity extends Activity  {
         loadList();
         listViewRegulatorActivityReglutorList.dynSetHeadViewHeight(0);
         userTouchDistance = 0;
+        listViewRegulatorActivityReglutorList.setIsFreshing(false);
     }
 
     /**
@@ -559,7 +564,7 @@ public class RegulatorActivity extends Activity  {
     }
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
-            mService = ((Services.MBinder) service).getService();
+            mService = ((QuerySerivcesBinder) service).getService();
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -572,7 +577,7 @@ public class RegulatorActivity extends Activity  {
      */
     private void startLocationService() {
         Log.i("service", "[SERVICE]start");
-        startService(new Intent(RegulatorActivity.this, Services.class));
+        startService(new Intent(RegulatorActivity.this, QueryService.class));
     }
 
     /**
@@ -580,7 +585,7 @@ public class RegulatorActivity extends Activity  {
      */
     private void stopLocationService() {
         Log.i("service", "[SERVICE]stop");
-        stopService(new Intent(RegulatorActivity.this, Services.class));
+        stopService(new Intent(RegulatorActivity.this, QueryService.class));
     }
 
     /**
@@ -589,7 +594,7 @@ public class RegulatorActivity extends Activity  {
     private void bindLocationService() {
         Log.i("service", "[SERVICE] beBinded");
         bindService(new Intent(RegulatorActivity.this,
-                Services.class), mConnection, Context.BIND_AUTO_CREATE + Context.BIND_DEBUG_UNBIND);
+                QueryService.class), mConnection, Context.BIND_AUTO_CREATE + Context.BIND_DEBUG_UNBIND);
     }
 
     /**

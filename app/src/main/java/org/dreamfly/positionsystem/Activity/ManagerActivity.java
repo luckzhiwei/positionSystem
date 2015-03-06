@@ -41,6 +41,8 @@ import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.Database.DefinedShared;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Services.BaiduLocationService;
+import org.dreamfly.positionsystem.Services.QuerySerivcesBinder;
+import org.dreamfly.positionsystem.Services.QueryService;
 import org.dreamfly.positionsystem.Services.Services;
 import org.dreamfly.positionsystem.Thread.ManagerListThread;
 import org.dreamfly.positionsystem.Thread.RenameThread;
@@ -96,7 +98,7 @@ public class ManagerActivity extends Activity {
     protected DataBase mDataBase = new DataBase(this);
     protected final static String DEVICE = "deviceinformation";
     protected com.baidu.mapapi.search.geocode.GeoCoder mcoder;
-    protected Services mService;
+    protected QueryService mService;
 
     private UserInfoUtils logoutUserInfoUtils;
 
@@ -185,15 +187,13 @@ public class ManagerActivity extends Activity {
     private void initial() {
         this.bindID();
         Log.i("lzw", "manage_intial");
-        BaiduLocationService mLocation = new BaiduLocationService(this);
+
         if (!mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
                 equals(ComParameter.STATE_SECOND)) {
             //如果是第一次启动,不在这里加载列表数据(第一次请求的数据从网络获得)
             this.loadList();
         }
-        contentview = this.findViewById(R.id.manageractivity_layout);
         this.telNumSave(mInformation);
-        mLocation.locationSave();
         this.sendIdtoSever();
         //发送请求至服务器，获取服务器上的联系人列表
 
@@ -205,6 +205,7 @@ public class ManagerActivity extends Activity {
     }
 
     private void bindID() {
+        contentview = this.findViewById(R.id.manageractivity_layout);
         this.proManactivity = (ProgressBar)
                 this.findViewById(R.id.progressBar_manactivity);
         this.managerActivityListView = (DefineListView)
@@ -456,8 +457,7 @@ public class ManagerActivity extends Activity {
                 this.dealErrorMsg(msg);
                 //处理错误信息
             }
-            managerActivityListView.setIsFreshing(false);
-            //设置listview的加载状态为不刷新
+
         }
 
         private void dealErrorMsg(Message msg) {
@@ -542,6 +542,8 @@ public class ManagerActivity extends Activity {
 
         this.setContentView(R.layout.manager_layout);
         loadList();
+        managerActivityListView.setIsFreshing(false);
+        //设置listview的加载状态为不刷新
         managerActivityListView.dynSetHeadViewHeight(0);
         userTouchDistance = 0;
 
@@ -690,7 +692,7 @@ public class ManagerActivity extends Activity {
 
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
-            mService = ((Services.MBinder) service).getService();
+            mService = ((QuerySerivcesBinder)service).getService();
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -703,7 +705,7 @@ public class ManagerActivity extends Activity {
      */
     private void startLocationService() {
         Log.i("service", "[SERVICE]start");
-        startService(new Intent(ManagerActivity.this, Services.class));
+        startService(new Intent(ManagerActivity.this, QueryService.class));
     }
 
     /**
@@ -711,7 +713,7 @@ public class ManagerActivity extends Activity {
      */
     private void stopLocationService() {
         Log.i("service", "[SERVICE]stop");
-        stopService(new Intent(ManagerActivity.this, Services.class));
+        stopService(new Intent(ManagerActivity.this, QueryService.class));
     }
 
     /**
@@ -720,7 +722,7 @@ public class ManagerActivity extends Activity {
     private void bindLocationService() {
         Log.i("service", "[SERVICE] beBinded");
         bindService(new Intent(ManagerActivity.this,
-                Services.class), mConnection, Context.BIND_AUTO_CREATE + Context.BIND_DEBUG_UNBIND);
+                QueryService.class), mConnection, Context.BIND_AUTO_CREATE + Context.BIND_DEBUG_UNBIND);
     }
 
     /**
