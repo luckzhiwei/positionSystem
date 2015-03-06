@@ -221,9 +221,9 @@ public class ManagerActivity extends Activity {
     private void serviceIntital() {
         if (!mdata.getString(ComParameter.LOADING_STATE, ComParameter.SERVICE_STATE)
                 .equals(ComParameter.STATE_SECOND)) {
-            this.startLocationService();
-            this.bindLocationService();
-        } else {
+           this.startLocationService();
+           this.bindLocationService();
+     } else {
             this.bindLocationService();
         }
     }

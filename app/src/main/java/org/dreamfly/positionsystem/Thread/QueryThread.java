@@ -48,7 +48,8 @@ public class QueryThread extends  Thread {
                         String reponseStr= HttpUtils.requestHttpServer(this.URLrequest,
                                 this.params,ComParameter.ENCODE_UTF_8,ComParameter.ENCODE_UTF_8);
                         this.dealResponseStr(reponseStr);
-                        this.sleep(2 * 1000);
+                        Log.i("lzw",reponseStr);
+                        this.sleep(5 * 1000);
                     }catch(InterruptedException e) {
                            e.printStackTrace();
                     }
@@ -81,7 +82,7 @@ public class QueryThread extends  Thread {
                 if(reponseStr!=null)
                   if(reponseStr.equals("n"))
                   {
-                    //Log.i("lzw",reponseStr);
+                    Log.i("lzw",reponseStr);
                   }else{
                      Log.i("lzw",reponseStr);
                      String[] strArr=reponseStr.split(":");
