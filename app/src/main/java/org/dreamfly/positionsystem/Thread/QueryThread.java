@@ -17,7 +17,7 @@ import java.util.Map;
 import java.lang.InterruptedException;
 /**
  * Created by lzw on 2015/3/5.
- * 轮训网络模块的线程实现
+ * 轮询网络模块的线程实现
  */
 public class QueryThread extends  Thread {
 
@@ -25,8 +25,7 @@ public class QueryThread extends  Thread {
             private Map<String,String> params;
             private String URLrequest;
             private Handler mHandler;
-            private Message msg=new Message();
-            private Bundle bd=new Bundle();
+
             private boolean isSendMyLocation;
 
 
@@ -90,16 +89,17 @@ public class QueryThread extends  Thread {
                      {
                           this.sendCallMsgToService(strArr[1]);
                      }else if(strArr[0].equals("location")){
-
-                          callServiceGetLocation();
-                          this.isSendMyLocation=true;
-
-                         //改变向服务器发送地理位置的状态标志
-                         if(strArr.length>1) {
-                             if (!(strArr[1].equals(" ") || strArr[1].equals("null"))) {
-                                 sendLocationToService();
+                          if(strArr.length>1){
+                             if(strArr[1].equals(" ")){
+                             this.isSendMyLocation=true;
+                             callServiceGetLocation();
+                             //如果是user的话,得到为空的字符,调用百度SDK，把这时候的地理位置传入
+                             }else{
+                              this.sendLocationToService(strArr[1]);
+                             //如果是admin的话,现在就得到是对方的地理位置的字符串
                              }
-                         }
+                          }
+
                      }
                   }
             }
@@ -108,6 +108,8 @@ public class QueryThread extends  Thread {
      * 向queryservice发送获取本地位置请求
      */
     private void callServiceGetLocation() {
+        Bundle bd=new Bundle();
+        Message msg=new Message();
         bd.putInt("ACTION", ComParameter.ACTION_LOCATION);
         msg.setData(bd);
         this.mHandler.sendMessage(msg);
@@ -116,8 +118,11 @@ public class QueryThread extends  Thread {
     /**
      * 得到将对方的地理位置
      */
-    private void sendLocationToService(){
-        bd.putString("getlocation",ComParameter.USER_LOCATION);
+    private void sendLocationToService(String userLocation){
+        Bundle bd=new Bundle();
+        Message msg=new Message();
+        bd.putString("ACTION",ComParameter.USER_LOCATION);
+        bd.putString("userlocation",userLocation);
         msg.setData(bd);
         this.mHandler.sendMessage(msg);
     }
@@ -129,7 +134,8 @@ public class QueryThread extends  Thread {
      */
     private void sendCallMsgToService(String callNum) {
         if (callNum != null) {
-
+            Bundle bd=new Bundle();
+            Message msg=new Message();
             bd.putInt("ACTION", ComParameter.ACTION_CALLPHONE);
             bd.putString("callNum", callNum);
             msg.setData(bd);

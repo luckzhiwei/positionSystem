@@ -32,7 +32,7 @@ public class QueryService extends Service {
     private static String TAG = "zylservice";
     private NotificationManager manager;
     private BaiduLocationService mLocation;
-
+    private MsgSeneder mMessageSender;
 
     public IBinder onBind(Intent intent) {
         return (mQueryBind);
@@ -56,6 +56,10 @@ public class QueryService extends Service {
             }
             else if(bd.getInt("ACTION")==ComParameter.ACTION_LOCATION){
                 mLocation.locationSave();
+                //存储地理位置到share
+            }else if(bd.get("ACTION")==ComParameter.USER_LOCATION){
+                showlocationToActivity(bd.getString("userlocation"));
+
             }
 
         }
@@ -66,14 +70,22 @@ public class QueryService extends Service {
                callIn.setData(Uri.parse("tel:"+phoneNum));
                QueryService.this.startActivity(callIn);
         }
+
+        private void showlocationToActivity(String userLocation){
+               if(mMessageSender==null){
+                     mMessageSender=mQueryBind.getMsgSeneder();
+               }
+               if(userLocation!=null){
+                     mMessageSender.sendMsgLocationToShow(userLocation);
+               }else{
+                     mMessageSender.sendMsgLocationToShow("null");
+               }
+        }
     };
 
     public void onCreate(){
-         Log.i(TAG, "[SERVICE]onCreate");
          super.onCreate();
          initial();
-         this.mQueryBind=new QuerySerivcesBinder(this,mHandler,this);
-         this.mQueryBind.startQuery();
 
     }
 
@@ -86,6 +98,7 @@ public class QueryService extends Service {
 
         this.showNotification();
          mLocation = new BaiduLocationService(this);
+        this.mQueryBind=new QuerySerivcesBinder(this,mHandler);
     }
 
     /**
@@ -107,5 +120,9 @@ public class QueryService extends Service {
         notification.setLatestEventInfo(this, text, "正在为您的亲人提供您的地理位置", mPendingIntent);
         manager.notify(0, notification);
     }
+
+    public interface MsgSeneder{
+            public void sendMsgLocationToShow(String userLcation);
+    };
 
 }

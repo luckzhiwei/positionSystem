@@ -67,9 +67,6 @@ import java.util.Map;
 public class ManagerActivity extends Activity {
 
 
-
-
-
     private DefineListView managerActivityListView;
     private TextView txtManagerActivityTitle, txtManagertgetDeviceName;
     private LinearLayout layout;
@@ -101,6 +98,8 @@ public class ManagerActivity extends Activity {
     protected QueryService mService;
 
     private UserInfoUtils logoutUserInfoUtils;
+    private QueryService.MsgSeneder mMessageSender;
+
 
     /**
      * 重写onCreate方法,完成数据初始化,加载操作
@@ -221,6 +220,16 @@ public class ManagerActivity extends Activity {
     private void serviceIntital() {
         if (!mdata.getString(ComParameter.LOADING_STATE, ComParameter.SERVICE_STATE)
                 .equals(ComParameter.STATE_SECOND)) {
+           this.mMessageSender=new QueryService.MsgSeneder() {
+               public void sendMsgLocationToShow(String userLcation) {
+                    Message msg=new Message();
+                    Bundle bd=new Bundle();
+                    bd.putString("userlocation",userLcation);
+                    msg.setData(bd);
+                    queryServiceHandler.sendMessage(msg);
+               }
+           };
+           //实例化抽象类的线程
            this.startLocationService();
            this.bindLocationService();
      } else {
@@ -480,7 +489,9 @@ public class ManagerActivity extends Activity {
             }
         }
     };
-
+    /**
+     * 处理更改备注的信息
+     */
     private Handler renameHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
             if (msg.getData().getInt("renamestate") == ComParameter.STATE_RIGHT) {
@@ -490,6 +501,27 @@ public class ManagerActivity extends Activity {
                 ToastUtils.showToast(getApplicationContext(), ComParameter.ERRORINFO);
             }
         }
+    };
+    private Handler queryServiceHandler=new Handler(Looper.getMainLooper()){
+           public void handleMessage(Message msg) {
+                 String userlcation=msg.getData().getString("userlocation");
+                 if(userlcation!=null){
+                    dealUserLocation(userlcation);
+                 }
+
+           }
+
+           /**
+             * 处理UI跳转
+             * @param userlocation
+             */
+           private void dealUserLocation(String userlocation){
+                if(userlocation.equals("null")){
+                      //提示用户处理失败
+                }else{
+                     //跳转到PositionActivity中去
+                }
+           }
     };
 
     private void dealRenameMessage() {
@@ -690,9 +722,11 @@ public class ManagerActivity extends Activity {
 
 
     private ServiceConnection mConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            mService = ((QuerySerivcesBinder)service).getService();
-
+        public void onServiceConnected(ComponentName className, IBinder myBinder) {
+                QuerySerivcesBinder binder= (QuerySerivcesBinder)myBinder;
+                binder.setMsgSender(mMessageSender);
+                binder.startQuery();
+            //绑定到轮询线程要做的事情
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -701,7 +735,7 @@ public class ManagerActivity extends Activity {
     };
 
     /**
-     * 开启service
+     * 开启轮询线程的service
      */
     private void startLocationService() {
         Log.i("service", "[SERVICE]start");
@@ -709,7 +743,7 @@ public class ManagerActivity extends Activity {
     }
 
     /**
-     * 停止service
+     * 停止轮询线程的service
      */
     private void stopLocationService() {
         Log.i("service", "[SERVICE]stop");
@@ -717,7 +751,7 @@ public class ManagerActivity extends Activity {
     }
 
     /**
-     * 绑定service
+     * 绑定轮询线程的service
      */
     private void bindLocationService() {
         Log.i("service", "[SERVICE] beBinded");
@@ -726,7 +760,7 @@ public class ManagerActivity extends Activity {
     }
 
     /**
-     * 解除绑定service
+     * 解除绑定轮询线程的service
      */
     private void unbindLocationService() {
         Log.i("service", "[SERVICE] Unbind");
