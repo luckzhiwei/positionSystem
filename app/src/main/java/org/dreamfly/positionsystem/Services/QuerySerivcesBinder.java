@@ -7,7 +7,7 @@ import android.os.Handler;
 import org.dreamfly.positionsystem.Thread.QueryThread;
 
 /**
- * Created by asus on 2015/3/5.
+ * Created by lzw on 2015/3/5.
  */
 public class QuerySerivcesBinder extends Binder {
 
