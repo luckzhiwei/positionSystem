@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import org.dreamfly.positionsystem.CommonParameter.ComParameter;
 import org.dreamfly.positionsystem.Database.DefinedShared;
@@ -24,7 +25,8 @@ public class QueryThread extends  Thread {
             private Map<String,String> params;
             private String URLrequest;
             private Handler mHandler;
-
+            private Message msg=new Message();
+            private Bundle bd=new Bundle();
             private boolean isSendMyLocation;
 
 
@@ -36,6 +38,7 @@ public class QueryThread extends  Thread {
                    this.isSendMyLocation=false;
                    UserInfoUtils userIdUtils=new UserInfoUtils(mContext);
                    this.params.put("id",userIdUtils.getServerId()+"");
+                   Log.i("lzw","轮询线程启动中");
             }
 
             public void  run(){
@@ -45,7 +48,7 @@ public class QueryThread extends  Thread {
                         String reponseStr= HttpUtils.requestHttpServer(this.URLrequest,
                                 this.params,ComParameter.ENCODE_UTF_8,ComParameter.ENCODE_UTF_8);
                         this.dealResponseStr(reponseStr);
-                        this.sleep(5 * 1000);
+                        this.sleep(2 * 1000);
                     }catch(InterruptedException e) {
                            e.printStackTrace();
                     }
@@ -78,8 +81,9 @@ public class QueryThread extends  Thread {
                 if(reponseStr!=null)
                   if(reponseStr.equals("n"))
                   {
-
+                    //Log.i("lzw",reponseStr);
                   }else{
+                     Log.i("lzw",reponseStr);
                      String[] strArr=reponseStr.split(":");
                      if(strArr[0].equals("call"))
                      {
@@ -87,27 +91,49 @@ public class QueryThread extends  Thread {
                      }else if(strArr[0].equals("location")){
 
                           this.isSendMyLocation=true;
+                          callServiceGetLocation();
                          //改变向服务器发送地理位置的状态标志
+                         if(strArr.length>1) {
+                             if (!(strArr[1].equals(" ") || strArr[1].equals("null"))) {
+                                 sendLocationToService();
+                             }
+                         }
                      }
                   }
             }
 
-            /**
-            * 向QuertSerivce发送拨打电话的请求
-            * @param callNum
-            */
-            private void sendCallMsgToService(String callNum){
-                   if(callNum!=null){
-                       Message msg=new Message();
-                       Bundle bd=new Bundle();
-                       bd.putInt("ACTION",ComParameter.ACTION_CALLPHONE);
-                       bd.putString("callNum",callNum);
-                       msg.setData(bd);
-                       this.mHandler.sendMessage(msg);
-                   }
-            }
+    /**
+     * 向queryservice发送获取本地位置请求
+     */
+    private void callServiceGetLocation() {
+        bd.putInt("ACTION", ComParameter.ACTION_LOCATION);
+        msg.setData(bd);
+        this.mHandler.sendMessage(msg);
+    }
 
+    /**
+     * 得到将对方的地理位置
+     */
+    private void sendLocationToService(){
+        bd.putString("getlocation",ComParameter.USER_LOCATION);
+        msg.setData(bd);
+        this.mHandler.sendMessage(msg);
+    }
 
+    /**
+     * 向QuertSerivce发送拨打电话的请求
+     *
+     * @param callNum
+     */
+    private void sendCallMsgToService(String callNum) {
+        if (callNum != null) {
+
+            bd.putInt("ACTION", ComParameter.ACTION_CALLPHONE);
+            bd.putString("callNum", callNum);
+            msg.setData(bd);
+            this.mHandler.sendMessage(msg);
+        }
+    }
 
 
 }

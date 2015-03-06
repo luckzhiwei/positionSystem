@@ -88,7 +88,7 @@ public class HttpUtils {
                    strBuilder.append(tmpStr);
             }
             mBufferReader.close();
-            Log.i("lzw","转换流至字符串");
+            //Log.i("lzw","转换流至字符串");
             return(strBuilder.toString());
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -109,7 +109,7 @@ public class HttpUtils {
     private static List<NameValuePair> getRequestParams(Map<String, String> reuqestParams) {
         List<NameValuePair> list = null;
         if (reuqestParams != null && (!reuqestParams.isEmpty())) {
-            Log.i("lzw","post预前准备");
+            //Log.i("lzw","post预前准备");
             list = new ArrayList<NameValuePair>();
             Iterator iterator = reuqestParams.entrySet().iterator();
             while (iterator.hasNext()) {
@@ -132,7 +132,7 @@ public class HttpUtils {
     private static HttpPost bulidHttpPost(List<NameValuePair> list, String requestPath) {
         HttpPost post = null;
         try {
-            Log.i("lzw","形成表单");
+            //Log.i("lzw","形成表单");
             UrlEncodedFormEntity postEntity = new UrlEncodedFormEntity(list, "utf-8");
             //请求体的编码格式
             post = new HttpPost(requestPath);

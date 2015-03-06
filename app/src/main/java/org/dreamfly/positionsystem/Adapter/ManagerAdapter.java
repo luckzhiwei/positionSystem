@@ -35,10 +35,10 @@ import android.widget.Toast;
 
 public class ManagerAdapter extends BaseAdapter {
 
-    private  Context mContext;
-    private List<User> mRegulatorList;//适配器中应该含有的容器,
-    private  DataBase mDataBase;
-    private  User regulator;
+    protected   Context mContext;
+    protected List<User> mRegulatorList;//适配器中应该含有的容器,
+    protected   DataBase mDataBase;
+    protected   User regulator;
     private Cursor cur;
     private DefineDialog mDefineDialog = null;
     private final static String TABLENAME="regulatoritems";

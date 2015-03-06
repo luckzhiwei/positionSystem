@@ -14,12 +14,17 @@ public class QuerySerivcesBinder extends Binder {
 
     private Context mContext;
     private Handler mHandler;
-
+    private QueryService queryService;
     private QueryThread queryThread;
 
-    public QuerySerivcesBinder(Context mContext,Handler mHandler) {
+    public QuerySerivcesBinder(Context mContext,Handler mHandler,QueryService queryService) {
         this.mContext = mContext;
         this.mHandler=mHandler;
+        this.queryService=queryService;
+    }
+
+    public QueryService getService(){
+        return queryService ;
     }
 
     /**

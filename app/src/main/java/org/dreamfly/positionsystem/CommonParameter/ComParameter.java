@@ -53,6 +53,8 @@ public class ComParameter {
 
           public final static String STATE_THIRD="2";
 
+          public final static String USER_LOCATION="userlocation";
+
           public final static int ACTION_CALLPHONE=6;
 
           public final static int ACTION_LOCATION=7;
