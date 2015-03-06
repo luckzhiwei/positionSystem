@@ -187,7 +187,6 @@ public class ManagerActivity extends Activity {
     private void initial() {
         this.bindID();
         Log.i("lzw", "manage_intial");
-
         if (!mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
                 equals(ComParameter.STATE_SECOND)) {
             //如果是第一次启动,不在这里加载列表数据(第一次请求的数据从网络获得)
@@ -693,6 +692,7 @@ public class ManagerActivity extends Activity {
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             mService = ((QuerySerivcesBinder)service).getService();
+
         }
 
         public void onServiceDisconnected(ComponentName className) {

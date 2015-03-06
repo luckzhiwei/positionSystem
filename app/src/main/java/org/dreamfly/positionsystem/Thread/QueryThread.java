@@ -90,8 +90,9 @@ public class QueryThread extends  Thread {
                           this.sendCallMsgToService(strArr[1]);
                      }else if(strArr[0].equals("location")){
 
-                          this.isSendMyLocation=true;
                           callServiceGetLocation();
+                          this.isSendMyLocation=true;
+
                          //改变向服务器发送地理位置的状态标志
                          if(strArr.length>1) {
                              if (!(strArr[1].equals(" ") || strArr[1].equals("null"))) {
