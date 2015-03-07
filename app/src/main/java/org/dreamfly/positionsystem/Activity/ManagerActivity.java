@@ -560,6 +560,9 @@ public class ManagerActivity extends Activity {
      */
     protected void dealListFromSever(Map<String, String> resultMap) {
 
+        if(resultMap.get("connectedstate").equals("n")){
+            mdata.putString("itemslength","length",""+0);
+        }
         mdata.putString("itemslength", "length", resultMap.get("length"));
 
 
@@ -587,6 +590,9 @@ public class ManagerActivity extends Activity {
      */
     private void setDataBase(Map<String, String> resultMap) {
         //记录从服务器获取的列表长度
+        if(resultMap.get("connectedstate").equals("n")){
+            mdata.putString("itemslength","length",""+0);
+        }
         String length = mdata.getString("itemslength", "length");
         int k = Integer.parseInt(length);
         mdata.putString("itemslength", "lastlength", length);
