@@ -109,7 +109,7 @@ public class RegulatorActivity extends Activity  {
      */
     protected void onStop() {
         super.onStop();
-        this.unbindLocationService();
+        //this.unbindLocationService();
     }
 
     protected void onResume() {
@@ -240,6 +240,9 @@ public class RegulatorActivity extends Activity  {
     public List<User> getData() {
         List<User> list = new ArrayList<User>();
         String length = mdata.getString("itemslength", "length");
+        if(length.equals("")){
+            length=""+0;
+        }
         int k = Integer.parseInt(length);
         if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
                 equals(ComParameter.STATE_SECOND)) {
@@ -475,8 +478,9 @@ public class RegulatorActivity extends Activity  {
         if(resultMap.get("connectedstate").equals("n")){
             mdata.putString("itemslength","length",""+0);
         }
-        mdata.putString("itemslength", "length", resultMap.get("length"));
-
+        else {
+            mdata.putString("itemslength", "length", resultMap.get("length"));
+        }
         //如果是首次启动
         if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
                 equals(ComParameter.STATE_SECOND)) {
