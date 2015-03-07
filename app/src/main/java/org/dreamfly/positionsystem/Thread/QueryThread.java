@@ -48,7 +48,7 @@ public class QueryThread extends  Thread {
                                 this.params,ComParameter.ENCODE_UTF_8,ComParameter.ENCODE_UTF_8);
                         this.dealResponseStr(reponseStr);
                         Log.i("lzw",reponseStr);
-                        this.sleep(5 * 1000);
+                        this.sleep(10 * 1000);
                     }catch(InterruptedException e) {
                            e.printStackTrace();
                     }

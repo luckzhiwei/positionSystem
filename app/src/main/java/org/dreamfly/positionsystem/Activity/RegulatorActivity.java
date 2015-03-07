@@ -89,6 +89,7 @@ public class RegulatorActivity extends Activity  {
     protected DefinedShared mdata = new DefinedShared(this);
     protected DataBase mDataBase = new DataBase(this);
     protected QueryService mService;
+    private QueryService.MsgSeneder mMessageSender;
     protected com.baidu.mapapi.search.geocode.GeoCoder mcoder;
     protected String lat;
     protected String lon;
@@ -114,7 +115,7 @@ public class RegulatorActivity extends Activity  {
     protected void onResume() {
         super.onResume();
         this.bindID();
-        this.serviceIntital();
+
         Log.i("lzw", "manage_intial");
         //从数据库读取上一次的地理位置
         if (!mdata.getString(ComParameter.LOADING_STATE, ComParameter.CLICKING_STATE)
@@ -162,6 +163,7 @@ public class RegulatorActivity extends Activity  {
         this.telNumSave(mInformation);
 
         this.sendIdtoSever();
+       // this.serviceIntital();
 
     }
 
@@ -179,6 +181,15 @@ public class RegulatorActivity extends Activity  {
     private void serviceIntital() {
         if (!mdata.getString(ComParameter.LOADING_STATE, ComParameter.SERVICE_STATE)
                 .equals(ComParameter.STATE_SECOND)) {
+            this.mMessageSender=new QueryService.MsgSeneder() {
+                public void sendMsgLocationToShow(String userLcation) {
+                    Message msg=new Message();
+                    Bundle bd=new Bundle();
+                    bd.putString("userlocation",userLcation);
+                    msg.setData(bd);
+                    queryServiceHandler.sendMessage(msg);
+                }
+            };
             this.startLocationService();
             this.bindLocationService();
         } else {
@@ -380,6 +391,27 @@ public class RegulatorActivity extends Activity  {
             }
         }
     };
+    private Handler queryServiceHandler=new Handler(Looper.getMainLooper()){
+        public void handleMessage(Message msg) {
+            String userlcation=msg.getData().getString("userlocation");
+            if(userlcation!=null){
+                dealUserLocation(userlcation);
+            }
+
+        }
+
+        /**
+         * 处理UI跳转
+         * @param userlocation
+         */
+        private void dealUserLocation(String userlocation){
+            if(userlocation.equals("null")){
+                //提示用户处理失败
+            }else{
+                //跳转到PositionActivity中去
+            }
+        }
+    };
 
     private void dealRenameMessage() {
         Map<String, String> resultMap = renameThread.getResultMap();
@@ -440,6 +472,9 @@ public class RegulatorActivity extends Activity  {
      */
     protected void dealListFromSever(Map<String, String> resultMap) {
 
+        if(resultMap.get("connectedstate").equals("n")){
+            mdata.putString("itemslength","length",""+0);
+        }
         mdata.putString("itemslength", "length", resultMap.get("length"));
 
         //如果是首次启动
@@ -463,6 +498,9 @@ public class RegulatorActivity extends Activity  {
      */
     private void setDataBase(Map<String, String> resultMap) {
         //记录从服务器获取的列表长度
+        if(resultMap.get("connectedstate").equals("n")){
+            mdata.putString("itemslength","length",""+0);
+        }
         String length = mdata.getString("itemslength", "length");
         int k = Integer.parseInt(length);
         mdata.putString("itemslength", "lastlength", length);
@@ -563,8 +601,10 @@ public class RegulatorActivity extends Activity  {
         startActivity(new Intent(RegulatorActivity.this, LoginActivity.class));
     }
     private ServiceConnection mConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            mService = ((QuerySerivcesBinder) service).getService();
+        public void onServiceConnected(ComponentName className, IBinder myBinder) {
+            QuerySerivcesBinder binder= (QuerySerivcesBinder)myBinder;
+            binder.setMsgSender(mMessageSender);
+            binder.startQuery();
         }
 
         public void onServiceDisconnected(ComponentName className) {
