@@ -146,7 +146,7 @@ public class ManagerActivity extends Activity {
      */
     protected void onStop() {
         super.onStop();
-        this.unbindLocationService();
+        //this.unbindLocationService();
     }
 
     @Override
@@ -289,6 +289,9 @@ public class ManagerActivity extends Activity {
     private List<User> getData() {
         List<User> list = new ArrayList<User>();
         String length = mdata.getString("itemslength", "length");
+        if(length.equals("")){
+            length=""+0;
+        }
         int k = Integer.parseInt(length);
         if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
                 equals(ComParameter.STATE_SECOND)) {
@@ -563,8 +566,9 @@ public class ManagerActivity extends Activity {
         if(resultMap.get("connectedstate").equals("n")){
             mdata.putString("itemslength","length",""+0);
         }
-        mdata.putString("itemslength", "length", resultMap.get("length"));
-
+        else {
+            mdata.putString("itemslength", "length", resultMap.get("length"));
+        }
 
         if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
                 equals(ComParameter.STATE_SECOND)) {
