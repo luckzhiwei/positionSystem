@@ -62,7 +62,6 @@ public class HttpUtils {
                     return (switchStreamToString(ServerInputStream, responseEncode));
                 }else{
                     return "InterNetException";
-                    //
                 }
             }else{
                 return "singleTonException";

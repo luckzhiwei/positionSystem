@@ -564,7 +564,7 @@ public class RegulatorActivity extends Activity  {
     }
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
-            mService = ((QuerySerivcesBinder) service).getService();
+           // mService = ((QuerySerivcesBinder) service).getService();
         }
 
         public void onServiceDisconnected(ComponentName className) {

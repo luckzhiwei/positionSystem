@@ -13,8 +13,8 @@ import org.apache.http.params.HttpConnectionParams;
 public class CustomHttpclient {
 
     private static volatile HttpClient mHttpClient = null;
-    private static int  MAXREQUEST_TIME=300*1000;
-    private static int  MAXCON_TIME=300*1000;
+    private static int  MAXREQUEST_TIME=60*1000;
+    private static int  MAXCON_TIME=60*1000;
     /**
      * singleTon模式,节省内存
      * @return
