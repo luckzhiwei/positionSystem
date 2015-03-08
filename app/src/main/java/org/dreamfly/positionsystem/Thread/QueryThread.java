@@ -46,8 +46,8 @@ public class QueryThread extends  Thread {
                     try{
                         String reponseStr= HttpUtils.requestHttpServer(this.URLrequest,
                                 this.params,ComParameter.ENCODE_UTF_8,ComParameter.ENCODE_UTF_8);
+
                         this.dealResponseStr(reponseStr);
-                        Log.i("lzw",reponseStr);
                         this.sleep(10 * 1000);
                     }catch(InterruptedException e) {
                            e.printStackTrace();
@@ -78,25 +78,32 @@ public class QueryThread extends  Thread {
              * @param reponseStr
              */
             private void dealResponseStr(String reponseStr){
-                if(reponseStr!=null)
-                  if(reponseStr.equals("n"))
-                  {
-                    Log.i("lzw",reponseStr);
-                  }else{
-                     Log.i("lzw",reponseStr);
-                     String[] strArr=reponseStr.split(":");
-                     if(strArr[0].equals("call"))
-                     {
-                          this.sendCallMsgToService(strArr[1]);
-                     }else if(strArr[0].equals("location")){
-                         this.isSendMyLocation=true;
-                         callServiceGetLocation();
-                          if(strArr.length>1){
-                              this.sendLocationToService(strArr[1]);
-                          }
+                if(reponseStr!=null) {
+                  if(reponseStr.equals("InterNetException")) {
+                      //不是网络的异常的字符串
+                      if (reponseStr.equals("n")) {
+                          Log.i("lzw", reponseStr);
+                      } else {
+                          Log.i("lzw", reponseStr);
+                          String[] strArr = reponseStr.split(":");
+                          if (strArr[0].equals("call")) {
+                              this.sendCallMsgToService(strArr[1]);
+                          } else if (strArr[0].equals("location")) {
 
-                     }
+                              this.isSendMyLocation = true;
+                              callServiceGetLocation();
+                              //对location的处理 这是user的对location的处理
+                              if (strArr.length > 1) {
+                                  this.sendLocationToService(strArr[1]);
+                                  //这是admin获取user的地理位置信息
+                              }
+
+                          }
+                      }
+                  }else{
+                      sendErrorMsgToSerivce();
                   }
+                }
             }
 
     /**
@@ -137,6 +144,15 @@ public class QueryThread extends  Thread {
             this.mHandler.sendMessage(msg);
         }
     }
+
+    private void sendErrorMsgToSerivce(){
+          Bundle bd=new Bundle();
+          Message msg=new Message();
+          bd.putInt("STATE_ERROR",ComParameter.STATE_ERROR);
+          msg.setData(bd);
+          this.mHandler.sendMessage(msg);
+    }
+
 
 
 }

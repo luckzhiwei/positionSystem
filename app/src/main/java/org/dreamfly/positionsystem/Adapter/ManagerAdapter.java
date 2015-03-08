@@ -6,19 +6,26 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.location.Location;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.BaseAdapter;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.dreamfly.positionsystem.Activity.PositionActivity;
+import org.dreamfly.positionsystem.CommonParameter.ComParameter;
 import org.dreamfly.positionsystem.Custom.DefineDialog;
 import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.Database.DefinedShared;
 import org.dreamfly.positionsystem.R;
+import org.dreamfly.positionsystem.Thread.BaseThread;
+import org.dreamfly.positionsystem.Thread.LocationGetThread;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 
+import org.dreamfly.positionsystem.Utils.ToastUtils;
+import org.dreamfly.positionsystem.Utils.UserInfoUtils;
 import org.dreamfly.positionsystem.bean.User;
 
 import android.view.View;
@@ -44,11 +51,14 @@ public class ManagerAdapter extends BaseAdapter {
     private final static String TABLENAME="regulatoritems";
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(mContext);
     private DefinedShared mdata;
+    private Handler mHandler;
+    private LocationGetThread mLocationGetThread;
 
-    public ManagerAdapter(List<User> mRegulatorList, Context context, DataBase mDataBase) {
+    public ManagerAdapter(List<User> mRegulatorList, Context context, DataBase mDataBase,Handler mHandler) {
         this.mRegulatorList = mRegulatorList;
         this.mContext = context;
         this.mDataBase = mDataBase;
+        this.mHandler=mHandler;
     }
 
     public int getCount() {
@@ -114,6 +124,7 @@ public class ManagerAdapter extends BaseAdapter {
         protected User oneRegulator;
         protected DataBase mDataBase;
         protected DefineDialog mDefineDialog;
+
         final String s[] = {"南京路234号", "上海路278号", "北京路123号", "河北路456号",
                 "南山路88号", "合肥路87号", "河南路768号"};
 
@@ -130,14 +141,32 @@ public class ManagerAdapter extends BaseAdapter {
          * @param view
          */
         public void onClick(View view) {
+            ToastUtils.showToast(mContext,"正在获取对方的地理位置");
+            this.getUserLocationFromSever();
+        }
 
-            /*oneRegulator.setLastLocation("上次的位置:" + s[pos]);
-            mDataBase.items_changeValue(TABLENAME,"position", oneRegulator.getLastLocation(), pos);*/
+        /**
+         * 向服务器发送获取对方的地理位置的请求
+         */
+        private void getUserLocationFromSever(){
+            HashMap<String,String> params=new HashMap<String,String>();
+            params.put("type","location");
+            UserInfoUtils tmpUtils=new UserInfoUtils(mContext);
+            params.put("fromid",tmpUtils.getServerId()+"");
+            params.put("toid",oneRegulator.getDataBaseID()+"");
+            if(mLocationGetThread==null) {
+                mLocationGetThread=new LocationGetThread(mHandler,"getlocationstate");
+                String requestURL = ComParameter.HOST + "control.action";
+                mLocationGetThread.setRequestPrepare(requestURL, params);
+                mLocationGetThread.start();
+            }
             oneRegulator.setLastDateTouch(mInformation.getCurrentTime());
             mDataBase.items_changeValue(TABLENAME,"time", oneRegulator.getLastDateTouch(), pos);
             mDefineDialog.dismiss();
             sendposition(pos);
+
         }
+
     }
 
     /**
@@ -276,6 +305,10 @@ public class ManagerAdapter extends BaseAdapter {
         mdata.putString("pos","pos",pos+"");
         mdata.putString("isfirstconnect","isfirstclick","1");
 
+    }
+
+    public BaseThread getLocationThread(){
+         return(this.mLocationGetThread);
     }
 
 

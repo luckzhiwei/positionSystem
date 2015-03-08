@@ -44,6 +44,7 @@ import org.dreamfly.positionsystem.Services.BaiduLocationService;
 import org.dreamfly.positionsystem.Services.QuerySerivcesBinder;
 import org.dreamfly.positionsystem.Services.QueryService;
 import org.dreamfly.positionsystem.Services.Services;
+import org.dreamfly.positionsystem.Thread.LocationGetThread;
 import org.dreamfly.positionsystem.Thread.ManagerListThread;
 import org.dreamfly.positionsystem.Thread.RenameThread;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
@@ -227,6 +228,13 @@ public class ManagerActivity extends Activity {
                     bd.putString("userlocation",userLcation);
                     msg.setData(bd);
                     queryServiceHandler.sendMessage(msg);
+               }
+               public void sendMsgEroor(int state){
+                     Message msg=new Message();
+                     Bundle bd=new Bundle();
+                     bd.putInt("errorstate",state);
+                     msg.setData(bd);
+                     queryServiceHandler.sendMessage(msg);
                }
            };
            //实例化抽象类的线程
@@ -474,8 +482,6 @@ public class ManagerActivity extends Activity {
         private void dealErrorMsg(Message msg) {
             if(msg.getData().getInt("NetWorkException")==ComParameter.STATE_ERROR_NETWORK){
                 ToastUtils.showToast(getApplicationContext(),"网络连接超时，请稍候尝试");
-            }else{
-                ToastUtils.showToast(getApplicationContext(),"加载失败，请稍候尝试");
             }
             if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
                     equals(ComParameter.STATE_SECOND)) {
@@ -509,10 +515,9 @@ public class ManagerActivity extends Activity {
     private Handler queryServiceHandler=new Handler(Looper.getMainLooper()){
            public void handleMessage(Message msg) {
                  String userlcation=msg.getData().getString("userlocation");
-                 if(userlcation!=null){
-                    dealUserLocation(userlcation);
-                 }
-
+                 int state=msg.getData().getInt("errorstate");
+                 this.dealUserLocation(userlcation);
+                 this.dealLocationFail(state);
            }
 
            /**
@@ -521,13 +526,44 @@ public class ManagerActivity extends Activity {
              */
            private void dealUserLocation(String userlocation){
                 if(userlocation.equals("null")){
-                      //提示用户处理失败
+                     //提示用户处理失败
                 }else{
                      //跳转到PositionActivity中去
                 }
            }
-    };
 
+            /**
+             * 处理获取location失败的界面
+             * @param state
+             */
+           private void dealLocationFail(int state){
+               if(state==ComParameter.STATE_ERROR){
+                   //获取加载失败的界面
+               }
+
+           }
+    };
+    private Handler getLocationHandler=new Handler(Looper.getMainLooper()){
+        public void handleMessage(Message msg){
+              int state=msg.getData().getInt("getlocationstate");
+              if(state==ComParameter.STATE_RIGHT) {
+                  LocationGetThread mLocationGetThread=(LocationGetThread)mManagerAdapter.getLocationThread();
+                  Map<String,String> resultMap=mLocationGetThread.getResultMap();
+                  dealEnrollLoadMsg(resultMap);
+              }else if(state==ComParameter.STATE_ERROR){
+                  ToastUtils.showToast(getApplicationContext(),"获取失败");
+              }
+        }
+
+        private void dealEnrollLoadMsg(Map<String,String> reusltMap){
+               if(reusltMap.get("state").equals("success")){
+                    //有关与进入数据加载界面的UI处理
+
+               }else{
+                   ToastUtils.showToast(getApplicationContext(),"获取失败,尝试重新获取");
+               }
+        }
+    } ;
     private void dealRenameMessage() {
         Map<String, String> resultMap = renameThread.getResultMap();
         String state = resultMap.get("state");
@@ -552,7 +588,7 @@ public class ManagerActivity extends Activity {
     private void loadList() {
         this.bindID();
         this.setListViewListener();
-        this.mManagerAdapter = new ManagerAdapter(this.getData(), this, mDataBase);
+        this.mManagerAdapter = new ManagerAdapter(this.getData(), this, mDataBase,getLocationHandler);
         this.managerActivityListView.setAdapter(this.mManagerAdapter);
     }
 

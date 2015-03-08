@@ -60,6 +60,9 @@ public class QueryService extends Service {
             }else if(bd.get("ACTION")==ComParameter.USER_LOCATION){
                 showlocationToActivity(bd.getString("userlocation"));
 
+            }else if(bd.get("STATE_ERROR")==ComParameter.STATE_ERROR){
+                sendMsgErrorToActivity(ComParameter.STATE_ERROR);
+                //向activity的handler发送错误的消息
             }
 
         }
@@ -81,6 +84,14 @@ public class QueryService extends Service {
                      mMessageSender.sendMsgLocationToShow("null");
                }
         }
+
+        private void sendMsgErrorToActivity(int state){
+              if(mMessageSender==null){
+                    mMessageSender=mQueryBind.getMsgSeneder();
+              }
+              mMessageSender.sendMsgEroor(state);
+        }
+
     };
 
     public void onCreate(){
@@ -123,6 +134,7 @@ public class QueryService extends Service {
 
     public interface MsgSeneder{
             public void sendMsgLocationToShow(String userLcation);
+            public void sendMsgEroor(int state);
     };
 
 }

@@ -119,7 +119,6 @@ public abstract class BaseThread extends Thread {
         this.msg = new Message();
         Bundle bd = new Bundle();
         bd.putInt(key, state);
-
         this.msg.setData(bd);
     }
 
