@@ -39,7 +39,9 @@ public class CustomHttpclient {
                     //三次握手的请求时间最大设置
                     HttpConnectionParams.setSoTimeout(params,MAXCON_TIME);
                     //三次握手的返回时间最大设置
-                    SchemeRegistry schReg = new SchemeRegistry();
+
+                    SchemeRegistry schReg=new SchemeRegistry();
+
                     schReg.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
                     schReg.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
                     ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(params,schReg);
