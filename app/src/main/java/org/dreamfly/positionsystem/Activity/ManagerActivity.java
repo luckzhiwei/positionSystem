@@ -472,8 +472,10 @@ public class ManagerActivity extends Activity {
         }
 
         private void dealErrorMsg(Message msg) {
-            if (msg.getData().getInt("managerlistid") == ComParameter.STATE_ERROR) {
-                ToastUtils.showToast(getApplicationContext(), "请求失败，请尝试重新获取");
+            if(msg.getData().getInt("NetWorkException")==ComParameter.STATE_ERROR_NETWORK){
+                ToastUtils.showToast(getApplicationContext(),"网络连接超时，请稍候尝试");
+            }else{
+                ToastUtils.showToast(getApplicationContext(),"加载失败，请稍候尝试");
             }
             if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
                     equals(ComParameter.STATE_SECOND)) {
@@ -488,6 +490,7 @@ public class ManagerActivity extends Activity {
                 managerActivityListView.dynSetHeadViewHeight(0);
                 //第二次请求失败，列表上部的视图消失
             }
+            managerActivityListView.setIsFreshing(false);
         }
     };
     /**

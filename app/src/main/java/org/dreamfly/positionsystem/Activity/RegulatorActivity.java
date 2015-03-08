@@ -446,10 +446,11 @@ public class RegulatorActivity extends Activity  {
 
         }
         private void dealErrorMsg(Message msg) {
-            if (msg.getData().getInt("managerlistid") == ComParameter.STATE_ERROR) {
-                ToastUtils.showToast(getApplicationContext(), "请求失败，请尝试重新获取");
-            } else if (msg.getData().getInt("NetWorkException") == ComParameter.STATE_ERROR_NETWORK) {
+
+            if (msg.getData().getInt("NetWorkException") == ComParameter.STATE_ERROR_NETWORK) {
                 ToastUtils.showToast(getApplicationContext(), "网络连接超时，请稍候尝试");
+            }else{
+                 ToastUtils.showToast(getApplication(),"加载错误，请稍候重试");
             }
             if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
                     equals(ComParameter.STATE_SECOND)) {
@@ -465,6 +466,7 @@ public class RegulatorActivity extends Activity  {
                     listViewRegulatorActivityReglutorList.dynSetHeadViewHeight(0);
                 //第二次请求失败，列表上部的视图消失
             }
+            listViewRegulatorActivityReglutorList.setIsFreshing(false);
         }
 
     };
