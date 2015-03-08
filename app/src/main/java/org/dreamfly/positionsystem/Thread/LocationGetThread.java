@@ -1,6 +1,7 @@
 package org.dreamfly.positionsystem.Thread;
 
 import android.os.Handler;
+import android.util.Log;
 
 import java.util.HashMap;
 
@@ -18,11 +19,15 @@ public class LocationGetThread extends BaseThread {
           this.resultMap=new HashMap<String,String>();
           String[] strArr=responseString.split(":");
           if(strArr.length==2){
+                 Log.i("lzw",strArr[0]);
+                 Log.i("lzw",strArr[1]);
                  resultMap.put(strArr[0],strArr[1]);
+
           }else if(strArr.length==3){
                  resultMap.put(strArr[0],strArr[1]);
                  resultMap.put("failReason",strArr[2]);
           }
+
     }
 
 }

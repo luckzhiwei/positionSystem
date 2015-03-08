@@ -142,18 +142,22 @@ public class ManagerAdapter extends BaseAdapter {
          */
         public void onClick(View view) {
             ToastUtils.showToast(mContext,"正在获取对方的地理位置");
-            this.getUserLocationFromSever();
+            this.getUserLocationFromSever(pos);
         }
 
         /**
          * 向服务器发送获取对方的地理位置的请求
          */
-        private void getUserLocationFromSever(){
+        private void getUserLocationFromSever(int pos){
             HashMap<String,String> params=new HashMap<String,String>();
             params.put("type","location");
             UserInfoUtils tmpUtils=new UserInfoUtils(mContext);
             params.put("fromid",tmpUtils.getServerId()+"");
-            params.put("toid",oneRegulator.getDataBaseID()+"");
+            Cursor cur=mDataBase.Selector(pos, TABLENAME);
+            if(cur.moveToNext()) {
+                params.put("toid", cur.getString(cur.getColumnIndex("subid")));
+            }
+            cur.close();
             if(mLocationGetThread==null) {
                 mLocationGetThread=new LocationGetThread(mHandler,"getlocationstate");
                 String requestURL = ComParameter.HOST + "control.action";
@@ -163,7 +167,7 @@ public class ManagerAdapter extends BaseAdapter {
             oneRegulator.setLastDateTouch(mInformation.getCurrentTime());
             mDataBase.items_changeValue(TABLENAME,"time", oneRegulator.getLastDateTouch(), pos);
             mDefineDialog.dismiss();
-            sendposition(pos);
+
 
         }
 

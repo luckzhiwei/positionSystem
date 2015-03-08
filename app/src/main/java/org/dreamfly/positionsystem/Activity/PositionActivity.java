@@ -109,8 +109,9 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
         mcoder.setOnGetGeoCodeResultListener(this);
         txtPositionLatitute.setText(sb);
         txtPositionLongitute.setText(sb1);
-        MapInfo(txtPositionLatitute, txtPositionLongitute, isFirstLoc);
-
+        if(dealIntent()) {
+            MapInfo(txtPositionLatitute, txtPositionLongitute, isFirstLoc);
+        }
     }
 
     /**
@@ -132,12 +133,16 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
 
 
     }
-    private void dealIntent(){
+    private boolean dealIntent(){
         String location=this.getIntent().getStringExtra("userlocation");
         if(location!=null&&location!="") {
             String str[] =location.split(" ");
             sb=str[0];
             sb1=str[1];
+            return  true;
+        }
+        else {
+            return false;
         }
     }
 
