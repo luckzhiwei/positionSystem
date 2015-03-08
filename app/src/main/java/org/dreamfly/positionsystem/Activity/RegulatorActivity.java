@@ -189,6 +189,13 @@ public class RegulatorActivity extends Activity  {
                     msg.setData(bd);
                     queryServiceHandler.sendMessage(msg);
                 }
+                public void sendMsgEroor(int state){
+                    Message msg=new Message();
+                    Bundle bd=new Bundle();
+                    bd.putInt("errorstate",state);
+                    msg.setData(bd);
+                    queryServiceHandler.sendMessage(msg);
+                }
             };
             this.startLocationService();
             this.bindLocationService();
@@ -336,7 +343,7 @@ public class RegulatorActivity extends Activity  {
 
     private void loadList() {
         this.bindID();
-        this.mRegulatordapter = new RegulatorAdapter(this.getData(), this, mDataBase);
+        this.mRegulatordapter = new RegulatorAdapter(this.getData(), this, mDataBase,mHandler);
         this.listViewRegulatorActivityReglutorList.setAdapter(mRegulatordapter);
         this.setCLickListener();
     }

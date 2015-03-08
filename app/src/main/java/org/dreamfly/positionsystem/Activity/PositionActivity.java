@@ -3,6 +3,7 @@ package org.dreamfly.positionsystem.Activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -98,6 +99,7 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
     }
 
     private void initial() {
+        dealIntent();
         this.bindID();
         mLocationUtils = new LocationUtils(this);
         mLocationUtils.LocationInfo();
@@ -105,6 +107,9 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
 
         mcoder = GeoCoder.newInstance();
         mcoder.setOnGetGeoCodeResultListener(this);
+        txtPositionLatitute.setText(sb);
+        txtPositionLongitute.setText(sb1);
+        MapInfo(txtPositionLatitute, txtPositionLongitute, isFirstLoc);
 
     }
 
@@ -127,7 +132,14 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
 
 
     }
-
+    private void dealIntent(){
+        String location=this.getIntent().getStringExtra("userlocation");
+        if(location!=null&&location!="") {
+            String str[] =location.split(" ");
+            sb=str[0];
+            sb1=str[1];
+        }
+    }
 
     /**
      * 初始化定位服务信息
@@ -148,13 +160,11 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
                 return;
             }
 
-            sb = location.getLatitude() + "";
+            //sb = location.getLatitude() + "";
 
-            sb1 = location.getLongitude() + "";
+            //sb1 = location.getLongitude() + "";
 
-            txtPositionLatitute.setText(sb);
-            txtPositionLongitute.setText(sb1);
-            MapInfo(txtPositionLatitute, txtPositionLongitute, isFirstLoc);
+
         }
 
         @Override

@@ -79,7 +79,7 @@ public class QueryThread extends  Thread {
              */
             private void dealResponseStr(String reponseStr){
                 if(reponseStr!=null) {
-                  if(reponseStr.equals("InterNetException")) {
+                  if(!reponseStr.equals("InterNetException")) {
                       //不是网络的异常的字符串
                       if (reponseStr.equals("n")) {
                           Log.i("lzw", reponseStr);

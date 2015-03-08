@@ -14,6 +14,7 @@ import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 import org.dreamfly.positionsystem.bean.User;
 import java.util.List;
+import java.util.logging.Handler;
 
 /**
  * Created by zhengyl on 15-1-22.
@@ -23,6 +24,7 @@ public class RegulatorAdapter extends ManagerAdapter {
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(mContext);
     private Cursor cur;
     private DefineDialog mDefineDialog = null;
+    protected android.os.Handler mHandler;
     private static  final String MANTABLENAME="manageritems";
 
     /**
@@ -31,8 +33,8 @@ public class RegulatorAdapter extends ManagerAdapter {
      * @param context
      * @param mDataBase
      */
-    public RegulatorAdapter(List<User>mRegulatorList,Context context,DataBase mDataBase) {
-        super(mRegulatorList,context,mDataBase);
+    public RegulatorAdapter(List<User>mRegulatorList,Context context,DataBase mDataBase,android.os.Handler mHandler) {
+        super(mRegulatorList,context,mDataBase,mHandler);
     }
 
     @Override

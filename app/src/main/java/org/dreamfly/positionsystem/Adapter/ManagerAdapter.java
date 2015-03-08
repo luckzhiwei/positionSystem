@@ -51,7 +51,7 @@ public class ManagerAdapter extends BaseAdapter {
     private final static String TABLENAME="regulatoritems";
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(mContext);
     private DefinedShared mdata;
-    private Handler mHandler;
+    protected Handler mHandler;
     private LocationGetThread mLocationGetThread;
 
     public ManagerAdapter(List<User> mRegulatorList, Context context, DataBase mDataBase,Handler mHandler) {

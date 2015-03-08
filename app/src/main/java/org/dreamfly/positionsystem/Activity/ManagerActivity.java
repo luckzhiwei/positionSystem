@@ -512,58 +512,69 @@ public class ManagerActivity extends Activity {
             }
         }
     };
-    private Handler queryServiceHandler=new Handler(Looper.getMainLooper()){
-           public void handleMessage(Message msg) {
-                 String userlcation=msg.getData().getString("userlocation");
-                 int state=msg.getData().getInt("errorstate");
-                 this.dealUserLocation(userlcation);
-                 this.dealLocationFail(state);
-           }
-
-           /**
-             * 处理UI跳转
-             * @param userlocation
-             */
-           private void dealUserLocation(String userlocation){
-                if(userlocation.equals("null")){
-                     //提示用户处理失败
-                }else{
-                     //跳转到PositionActivity中去
-                }
-           }
-
-            /**
-             * 处理获取location失败的界面
-             * @param state
-             */
-           private void dealLocationFail(int state){
-               if(state==ComParameter.STATE_ERROR){
-                   //获取加载失败的界面
-               }
-
-           }
+    private Handler queryServiceHandler=new Handler(Looper.getMainLooper()) {
+        public void handleMessage(Message msg) {
+            String userlcation = msg.getData().getString("userlocation");
+            int state = msg.getData().getInt("errorstate");
+            dealUserLocation(userlcation);
+            dealLocationFail(state);
+        }
     };
-    private Handler getLocationHandler=new Handler(Looper.getMainLooper()){
-        public void handleMessage(Message msg){
-              int state=msg.getData().getInt("getlocationstate");
-              if(state==ComParameter.STATE_RIGHT) {
-                  LocationGetThread mLocationGetThread=(LocationGetThread)mManagerAdapter.getLocationThread();
-                  Map<String,String> resultMap=mLocationGetThread.getResultMap();
-                  dealEnrollLoadMsg(resultMap);
-              }else if(state==ComParameter.STATE_ERROR){
-                  ToastUtils.showToast(getApplicationContext(),"获取失败");
-              }
+        /**
+         * 处理UI跳转
+         *
+         * @param userlocation
+         */
+        private void dealUserLocation(String userlocation) {
+            if (userlocation.equals("null")) {
+                //提示用户处理失败
+            } else {
+                setContentView(R.layout.manager_layout);
+                Intent intent = new Intent(ManagerActivity.this, PositionActivity.class);
+                intent.putExtra("userlocation", userlocation);
+                startActivity(intent);
+                //跳转到PositionActivity中去
+            }
         }
 
-        private void dealEnrollLoadMsg(Map<String,String> reusltMap){
-               if(reusltMap.get("state").equals("success")){
-                    //有关与进入数据加载界面的UI处理
+    /**
+     * 处理获取location失败的界面
+     *
+     * @param state
+     */
+    private void dealLocationFail(int state) {
+        if (state == ComParameter.STATE_ERROR) {
+            //获取加载失败的界面
+            ToastUtils.showToast(getApplicationContext(), "获取地理位置失败,请稍后再试");
+            setContentView(R.layout.manager_layout);
 
-               }else{
-                   ToastUtils.showToast(getApplicationContext(),"获取失败,尝试重新获取");
-               }
         }
-    } ;
+
+    }
+
+    private Handler getLocationHandler = new Handler(Looper.getMainLooper()) {
+        public void handleMessage(Message msg) {
+            int state = msg.getData().getInt("getlocationstate");
+            if (state == ComParameter.STATE_RIGHT) {
+                LocationGetThread mLocationGetThread = (LocationGetThread) mManagerAdapter.getLocationThread();
+                Map<String, String> resultMap = mLocationGetThread.getResultMap();
+                dealEnrollLoadMsg(resultMap);
+            } else if (state == ComParameter.STATE_ERROR) {
+                ToastUtils.showToast(getApplicationContext(), "获取失败");
+            }
+        }
+    };
+
+    private void dealEnrollLoadMsg(Map<String, String> reusltMap) {
+        if (reusltMap.get("state").equals("success")) {
+            //有关与进入数据加载界面的UI处理
+            setContentView(R.layout.manager_layout_first);
+
+        } else {
+            ToastUtils.showToast(getApplicationContext(), "获取失败,尝试重新获取");
+        }
+    }
+
     private void dealRenameMessage() {
         Map<String, String> resultMap = renameThread.getResultMap();
         String state = resultMap.get("state");

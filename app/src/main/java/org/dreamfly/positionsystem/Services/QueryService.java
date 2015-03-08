@@ -60,7 +60,7 @@ public class QueryService extends Service {
             }else if(bd.get("ACTION")==ComParameter.USER_LOCATION){
                 showlocationToActivity(bd.getString("userlocation"));
 
-            }else if(bd.get("STATE_ERROR")==ComParameter.STATE_ERROR){
+            }else if(bd.getInt("STATE_ERROR")==ComParameter.STATE_ERROR){
                 sendMsgErrorToActivity(ComParameter.STATE_ERROR);
                 //向activity的handler发送错误的消息
             }
