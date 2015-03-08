@@ -2,6 +2,7 @@ package org.dreamfly.positionsystem.CommonParameter;
 
 /**
  * Created by asus on 2015/1/15.
+ *
  */
 public class ComParameter {
 

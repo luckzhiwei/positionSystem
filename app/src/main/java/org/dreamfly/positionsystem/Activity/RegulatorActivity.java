@@ -220,8 +220,10 @@ public class RegulatorActivity extends Activity  {
                     if (listViewRegulatorActivityReglutorList.getFirstVisiblePosition() == 0
                             && userTouchDistance > 250) {
                         listViewRegulatorActivityReglutorList.dynSetHeadViewHeight(250);
-                        sendIdtoSever();
-                        Log.v("zyl", "请求服务器中");
+                      if(!listViewRegulatorActivityReglutorList.getIsFreshing()) {
+                          listViewRegulatorActivityReglutorList.setIsFreshing(true);
+                          sendIdtoSever();
+                      }
                         userTouchDistance = 0;
                     }
 
@@ -353,7 +355,6 @@ public class RegulatorActivity extends Activity  {
         this.managerListThread.setRequestPrepare(requestURL, this.prepareListParams());
         this.managerListThread.start();
     }
-
     /**
      * 发送修改备注名请求
      *

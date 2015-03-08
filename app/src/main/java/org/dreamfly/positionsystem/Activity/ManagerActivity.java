@@ -474,8 +474,6 @@ public class ManagerActivity extends Activity {
         private void dealErrorMsg(Message msg) {
             if (msg.getData().getInt("managerlistid") == ComParameter.STATE_ERROR) {
                 ToastUtils.showToast(getApplicationContext(), "请求失败，请尝试重新获取");
-            } else if (msg.getData().getInt("NetWorkException") == ComParameter.STATE_ERROR_NETWORK) {
-                ToastUtils.showToast(getApplicationContext(), "网络连接超时，请稍候尝试");
             }
             if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
                     equals(ComParameter.STATE_SECOND)) {

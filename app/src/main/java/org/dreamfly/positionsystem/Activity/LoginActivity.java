@@ -250,8 +250,8 @@ public class LoginActivity extends Activity {
         } else {
             params.put("type", "user");
         }
-        params.put("phonenum", this.mInformation.getDeviceTelNum());
-
+//        params.put("phonenum", this.mInformation.getDeviceTelNum());
+        params.put("phonenum","15828539365");
         params.put("deviceid", this.mInformation.getDeviceId());
 
         params.put("devicename", this.mInformation.getCurrentDeviceName());
