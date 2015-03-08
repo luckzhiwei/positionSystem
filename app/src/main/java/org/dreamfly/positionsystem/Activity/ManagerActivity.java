@@ -123,7 +123,7 @@ public class ManagerActivity extends Activity {
     protected void onResume() {
         super.onResume();
         this.bindID();
-        //this.serviceIntital();
+        this.serviceIntital();
         //从数据库读取上一次的地理位置
         if (!mdata.getString(ComParameter.LOADING_STATE, ComParameter.CLICKING_STATE)
                 .equals(ComParameter.STATE_FIRST)) {

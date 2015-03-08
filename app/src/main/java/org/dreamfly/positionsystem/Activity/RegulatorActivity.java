@@ -163,7 +163,7 @@ public class RegulatorActivity extends Activity  {
         this.telNumSave(mInformation);
 
         this.sendIdtoSever();
-       // this.serviceIntital();
+        this.serviceIntital();
 
     }
 

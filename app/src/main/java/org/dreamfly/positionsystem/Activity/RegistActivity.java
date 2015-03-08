@@ -129,6 +129,7 @@ public class RegistActivity extends Activity {
 
                         Intent in = new Intent().setClass(RegistActivity.this, LoginActivity.class);
                         startActivity(in);
+                        finish();
                     } else if (registerState.equals("fail")) {
                         ToastUtils.showToast(getApplicationContext(), "注册失败:" +
                                 resultMap.get("failReason") + "");
