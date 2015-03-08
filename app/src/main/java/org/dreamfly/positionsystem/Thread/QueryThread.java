@@ -89,15 +89,10 @@ public class QueryThread extends  Thread {
                      {
                           this.sendCallMsgToService(strArr[1]);
                      }else if(strArr[0].equals("location")){
+                         this.isSendMyLocation=true;
+                         callServiceGetLocation();
                           if(strArr.length>1){
-                             if(strArr[1].equals(" ")){
-                             this.isSendMyLocation=true;
-                             callServiceGetLocation();
-                             //如果是user的话,得到为空的字符,调用百度SDK，把这时候的地理位置传入
-                             }else{
                               this.sendLocationToService(strArr[1]);
-                             //如果是admin的话,现在就得到是对方的地理位置的字符串
-                             }
                           }
 
                      }

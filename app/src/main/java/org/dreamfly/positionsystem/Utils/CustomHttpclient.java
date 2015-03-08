@@ -2,7 +2,10 @@ package org.dreamfly.positionsystem.Utils;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.params.HttpClientParams;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
@@ -29,7 +32,10 @@ public class CustomHttpclient {
                     //三次握手的请求时间最大设置
                     HttpConnectionParams.setSoTimeout(params,MAXCON_TIME);
                     //三次握手的返回时间最大设置
-                    ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(params,new SchemeRegistry());
+                    SchemeRegistry schReg=new SchemeRegistry();
+                    schReg.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+                    schReg.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
+                    ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(params,schReg);
                     mHttpClient = new DefaultHttpClient(cm,params);
                 }
             }
