@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
+import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
@@ -43,6 +44,7 @@ public class BaiduLocationService implements OnGetGeoCoderResultListener {
      */
     public BaiduLocationService(Context context) {
         this.context = context;
+        SDKInitializer.initialize(context.getApplicationContext());
         mdata = new DefinedShared(context);
         mDataBase = new DataBase(context);
         mLocationUtils = new LocationUtils(context);

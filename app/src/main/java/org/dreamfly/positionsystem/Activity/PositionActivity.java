@@ -76,7 +76,7 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
 
         this.setContentView(R.layout.position_layout);
         this.initial();
-        this.bindListener();
+        //this.codeChanging();
     }
 
     @Override
@@ -109,7 +109,7 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
         mcoder.setOnGetGeoCodeResultListener(this);
         txtPositionLatitute.setText(sb);
         txtPositionLongitute.setText(sb1);
-        if(dealIntent()) {
+        if (dealIntent()) {
             MapInfo(txtPositionLatitute, txtPositionLongitute, isFirstLoc);
         }
     }
@@ -133,15 +133,15 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
 
 
     }
-    private boolean dealIntent(){
-        String location=this.getIntent().getStringExtra("userlocation");
-        if(location!=null&&location!="") {
-            String str[] =location.split(" ");
-            sb=str[0];
-            sb1=str[1];
-            return  true;
-        }
-        else {
+
+    private boolean dealIntent() {
+        String location = this.getIntent().getStringExtra("userlocation");
+        if (location != null && location != "") {
+            String str[] = location.split(" ");
+            sb = str[0];
+            sb1 = str[1];
+            return true;
+        } else {
             return false;
         }
     }
@@ -151,53 +151,22 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
      */
     private void locationInfo() {
         locationClient = mLocationUtils.getLocationClient();
-        BDListener bdListener = new BDListener();
-        locationClient.registerLocationListener(bdListener);
         locationClient.start();
         locationClient.requestLocation();
 
     }
 
-    public class BDListener implements com.baidu.location.BDLocationListener {
-        @Override
-        public void onReceiveLocation(BDLocation location) {
-            if (location == null) {
-                return;
-            }
-
-            //sb = location.getLatitude() + "";
-
-            //sb1 = location.getLongitude() + "";
-
-
-        }
-
-        @Override
-        public void onReceivePoi(BDLocation bdLocation) {
-
-        }
-    }
-
 
     /**
-     * 绑定按钮监听
+     * 转换编码
      */
-    private void bindListener() {
-        SharedPreferences sharedPreferences = this.getSharedPreferences("address", Context.MODE_PRIVATE);
-        String name = sharedPreferences.getString("address", "");
-        txtPositionLocation.setText(name);
+    private void codeChanging() {
 
-        mdata.putString("locationback", "locationback", name);
+        LatLng ptCenter = new LatLng(
+                (Float.valueOf(txtPositionLatitute.getText().toString())),
+                Float.valueOf(txtPositionLongitute.getText().toString()));
+        mcoder.reverseGeoCode(new ReverseGeoCodeOption().location(ptCenter));
 
-        this.btnPositionActivityGeo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LatLng ptCenter = new LatLng(
-                        (Float.valueOf(txtPositionLatitute.getText().toString())),
-                        Float.valueOf(txtPositionLongitute.getText().toString()));
-                mcoder.reverseGeoCode(new ReverseGeoCodeOption().location(ptCenter));
-            }
-        });
     }
 
     /**
@@ -251,36 +220,10 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
             return;
         }
         txtPositionLocation.setText(result.getAddress());
-
+        mdata.putString("locationback", "locationback", result.getAddress());
         Log.i("lzw", result.getAddress() + "");
 
     }
 
-    @Override
-    /**
-     * 添加菜单操作
-     */
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        menu.clear();
-        MenuInflater inflater = this.getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.manageractivity_logout:
-                break;
-            case R.id.manageractivity_exit:
-
-                //this.stopLocationService();
-                //this.unbindLocationService();
-                //ManagerActivity.this.finish();
-
-        }
-        return false;
-    }
 
 }

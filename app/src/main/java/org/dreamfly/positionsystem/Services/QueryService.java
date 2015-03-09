@@ -32,7 +32,7 @@ public class QueryService extends Service {
     private static String TAG = "zylservice";
     private NotificationManager manager;
     private BaiduLocationService mLocation;
-    private MsgSeneder mMessageSender;
+    private MsgSender mMessageSender;
 
     public IBinder onBind(Intent intent) {
         return (mQueryBind);
@@ -67,6 +67,7 @@ public class QueryService extends Service {
 
         }
 
+
         private void callPhone(String phoneNum){
                Intent callIn=new Intent();
                callIn.setAction(Intent.ACTION_CALL);
@@ -74,25 +75,31 @@ public class QueryService extends Service {
                QueryService.this.startActivity(callIn);
         }
 
-        private void showlocationToActivity(String userLocation){
-               if(mMessageSender==null){
-                     mMessageSender=mQueryBind.getMsgSeneder();
-               }
-               if(userLocation!=null){
-                     mMessageSender.sendMsgLocationToShow(userLocation);
-               }else{
-                     mMessageSender.sendMsgLocationToShow("null");
-               }
-        }
+
 
         private void sendMsgErrorToActivity(int state){
               if(mMessageSender==null){
                     mMessageSender=mQueryBind.getMsgSeneder();
               }
-              mMessageSender.sendMsgEroor(state);
+              mMessageSender.sendMsgError(state);
         }
 
     };
+
+    private void showlocationToActivity(String userLocation){
+        if(mMessageSender==null){
+            mMessageSender=this.getmMessageSender();
+        }
+
+        if(userLocation!=null){
+            if(mMessageSender==null){
+                Log.i("zyl","实例仍然为空");
+            }
+            mMessageSender.sendMsgLocationToShow(userLocation);
+        }else{
+            mMessageSender.sendMsgLocationToShow("null");
+        }
+    }
 
     public void onCreate(){
          super.onCreate();
@@ -109,7 +116,8 @@ public class QueryService extends Service {
 
         this.showNotification();
          mLocation = new BaiduLocationService(this);
-        this.mQueryBind=new QuerySerivcesBinder(this,mHandler);
+        this.mQueryBind=new QuerySerivcesBinder(this,mHandler,this);
+
     }
 
     /**
@@ -132,9 +140,19 @@ public class QueryService extends Service {
         manager.notify(0, notification);
     }
 
-    public interface MsgSeneder{
+    public interface MsgSender {
             public void sendMsgLocationToShow(String userLcation);
-            public void sendMsgEroor(int state);
-    };
+            public void sendMsgError(int state);
+    }
+
+    public void setMsgSender(MsgSender msgSender){
+        this.mMessageSender=msgSender;
+    }
+
+    public MsgSender getmMessageSender(){
+        return this.mMessageSender;
+    }
+
+
 
 }
