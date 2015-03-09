@@ -46,7 +46,6 @@ public class QueryThread extends  Thread {
                     try{
                         String reponseStr= HttpUtils.requestHttpServer(this.URLrequest,
                                 this.params,ComParameter.ENCODE_UTF_8,ComParameter.ENCODE_UTF_8);
-
                         this.dealResponseStr(reponseStr);
                         this.sleep(10 * 1000);
                     }catch(InterruptedException e) {
@@ -82,9 +81,9 @@ public class QueryThread extends  Thread {
                   if(!reponseStr.equals("InterNetException")) {
                       //不是网络的异常的字符串
                       if (reponseStr.equals("n")) {
-                          Log.i("lzw", reponseStr);
+
                       } else {
-                          Log.i("lzw", reponseStr);
+
                           String[] strArr = reponseStr.split(":");
                           if (strArr[0].equals("call")) {
                               this.sendCallMsgToService(strArr[1]);

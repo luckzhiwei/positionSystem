@@ -557,7 +557,12 @@ public class ManagerActivity extends Activity {
             int state = msg.getData().getInt("getlocationstate");
             if (state == ComParameter.STATE_RIGHT) {
                 LocationGetThread mLocationGetThread = (LocationGetThread) mManagerAdapter.getLocationThread();
-                Map<String, String> resultMap = mLocationGetThread.getResultMap();
+                if(mLocationGetThread==null){
+                     Log.i("lzw","null");
+                }else{
+                     Log.i("lzw","not null");
+                }
+                Map<String,String> resultMap=mLocationGetThread.getResultMap();
                 dealEnrollLoadMsg(resultMap);
             } else if (state == ComParameter.STATE_ERROR) {
                 ToastUtils.showToast(getApplicationContext(), "获取失败");
@@ -566,13 +571,13 @@ public class ManagerActivity extends Activity {
     };
 
     private void dealEnrollLoadMsg(Map<String, String> reusltMap) {
-//        if (reusltMap.get("state").equals("success")) {
-//            //有关与进入数据加载界面的UI处理
-//            setContentView(R.layout.manager_layout_first);
-//
-//        } else {
-//            ToastUtils.showToast(getApplicationContext(), "获取失败,尝试重新获取");
-//        }
+        if (reusltMap.get("state").equals("success")) {
+            //有关与进入数据加载界面的UI处理
+            setContentView(R.layout.manager_layout_first);
+
+        } else {
+            ToastUtils.showToast(getApplicationContext(), "获取失败,尝试重新获取");
+        }
     }
 
     private void dealRenameMessage() {
