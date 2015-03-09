@@ -5,8 +5,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import
-        android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,18 +23,9 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.mapapi.SDKInitializer;
-import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.search.core.SearchResult;
-import com.baidu.mapapi.search.geocode.GeoCodeResult;
-import com.baidu.mapapi.search.geocode.GeoCoder;
-import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
-import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
-import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 
 import org.dreamfly.positionsystem.Adapter.RegulatorAdapter;
 import org.dreamfly.positionsystem.Custom.DefineDialog;
@@ -44,10 +33,8 @@ import org.dreamfly.positionsystem.Custom.DefineListView;
 import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.Database.DefinedShared;
 import org.dreamfly.positionsystem.R;
-import org.dreamfly.positionsystem.Services.BaiduLocationService;
 import org.dreamfly.positionsystem.Services.QuerySerivcesBinder;
 import org.dreamfly.positionsystem.Services.QueryService;
-import org.dreamfly.positionsystem.Services.Services;
 import org.dreamfly.positionsystem.Thread.ManagerListThread;
 import org.dreamfly.positionsystem.Thread.RenameThread;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
@@ -89,7 +76,7 @@ public class RegulatorActivity extends Activity  {
     protected DefinedShared mdata = new DefinedShared(this);
     protected DataBase mDataBase = new DataBase(this);
     protected QueryService mService;
-    private QueryService.MsgSeneder mMessageSender;
+    private QueryService.MsgSender mMessageSender;
     protected com.baidu.mapapi.search.geocode.GeoCoder mcoder;
     protected String lat;
     protected String lon;
@@ -181,7 +168,7 @@ public class RegulatorActivity extends Activity  {
     private void serviceIntital() {
         if (!mdata.getString(ComParameter.LOADING_STATE, ComParameter.SERVICE_STATE)
                 .equals(ComParameter.STATE_SECOND)) {
-            this.mMessageSender=new QueryService.MsgSeneder() {
+            this.mMessageSender=new QueryService.MsgSender() {
                 public void sendMsgLocationToShow(String userLcation) {
                     Message msg=new Message();
                     Bundle bd=new Bundle();
@@ -189,7 +176,7 @@ public class RegulatorActivity extends Activity  {
                     msg.setData(bd);
                     queryServiceHandler.sendMessage(msg);
                 }
-                public void sendMsgEroor(int state){
+                public void sendMsgError(int state){
                     Message msg=new Message();
                     Bundle bd=new Bundle();
                     bd.putInt("errorstate",state);

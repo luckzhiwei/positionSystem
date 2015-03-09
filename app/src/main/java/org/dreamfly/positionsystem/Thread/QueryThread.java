@@ -87,21 +87,26 @@ public class QueryThread extends  Thread {
                           String[] strArr = reponseStr.split(":");
                           if (strArr[0].equals("call")) {
                               this.sendCallMsgToService(strArr[1]);
-                          } else if (strArr[0].equals("location")) {
+                          }
+                          //由于admin不需要提供自己的地理位置,所以增加此判断
+                          else if (strArr[0].equals("location") && strArr.length ==1) {
 
                               this.isSendMyLocation = true;
                               callServiceGetLocation();
-                              //对location的处理 这是user的对location的处理
-                              if (strArr.length > 1) {
-                                  this.sendLocationToService(strArr[1]);
-                                  //这是admin获取user的地理位置信息
-                              }
-
+                          }    //对location的处理 这是user的对location的处理
+                          if (strArr[0].equals("location") && strArr.length > 1) {
+                              this.sendLocationToService(strArr[1]);
+                              //这是admin获取user的地理位置信息
                           }
+
+
                       }
                   }else{
                       sendErrorMsgToSerivce();
                   }
+                }
+                else {
+                    sendErrorMsgToSerivce();
                 }
             }
 
@@ -122,7 +127,7 @@ public class QueryThread extends  Thread {
     private void sendLocationToService(String userLocation){
         Bundle bd=new Bundle();
         Message msg=new Message();
-        bd.putString("ACTION",ComParameter.USER_LOCATION);
+        bd.putString("ACTION", ComParameter.USER_LOCATION);
         bd.putString("userlocation",userLocation);
         msg.setData(bd);
         this.mHandler.sendMessage(msg);

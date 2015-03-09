@@ -5,7 +5,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,9 +15,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -40,10 +36,8 @@ import org.dreamfly.positionsystem.Custom.DefineListView;
 import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.Database.DefinedShared;
 import org.dreamfly.positionsystem.R;
-import org.dreamfly.positionsystem.Services.BaiduLocationService;
 import org.dreamfly.positionsystem.Services.QuerySerivcesBinder;
 import org.dreamfly.positionsystem.Services.QueryService;
-import org.dreamfly.positionsystem.Services.Services;
 import org.dreamfly.positionsystem.Thread.LocationGetThread;
 import org.dreamfly.positionsystem.Thread.ManagerListThread;
 import org.dreamfly.positionsystem.Thread.RenameThread;
@@ -99,7 +93,7 @@ public class ManagerActivity extends Activity {
     protected QueryService mService;
 
     private UserInfoUtils logoutUserInfoUtils;
-    private QueryService.MsgSeneder mMessageSender;
+    private QueryService.MsgSender mMessageSender;
 
 
     /**
@@ -219,30 +213,31 @@ public class ManagerActivity extends Activity {
     }
 
     private void serviceIntital() {
-        if (!mdata.getString(ComParameter.LOADING_STATE, ComParameter.SERVICE_STATE)
-                .equals(ComParameter.STATE_SECOND)) {
-           this.mMessageSender=new QueryService.MsgSeneder() {
-               public void sendMsgLocationToShow(String userLcation) {
-                    Message msg=new Message();
-                    Bundle bd=new Bundle();
-                    bd.putString("userlocation",userLcation);
-                    msg.setData(bd);
-                    queryServiceHandler.sendMessage(msg);
-               }
-               public void sendMsgEroor(int state){
-                     Message msg=new Message();
-                     Bundle bd=new Bundle();
-                     bd.putInt("errorstate",state);
-                     msg.setData(bd);
-                     queryServiceHandler.sendMessage(msg);
-               }
-           };
-           //实例化抽象类的线程
-           this.startLocationService();
-           this.bindLocationService();
-     } else {
-            this.bindLocationService();
-        }
+
+        this.mMessageSender = new QueryService.MsgSender() {
+            public void sendMsgLocationToShow(String userLcation) {
+                Message msg = new Message();
+                Bundle bd = new Bundle();
+                bd.putInt("errorstate", ComParameter.STATE_RIGHT);
+                bd.putString("userlocation", userLcation);
+                msg.setData(bd);
+                queryServiceHandler.sendMessage(msg);
+            }
+
+            public void sendMsgError(int state) {
+                Message msg = new Message();
+                Bundle bd = new Bundle();
+                bd.putInt("errorstate", state);
+                msg.setData(bd);
+                queryServiceHandler.sendMessage(msg);
+            }
+
+        };
+        Log.i("zyl", "在这里成功实例化MessageSender");
+        //实例化抽象类的线程
+        //this.startLocationService();
+        this.bindLocationService();
+
     }
 
     /**
@@ -297,8 +292,8 @@ public class ManagerActivity extends Activity {
     private List<User> getData() {
         List<User> list = new ArrayList<User>();
         String length = mdata.getString("itemslength", "length");
-        if(length.equals("")){
-            length=""+0;
+        if (length.equals("")) {
+            length = "" + 0;
         }
         int k = Integer.parseInt(length);
         if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
@@ -480,8 +475,8 @@ public class ManagerActivity extends Activity {
         }
 
         private void dealErrorMsg(Message msg) {
-            if(msg.getData().getInt("NetWorkException")==ComParameter.STATE_ERROR_NETWORK){
-                ToastUtils.showToast(getApplicationContext(),"网络连接超时，请稍候尝试");
+            if (msg.getData().getInt("NetWorkException") == ComParameter.STATE_ERROR_NETWORK) {
+                ToastUtils.showToast(getApplicationContext(), "网络连接超时，请稍候尝试");
             }
             if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
                     equals(ComParameter.STATE_SECOND)) {
@@ -512,43 +507,50 @@ public class ManagerActivity extends Activity {
             }
         }
     };
-    private Handler queryServiceHandler=new Handler(Looper.getMainLooper()) {
+    private Handler queryServiceHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
             String userlcation = msg.getData().getString("userlocation");
-            int state = msg.getData().getInt("errorstate");
-            dealUserLocation(userlcation);
-            dealLocationFail(state);
-        }
-    };
-        /**
-         * 处理UI跳转
-         *
-         * @param userlocation
-         */
-        private void dealUserLocation(String userlocation) {
-            if (userlocation.equals("null")) {
-                //提示用户处理失败
+
+            if (msg.getData().getInt("errorstate") == ComParameter.STATE_ERROR) {
+                dealLocationFail();
             } else {
-                setContentView(R.layout.manager_layout);
-                Intent intent = new Intent(ManagerActivity.this, PositionActivity.class);
-                intent.putExtra("userlocation", userlocation);
-                startActivity(intent);
-                //跳转到PositionActivity中去
+                dealUserLocation(userlcation);
             }
         }
+    };
+
+    /**
+     * 处理UI跳转
+     *
+     * @param userlocation
+     */
+    private void dealUserLocation(String userlocation) {
+        if (userlocation.equals("null")) {
+            //提示用户处理失败
+            ToastUtils.showToast(getApplicationContext(), "获取失败,请稍后再试");
+            setContentView(R.layout.manager_layout);
+            loadList();
+        } else {
+            setContentView(R.layout.manager_layout);
+            Intent intent = new Intent(ManagerActivity.this, PositionActivity.class);
+            intent.putExtra("userlocation", userlocation);
+            startActivity(intent);
+            //跳转到PositionActivity中去
+        }
+    }
 
     /**
      * 处理获取location失败的界面
      *
-     * @param state
+     *
      */
-    private void dealLocationFail(int state) {
-        if (state == ComParameter.STATE_ERROR) {
-            //获取加载失败的界面
-            ToastUtils.showToast(getApplicationContext(), "获取地理位置失败,请稍后再试");
-            setContentView(R.layout.manager_layout);
+    private void dealLocationFail() {
 
-        }
+        //获取加载失败的界面
+        ToastUtils.showToast(getApplicationContext(), "网络状况不佳");
+        setContentView(R.layout.manager_layout);
+        loadList();
+
 
     }
 
@@ -786,8 +788,9 @@ public class ManagerActivity extends Activity {
 
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder myBinder) {
-                QuerySerivcesBinder binder= (QuerySerivcesBinder)myBinder;
-                binder.setMsgSender(mMessageSender);
+                QuerySerivcesBinder binder=(QuerySerivcesBinder)myBinder;
+                QueryService service= ((QuerySerivcesBinder)myBinder).getService();
+                service.setMsgSender(mMessageSender);
                 binder.startQuery();
             //绑定到轮询线程要做的事情
         }

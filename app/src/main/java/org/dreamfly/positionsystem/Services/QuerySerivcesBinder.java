@@ -1,6 +1,5 @@
 package org.dreamfly.positionsystem.Services;
 
-import android.app.DownloadManager;
 import android.content.Context;
 import android.os.Binder;
 import android.os.Handler;
@@ -17,11 +16,13 @@ public class QuerySerivcesBinder extends Binder {
     private Handler mHandler;
 
     private QueryThread queryThread;
-    private  QueryService.MsgSeneder msgSeneder;
+    private QueryService queryService;
+    private QueryService.MsgSender msgSeneder;
 
-    public QuerySerivcesBinder(Context mContext,Handler mHandler) {
+    public QuerySerivcesBinder(Context mContext,Handler mHandler,QueryService queryService) {
         this.mContext = mContext;
         this.mHandler=mHandler;
+        this.queryService=queryService;
     }
 
 
@@ -33,12 +34,16 @@ public class QuerySerivcesBinder extends Binder {
           this.queryThread.start();
     }
 
-    public  void setMsgSender(QueryService.MsgSeneder msgSender){
+    public  void setMsgSender(QueryService.MsgSender msgSender){
              this.msgSeneder=msgSender;
     }
 
-    public QueryService.MsgSeneder getMsgSeneder(){
+    public QueryService.MsgSender getMsgSeneder(){
         return(this.msgSeneder);
+    }
+
+    public QueryService getService(){
+        return queryService ;
     }
 
 
