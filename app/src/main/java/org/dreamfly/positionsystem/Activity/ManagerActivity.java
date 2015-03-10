@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -80,6 +81,7 @@ public class ManagerActivity extends Activity {
     private ManagerAdapter mManagerAdapter;
     private final static String TABLENAME = "regulatoritems";
     private int userTouchDistance;
+    private WindowManager wm;
     private float touchY;
     protected LocationUtils mLocationUtils;
     protected LocationClient locationClient;
@@ -210,6 +212,7 @@ public class ManagerActivity extends Activity {
                 this.findViewById(R.id.manageractivity_txt2_name);
         this.layout = (LinearLayout)
                 this.findViewById(R.id.manageractivity_layout);
+        wm=(WindowManager)getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
 
     }
 
@@ -738,7 +741,8 @@ public class ManagerActivity extends Activity {
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View mPopwindow = inflater.inflate(R.layout.man_popwindow, null, false);
-        final PopupWindow popWindow = new PopupWindow(mPopwindow, 700, 350, true);
+        int height=wm.getDefaultDisplay().getHeight()/3;
+        final PopupWindow popWindow = new PopupWindow(mPopwindow,wm.getDefaultDisplay().getWidth() , height, true);
         bindButtonID(mPopwindow, popWindow);
         popWindow.showAtLocation(parent, Gravity.BOTTOM, 0, 0);
     }
@@ -788,7 +792,6 @@ public class ManagerActivity extends Activity {
         if(tmpMap!=null) {
             tmpMap.remove("username");
             tmpMap.remove("password");
-            tmpMap.remove("type");
             //注销清楚本地缓存的文件信息
             tmpMap.put("loginstate", "seclogin");
             this.logoutUserInfoUtils.updateUserInfo(tmpMap);
