@@ -45,8 +45,8 @@ public class LoginActivity extends Activity {
     private ProgressBar proLoginActivity;
 
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
-    private DefinedShared mdata = new DefinedShared(this);
     private BaseThread loginReuquestThread;
+    private DefinedShared mdata = new DefinedShared(this);
     private BaseThread secLoginRequestThread;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +127,6 @@ public class LoginActivity extends Activity {
      * 提示未登录用户的在登录成功的情况下选择管理者和被管理者对话框
      */
     private void showIsManagerDialog() {
-        mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOGIN_STATE, ComParameter.STATE_SECOND);
         this.mIsManagerDialog = new DefineDialog(LoginActivity.this).buiider(false).
                 setTitle("是否成为管理者").setPosBtnTxt("是").setNegBtnTxt("否")
                 .setNegBtnClickListenr(regulatorClickListener).setPosBtnClickListener(managerClickListener)
@@ -233,7 +232,6 @@ public class LoginActivity extends Activity {
         Map<String, String> params = new HashMap<String, String>();
         params.put("username", edittextLoginactivityUsername.getText().toString());
         params.put("password", editextLoginactivityPassword.getText().toString());
-//        params.put("id", mdata.getString("tableid", mInformation.getDeviceId()));
         UserInfoUtils severIdUtils=new UserInfoUtils(this);
         params.put("id",severIdUtils.getServerId()+"");
         return (params);
@@ -287,8 +285,6 @@ public class LoginActivity extends Activity {
                             resultMap.get("dataBaseId"),
                             edittextLoginactivityUsername.getText().toString());
                     this.dealAfterLogin(resultMap.get("type"));
-                    mdata.putString("tableid", mInformation.getDeviceId(), resultMap.get("dataBaseId"));
-
                 } else if (loginstate.equals("unlogin")) {
                     Log.i("lzw", "unlogin_deal");
                     ToastUtils.showToast(getApplication(), resultMap.get("failReason"));
@@ -300,7 +296,6 @@ public class LoginActivity extends Activity {
 
         private void dealAfterLogin(String type) {
             Intent in = null;
-
             mdata.putString(ComParameter.LOADING_STATE, ComParameter.CLICKING_STATE,
                     ComParameter.STATE_FIRST);
             if (type.equals("manager")) {
@@ -316,7 +311,6 @@ public class LoginActivity extends Activity {
                 startActivity(in);
                 finish();
             }
-
         }
     };
 
@@ -337,6 +331,7 @@ public class LoginActivity extends Activity {
             if (loginstate != null) {
                 if (loginstate.equals("login")) {
                     this.dealAfterLogin(resultMap.get("type"));
+
                 } else if (loginstate.equals("unlogin")) {
                     Log.i("lzw", "unlogin_deal");
                     ToastUtils.showToast(getApplication(), resultMap.get("failReason"));
@@ -346,7 +341,14 @@ public class LoginActivity extends Activity {
             }
         }
 
+        /**
+         * 二次登录的登录成功的处理
+         * @param type
+         */
         private void dealAfterLogin(String type) {
+            UserInfoUtils tmpUtils=new UserInfoUtils(LoginActivity.this);
+            String userid=tmpUtils.getServerId()+"";
+            writeUserInfo(type,mInformation,userid,edittextLoginactivityUsername.getText().toString());
             if (type.equals("manager")) {
                 Intent in = new Intent().setClass(LoginActivity.this, ManagerActivity.class);
                 startActivity(in);

@@ -788,7 +788,6 @@ public class ManagerActivity extends Activity {
         if(tmpMap!=null) {
             tmpMap.remove("username");
             tmpMap.remove("password");
-            tmpMap.remove("type");
             //注销清楚本地缓存的文件信息
             tmpMap.put("loginstate", "seclogin");
             this.logoutUserInfoUtils.updateUserInfo(tmpMap);
