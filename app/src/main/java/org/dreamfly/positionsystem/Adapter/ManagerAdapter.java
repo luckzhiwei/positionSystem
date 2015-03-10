@@ -92,15 +92,14 @@ public class ManagerAdapter extends BaseAdapter {
             this.setItemInfo(holder, position, mDataBase);
             this.setClickListener(holder, position, mDataBase);
             contentview.setTag(holder);
-            this.mLocationGetThread=new LocationGetThread(mHandler,"getlocationstate");
+
         } else {
             holder = (ViewHolder) contentview.getTag();
             this.bindID(contentview, holder);
             this.setItemInfo( holder, position, mDataBase);
             this.setClickListener(holder, position, mDataBase);
-            this.mLocationGetThread=new LocationGetThread(mHandler,"getlocationstate");
         }
-        return contentview;
+        return (contentview);
     }
 
     /**
@@ -161,12 +160,11 @@ public class ManagerAdapter extends BaseAdapter {
                 params.put("toid", cur.getString(cur.getColumnIndex("subid")));
             }
             cur.close();
-            //if(mLocationGetThread==null) {
-              //  mLocationGetThread=new LocationGetThread(mHandler,"getlocationstate");
-                String requestURL = ComParameter.HOST + "control.action";
-                mLocationGetThread.setRequestPrepare(requestURL, params);
-                mLocationGetThread.start();
-            //}
+
+            mLocationGetThread=new LocationGetThread(mHandler,"getlocationstate");
+            String requestURL = ComParameter.HOST + "control.action";
+            mLocationGetThread.setRequestPrepare(requestURL, params);
+            mLocationGetThread.start();
             oneRegulator.setLastDateTouch(mInformation.getCurrentTime());
             mDataBase.items_changeValue(TABLENAME,"time", oneRegulator.getLastDateTouch(), pos);
             mDefineDialog.dismiss();
@@ -295,17 +293,6 @@ public class ManagerAdapter extends BaseAdapter {
      * 得到位置信息的数据,并存储,启动positionactivity
      */
     protected void sendposition(int pos) {
-        /*Location mLocation = mLocationUtils.getLocation(mContext);
-
-        if (mLocation != null) {
-
-            SharedPreferences sp1 = mContext.getSharedPreferences("position", 0);
-            SharedPreferences.Editor se = sp1.edit();
-            se.putString("location", "" + mLocation.getLatitude());
-            se.putString("location1", "" + mLocation.getLongitude());
-            se.commit();
-        }*/
-
         Intent in = new Intent(mContext, PositionActivity.class);
         mContext.startActivity(in);
         this.mdata=new DefinedShared(mContext);
@@ -315,9 +302,6 @@ public class ManagerAdapter extends BaseAdapter {
     }
 
     public BaseThread getLocationThread(){
-        if(mLocationGetThread==null) {
-            Log.i("zyl", "线程已经被释放");
-        }
          return(this.mLocationGetThread);
 
     }

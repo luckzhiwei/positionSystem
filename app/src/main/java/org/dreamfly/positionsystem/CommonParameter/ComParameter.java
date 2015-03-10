@@ -6,7 +6,7 @@ package org.dreamfly.positionsystem.CommonParameter;
  */
 public class ComParameter {
 
-          public final static int STATE_RIGHT=1;
+          public final static int STATE_RIGHT=5;
 
           public final static int STATE_ERROR=3;
 
