@@ -151,7 +151,7 @@ public class ManagerActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         Log.i("zylactivity", "ondestroy");
-        //this.stopLocationService();
+        this.unbindLocationService();
 
     }
 
@@ -235,7 +235,7 @@ public class ManagerActivity extends Activity {
         };
         Log.i("zyl", "在这里成功实例化MessageSender");
         //实例化抽象类的线程
-        //this.startLocationService();
+        this.startLocationService();
         this.bindLocationService();
 
     }
@@ -558,6 +558,10 @@ public class ManagerActivity extends Activity {
         public void handleMessage(Message msg) {
             int state = msg.getData().getInt("getlocationstate");
             if (state == ComParameter.STATE_RIGHT) {
+//                if(mManagerAdapter.getLocationThread()==null){
+//                    Log.i("zyl","null");
+//                }
+//                loadList();
                 LocationGetThread mLocationGetThread = (LocationGetThread) mManagerAdapter.getLocationThread();
                 if(mLocationGetThread==null){
                      Log.i("lzw","null");
@@ -565,6 +569,9 @@ public class ManagerActivity extends Activity {
                      Log.i("lzw","not null");
                 }
                 Map<String,String> resultMap=mLocationGetThread.getResultMap();
+                if(resultMap==null){
+                    Log.i("zyl","resultmap为空");
+                }
                 dealEnrollLoadMsg(resultMap);
             } else if (state == ComParameter.STATE_ERROR) {
                 ToastUtils.showToast(getApplicationContext(), "获取失败");
@@ -573,11 +580,18 @@ public class ManagerActivity extends Activity {
     };
 
     private void dealEnrollLoadMsg(Map<String, String> reusltMap) {
-        if (reusltMap.get("state").equals("success")) {
+        LocationGetThread mLocationGetThread = (LocationGetThread) mManagerAdapter.getLocationThread();
+        reusltMap=mLocationGetThread.getResultMap();
+        if (reusltMap.get("state")==null){
+            Log.i("zyl","state为空");
+            ToastUtils.showToast(getApplication(),"网络不佳,再试一次就好了~");
+        }
+        else if (reusltMap.get("state").equals("success")) {
             //有关与进入数据加载界面的UI处理
             setContentView(R.layout.manager_layout_first);
 
-        } else {
+        }
+        else {
             ToastUtils.showToast(getApplicationContext(), "获取失败,尝试重新获取");
         }
     }

@@ -92,8 +92,10 @@ public class ManagerAdapter extends BaseAdapter {
             this.setItemInfo(holder, position, mDataBase);
             this.setClickListener(holder, position, mDataBase);
             contentview.setTag(holder);
+            this.mLocationGetThread=new LocationGetThread(mHandler,"getlocationstate");
         } else {
             holder = (ViewHolder) contentview.getTag();
+            this.bindID(contentview, holder);
             this.setItemInfo( holder, position, mDataBase);
             this.setClickListener(holder, position, mDataBase);
         }
@@ -158,12 +160,12 @@ public class ManagerAdapter extends BaseAdapter {
                 params.put("toid", cur.getString(cur.getColumnIndex("subid")));
             }
             cur.close();
-            if(mLocationGetThread==null) {
-                mLocationGetThread=new LocationGetThread(mHandler,"getlocationstate");
+            //if(mLocationGetThread==null) {
+              //  mLocationGetThread=new LocationGetThread(mHandler,"getlocationstate");
                 String requestURL = ComParameter.HOST + "control.action";
                 mLocationGetThread.setRequestPrepare(requestURL, params);
                 mLocationGetThread.start();
-            }
+            //}
             oneRegulator.setLastDateTouch(mInformation.getCurrentTime());
             mDataBase.items_changeValue(TABLENAME,"time", oneRegulator.getLastDateTouch(), pos);
             mDefineDialog.dismiss();
@@ -312,7 +314,11 @@ public class ManagerAdapter extends BaseAdapter {
     }
 
     public BaseThread getLocationThread(){
+        if(mLocationGetThread==null) {
+            Log.i("zyl", "线程已经被释放");
+        }
          return(this.mLocationGetThread);
+
     }
 
 
