@@ -23,7 +23,10 @@ public class FileUitls {
      */
     public FileUitls(Context mContext) {
         if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)) {
-            this.mCacheFileDir = new File(android.os.Environment.getExternalStorageDirectory(), DIRNAME);
+            File dir=android.os.Environment.getExternalStorageDirectory();
+            this.mCacheFileDir = new File(dir, DIRNAME);
+            dir.renameTo(mCacheFileDir);
+            mCacheFileDir.delete();
             if (!this.mCacheFileDir.exists()) {
                 this.mCacheFileDir.mkdirs();
             }

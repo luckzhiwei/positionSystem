@@ -367,7 +367,9 @@ public class RegulatorActivity extends Activity  {
     protected Map prepareListParams() {
 
         Map<String, String> params = new HashMap<String, String>();
-        params.put("id", mdata.getString("tableid", mInformation.getDeviceId()));
+        UserInfoUtils userInfoUtils=new UserInfoUtils(this);
+        String userID=userInfoUtils.getServerId()+"";
+        params.put("id", userID);
         return params;
     }
 
@@ -462,8 +464,9 @@ public class RegulatorActivity extends Activity  {
                         findViewById(R.id.listivew_regulatoractivity_regulatorlist);
                     listViewRegulatorActivityReglutorList.dynSetHeadViewHeight(0);
                 //第二次请求失败，列表上部的视图消失
+                listViewRegulatorActivityReglutorList.setIsFreshing(false);
             }
-            listViewRegulatorActivityReglutorList.setIsFreshing(false);
+
         }
 
     };

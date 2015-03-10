@@ -447,7 +447,9 @@ public class ManagerActivity extends Activity {
     protected Map prepareListParams() {
 
         Map<String, String> params = new HashMap<String, String>();
-        params.put("id", mdata.getString("tableid", mInformation.getDeviceId()));
+        UserInfoUtils userInfoUtils=new UserInfoUtils(this);
+        String userID=userInfoUtils.getServerId()+"";
+        params.put("id", userID);
         return params;
     }
 
@@ -495,9 +497,10 @@ public class ManagerActivity extends Activity {
                 managerActivityListView = (DefineListView)
                         findViewById(R.id.delistiview_manageractivity_showmanger);
                 managerActivityListView.dynSetHeadViewHeight(0);
+                managerActivityListView.setIsFreshing(false);
                 //第二次请求失败，列表上部的视图消失
             }
-            managerActivityListView.setIsFreshing(false);
+
         }
     };
     /**
