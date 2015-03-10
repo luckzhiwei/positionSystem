@@ -52,7 +52,7 @@ public class ManagerAdapter extends BaseAdapter {
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(mContext);
     private DefinedShared mdata;
     protected Handler mHandler;
-    private LocationGetThread mLocationGetThread;
+    protected LocationGetThread mLocationGetThread;
 
     public ManagerAdapter(List<User> mRegulatorList, Context context, DataBase mDataBase,Handler mHandler) {
         this.mRegulatorList = mRegulatorList;

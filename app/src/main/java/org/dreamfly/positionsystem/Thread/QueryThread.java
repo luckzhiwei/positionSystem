@@ -46,6 +46,7 @@ public class QueryThread extends  Thread {
                     try{
                         String reponseStr= HttpUtils.requestHttpServer(this.URLrequest,
                                 this.params,ComParameter.ENCODE_UTF_8,ComParameter.ENCODE_UTF_8);
+                        Log.i("lzw",reponseStr);
                         this.dealResponseStr(reponseStr);
                         this.sleep(10 * 1000);
                     }catch(InterruptedException e) {
@@ -69,6 +70,7 @@ public class QueryThread extends  Thread {
                       String longtitud=mdata.getString("longitude","longitude");
                       String latitude=mdata.getString("latitude","latitude");
                       params.put("location",longtitud+" "+latitude);
+                      Log.i("lzw","上传响应请求，上传位置至服务器");
                   }
             }
 
@@ -83,7 +85,6 @@ public class QueryThread extends  Thread {
                       if (reponseStr.equals("n")) {
 
                       } else {
-
                           String[] strArr = reponseStr.split(":");
                           if (strArr[0].equals("call")) {
                               this.sendCallMsgToService(strArr[1]);

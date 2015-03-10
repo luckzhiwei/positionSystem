@@ -8,7 +8,7 @@ public class ComParameter {
 
           public final static int STATE_RIGHT=1;
 
-          public final static int STATE_ERROR=0;
+          public final static int STATE_ERROR=3;
 
           public final static int STATE_ERROR_NETWORK=6;
 
