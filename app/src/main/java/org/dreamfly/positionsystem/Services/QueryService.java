@@ -18,6 +18,7 @@ import org.dreamfly.positionsystem.Activity.RegulatorActivity;
 import org.dreamfly.positionsystem.CommonParameter.ComParameter;
 import org.dreamfly.positionsystem.Database.DefinedShared;
 import org.dreamfly.positionsystem.R;
+import org.dreamfly.positionsystem.Utils.NetWorkInfoUtils;
 
 
 /**
@@ -61,6 +62,7 @@ public class QueryService extends Service {
                 showlocationToActivity(bd.getString("userlocation"));
 
             }else if(bd.getInt("STATE_ERROR")==ComParameter.STATE_ERROR){
+                Log.i("lzw","处理错误轮询问线程的异常");
                 sendMsgErrorToActivity(ComParameter.STATE_ERROR);
                 //向activity的handler发送错误的消息
             }
@@ -78,10 +80,16 @@ public class QueryService extends Service {
 
 
         private void sendMsgErrorToActivity(int state){
-              if(mMessageSender==null){
-                    mMessageSender=mQueryBind.getMsgSeneder();
-              }
-              mMessageSender.sendMsgError(state);
+            boolean network=NetWorkInfoUtils.isNetWorkAlive(QueryService.this);
+            if(network){
+                if (mMessageSender == null) {
+                    mMessageSender = mQueryBind.getMsgSeneder();
+                }
+                mMessageSender.sendMsgError(state);
+                //网络状态正常的时候才向activity发送错误请求
+            }else{
+                Log.i("lzw","网路异常没有向activity发送");
+            }
         }
 
     };

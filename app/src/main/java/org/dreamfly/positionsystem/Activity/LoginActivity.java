@@ -105,13 +105,6 @@ public class LoginActivity extends Activity {
         this.btnLoginactivityLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 if (checkoutInputDataFormat()) {
-//                    if (!mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOGIN_STATE
-//                    ).equals(ComParameter.STATE_THIRD)) {
-//                        showIsManagerDialog();
-//                    } else {
-//                        proLoginActivity.setVisibility(View.VISIBLE);
-//                        sendSecLoginInfoToServer();
-//                    }
                       UserInfoUtils secLoginUtils=new UserInfoUtils(LoginActivity.this);
                       if(!secLoginUtils.isSecLogin())
                       {

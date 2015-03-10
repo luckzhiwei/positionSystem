@@ -306,7 +306,6 @@ public class ManagerAdapter extends BaseAdapter {
 
     public BaseThread getLocationThread(){
          return(this.mLocationGetThread);
-
     }
 
 

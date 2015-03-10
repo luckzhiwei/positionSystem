@@ -48,7 +48,9 @@ public class QueryThread extends  Thread {
                                 this.params,ComParameter.ENCODE_UTF_8,ComParameter.ENCODE_UTF_8);
                         Log.i("lzw",reponseStr);
                         this.dealResponseStr(reponseStr);
+                        this.params.remove("location");
                         this.sleep(10 * 1000);
+
                     }catch(InterruptedException e) {
                            e.printStackTrace();
                     }
@@ -64,7 +66,6 @@ public class QueryThread extends  Thread {
             private void prepareParams(boolean isSendLocation){
                   if(isSendLocation){
                       //需要获取地理位位置的时候再去获取，不然就不去向服务器提交
-
                       this.isSendMyLocation=false;
                       DefinedShared mdata=new DefinedShared(this.mContext);
                       String longtitud=mdata.getString("longitude","longitude");
@@ -99,7 +100,6 @@ public class QueryThread extends  Thread {
                               this.sendLocationToService(strArr[1]);
                               //这是admin获取user的地理位置信息
                           }
-
 
                       }
                   }else{
