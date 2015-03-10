@@ -467,7 +467,9 @@ public class ManagerActivity extends Activity {
         public void handleMessage(Message msg) {
             if (msg.getData().getInt("managerlistid") == ComParameter.STATE_RIGHT) {
                 Map<String, String> resultMap = managerListThread.getResultMap();
-                dealListFromSever(resultMap);
+                if(managerListThread!=null) {
+                    dealListFromSever(resultMap);
+                }
             } else {
                 this.dealErrorMsg(msg);
                 //处理错误信息
@@ -662,9 +664,11 @@ public class ManagerActivity extends Activity {
         //列表为空就返回，不插入数据库
         else {
             for (int i = 0; i < k; i++) {
+                User oneRegulator=new User();
+                oneRegulator.setIsOnLine(resultMap.get("isconnect" + i + ""));
                 mDataBase.itemsInsert(TABLENAME, i, resultMap.get("idname" + i + ""),
                         resultMap.get("subname" + i + ""), resultMap.get("subname" + i + ""), "暂未获取地理位置",
-                        mInformation.getCurrentTime(), resultMap.get("isconnect" + i + ""));
+                        mInformation.getCurrentTime(), oneRegulator.getOnLine());
             }
             //插入数据库
         }
@@ -682,10 +686,17 @@ public class ManagerActivity extends Activity {
         String lenth = mdata.getString("itemslength", "length");
         int length = Integer.parseInt(lenth);
         //新条目插入
+
         for (int i = last; i < length; i++) {
+            User oneRegulator=new User();
+            oneRegulator.setIsOnLine(resultMap.get("isconnect" + i + ""));
             mDataBase.itemsInsert(TABLENAME, i, resultMap.get("idname" + i + ""),
                     resultMap.get("subname" + i + ""), resultMap.get("subname" + i + ""), "暂未获取地理位置",
-                    mInformation.getCurrentTime(), resultMap.get("isconnect" + i + ""));
+                    mInformation.getCurrentTime(), oneRegulator.getOnLine());
+        }
+        //更新数据
+        for (int i=0;i<length;i++){
+            mDataBase.items_changeValue(TABLENAME,"isconnect",resultMap.get("isconnect"+i+""),i);
         }
         //将这次的长度作为下一次更新的"上次长度"
         mdata.putString("itemslength", "lastlength", lenth);

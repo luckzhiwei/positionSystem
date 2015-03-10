@@ -534,6 +534,11 @@ public class RegulatorActivity extends Activity  {
                     resultMap.get("subname" + i + ""), resultMap.get("subname" + i + ""), "暂未获取地理位置",
                     mInformation.getCurrentTime(), resultMap.get("isconnect" + i + ""));
         }
+
+        //更新数据
+        for (int i=0;i<length;i++){
+            mDataBase.items_changeValue(ComParameter.MANTABLENAME,"isconnect",resultMap.get("isconnect"+i+""),i);
+        }
         //将这次的长度作为下一次更新的"上次长度"
         mdata.putString("itemslength", "lastlength", lenth);
     }
