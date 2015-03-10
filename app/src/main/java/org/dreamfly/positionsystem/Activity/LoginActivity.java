@@ -90,7 +90,7 @@ public class LoginActivity extends Activity {
      * 注册组件的监听器
      */
     private void bindListener() {
-
+        final UserInfoUtils user=new UserInfoUtils(this);
         //跳入注册界面的事件监听
         this.txtLoginactivityRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -105,14 +105,19 @@ public class LoginActivity extends Activity {
         this.btnLoginactivityLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 if (checkoutInputDataFormat()) {
-                      UserInfoUtils secLoginUtils=new UserInfoUtils(LoginActivity.this);
-                      if(!secLoginUtils.isSecLogin())
-                      {
-                          showIsManagerDialog();
-                      }else{
-                         proLoginActivity.setVisibility(View.VISIBLE);
-                        sendSecLoginInfoToServer();
-                      }
+                    UserInfoUtils secLoginUtils = new UserInfoUtils(LoginActivity.this);
+                    if (!secLoginUtils.isSecLogin()) {
+                        showIsManagerDialog();
+                    } else {
+
+                        if (edittextLoginactivityUsername.getText().toString().equals(user.getFamilyName())) {
+                            proLoginActivity.setVisibility(View.VISIBLE);
+                            sendSecLoginInfoToServer();
+                        } else {
+                            ToastUtils.showToast(getApplicationContext(), "请输入上一次已经登陆过的账号");
+                        }
+
+                    }
                 }
             }
         });
