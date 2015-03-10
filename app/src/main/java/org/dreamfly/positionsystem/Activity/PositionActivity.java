@@ -53,7 +53,7 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
     private DataBase mDataBase = new DataBase(this);
     private DefinedShared mdata = new DefinedShared(this);
     private LocationUtils mLocationUtils;
-    private MapView mMapView = null;
+    private MapView mMapView ;
     private BaiduMap mBaiduMap;
     private String sb, sb1;
     private boolean isFirstLoc = true;
@@ -71,7 +71,7 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
 
         this.setContentView(R.layout.position_layout);
         this.initial();
-        this.codeChanging();
+
     }
 
     @Override
@@ -94,18 +94,20 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
     }
 
     private void initial() {
-        dealIntent();
         this.bindID();
-        mLocationUtils = new LocationUtils(this);
-        mLocationUtils.LocationInfo();
-        this.locationInfo();
-
+        dealIntent();
+//        mLocationUtils = new LocationUtils(this);
+//        mLocationUtils.LocationInfo();
+//        this.locationInfo();
+//
         mcoder = GeoCoder.newInstance();
         mcoder.setOnGetGeoCodeResultListener(this);
         txtPositionLatitute.setText(sb);
         txtPositionLongitute.setText(sb1);
         if (dealIntent()) {
+            Log.i("zyl","mapsuccess");
             MapInfo(txtPositionLatitute, txtPositionLongitute, isFirstLoc);
+            codeChanging();
         }
     }
 
@@ -180,6 +182,7 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
         MyLocationConfiguration config = new MyLocationConfiguration
                 (mCurrentMode, true, BitmapDescriptorFactory.fromResource(R.drawable.icon_marka));
         mBaiduMap.setMyLocationConfigeration(config);
+        Log.i("zyl","184success");
         //如果是第一次定位,定位到指定地点
         if (isFirstLoc) {
             this.isFirstLoc = false;
@@ -190,6 +193,7 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
             float f = mBaiduMap.getMaxZoomLevel();
             MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(ll, f - 3);
             mBaiduMap.animateMapStatus(u);
+            Log.i("zyl","194success");
         }
 
 

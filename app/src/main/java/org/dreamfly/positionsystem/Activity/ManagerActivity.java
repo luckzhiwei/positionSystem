@@ -117,6 +117,7 @@ public class ManagerActivity extends Activity {
      */
     protected void onResume() {
         super.onResume();
+
         this.bindID();
         this.serviceIntital();
         //从数据库读取上一次的地理位置

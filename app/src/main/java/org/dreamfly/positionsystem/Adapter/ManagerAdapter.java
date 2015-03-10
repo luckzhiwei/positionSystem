@@ -169,6 +169,9 @@ public class ManagerAdapter extends BaseAdapter {
             //}
             oneRegulator.setLastDateTouch(mInformation.getCurrentTime());
             mDataBase.items_changeValue(TABLENAME,"time", oneRegulator.getLastDateTouch(), pos);
+            mdata=new DefinedShared(mContext);
+            mdata.putString("pos","pos",pos+"");
+            mdata.putString("isfirstconnect","isfirstclick","1");
             mDefineDialog.dismiss();
 
 
