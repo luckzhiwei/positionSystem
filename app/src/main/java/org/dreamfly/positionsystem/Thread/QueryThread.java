@@ -46,7 +46,7 @@ public class QueryThread extends  Thread {
                     try{
                         String reponseStr= HttpUtils.requestHttpServer(this.URLrequest,
                                 this.params,ComParameter.ENCODE_UTF_8,ComParameter.ENCODE_UTF_8);
-                        Log.i("lzw",reponseStr);
+
                         this.dealResponseStr(reponseStr);
                         this.params.remove("location");
                         this.sleep(10 * 1000);
@@ -70,8 +70,8 @@ public class QueryThread extends  Thread {
                       DefinedShared mdata=new DefinedShared(this.mContext);
                       String longtitud=mdata.getString("longitude","longitude");
                       String latitude=mdata.getString("latitude","latitude");
-                      params.put("location",longtitud+" "+latitude);
-                      Log.i("lzw","上传响应请求，上传位置至服务器");
+                      params.put("location", longtitud + " " + latitude);
+                      Log.i("lzw","upload to server my location");
                   }
             }
 
@@ -84,8 +84,9 @@ public class QueryThread extends  Thread {
                   if(!reponseStr.equals("InterNetException")) {
                       //不是网络的异常的字符串
                       if (reponseStr.equals("n")) {
-
+                          Log.i("lzw", reponseStr);
                       } else {
+                          Log.i("lzw", reponseStr);
                           String[] strArr = reponseStr.split(":");
                           if (strArr[0].equals("call")) {
                               this.sendCallMsgToService(strArr[1]);

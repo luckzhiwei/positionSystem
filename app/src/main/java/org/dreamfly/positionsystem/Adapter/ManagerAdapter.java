@@ -96,7 +96,7 @@ public class ManagerAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) contentview.getTag();
             this.bindID(contentview, holder);
-            this.setItemInfo( holder, position, mDataBase);
+            this.setItemInfo(holder, position, mDataBase);
             this.setClickListener(holder, position, mDataBase);
         }
         return (contentview);
@@ -144,7 +144,9 @@ public class ManagerAdapter extends BaseAdapter {
          */
         public void onClick(View view) {
             ToastUtils.showToast(mContext,"正在获取对方的地理位置");
-            this.getUserLocationFromSever(pos);
+            if(decideWethertoSend(pos)) {
+                this.getUserLocationFromSever(pos);
+            }
         }
 
         /**
@@ -306,6 +308,24 @@ public class ManagerAdapter extends BaseAdapter {
 
     public BaseThread getLocationThread(){
          return(this.mLocationGetThread);
+    }
+
+    /**
+     * 判断对方是否在线,如果不在线就不让用户获取
+     * @param pos
+     * @return
+     */
+    private boolean decideWethertoSend(int pos){
+        Cursor cur=mDataBase.Selector(pos,ComParameter.TABLENAME);
+        if (cur.moveToNext()){
+            if(cur.getString(cur.getColumnIndex("isconnect")).equals("n")){
+                ToastUtils.showToast(mContext.getApplicationContext(),"对方不在线,请稍后");
+                return false;
+            }
+            else return true;
+        }
+        cur.close();
+        return  true;
     }
 
 
