@@ -574,7 +574,7 @@ public class ManagerActivity extends Activity {
     private void dealEnrollLoadMsg(Map<String, String> resultMap) {
         if (resultMap.get("state").equals("success")) {
             //有关与进入数据加载界面的UI处理
-//            setContentView(R.layout.manager_layout_first);
+          setContentView(R.layout.manager_layout_first);
 
         }
         else {
