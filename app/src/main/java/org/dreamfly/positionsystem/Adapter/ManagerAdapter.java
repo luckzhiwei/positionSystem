@@ -98,6 +98,7 @@ public class ManagerAdapter extends BaseAdapter {
             this.bindID(contentview, holder);
             this.setItemInfo( holder, position, mDataBase);
             this.setClickListener(holder, position, mDataBase);
+            this.mLocationGetThread=new LocationGetThread(mHandler,"getlocationstate");
         }
         return contentview;
     }

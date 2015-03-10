@@ -48,7 +48,7 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
 
     private TextView txtPositionLatitute, txtPositionLongitute, txtPositionLocation;
     private Button btnPositionActivityGeo;
-    private LocationClient locationClient = null;
+    private LocationClient locationClient;
     private int position = 0;
     private DataBase mDataBase = new DataBase(this);
     private DefinedShared mdata = new DefinedShared(this);
@@ -109,12 +109,6 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
         }
     }
 
-    /**
-     * 显示系统得到的经纬度
-     * @param txt
-     * @param txt1
-     * @param txt2
-     */
 
     /**
      * 绑定控件ID
