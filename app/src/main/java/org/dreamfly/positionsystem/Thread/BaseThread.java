@@ -7,6 +7,7 @@ import android.util.Log;
 
 import org.dreamfly.positionsystem.CommonParameter.ComParameter;
 import org.dreamfly.positionsystem.Utils.HttpUtils;
+import org.dreamfly.positionsystem.Utils.NetWorkInfoUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -85,6 +86,7 @@ public abstract class BaseThread extends Thread {
      * 将服务器的返回的结果（字符）交给子类的实例化的方法来
      */
     public void run() {
+
         this.checkRequestMap();
         try {
             String responseStr =

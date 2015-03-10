@@ -226,11 +226,11 @@ public class ManagerActivity extends Activity {
             }
 
             public void sendMsgError(int state) {
-                Message msg = new Message();
-                Bundle bd = new Bundle();
-                bd.putInt("errorstate", state);
-                msg.setData(bd);
-                queryServiceHandler.sendMessage(msg);
+//                Message msg = new Message();
+//                Bundle bd = new Bundle();
+//                bd.putInt("errorstate", state);
+//                msg.setData(bd);
+//                queryServiceHandler.sendMessage(msg);
             }
 
         };
@@ -512,13 +512,13 @@ public class ManagerActivity extends Activity {
     };
     private Handler queryServiceHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
-            String userlcation = msg.getData().getString("userlocation");
-
-            if (msg.getData().getInt("errorstate") == ComParameter.STATE_ERROR) {
-                dealLocationFail();
-            } else {
-                dealUserLocation(userlcation);
-            }
+//            String userlcation = msg.getData().getString("userlocation");
+//
+//            if (msg.getData().getInt("errorstate") == ComParameter.STATE_ERROR) {
+//                dealLocationFail();
+//            } else {
+//                dealUserLocation(userlcation);
+//            }
         }
     };
 

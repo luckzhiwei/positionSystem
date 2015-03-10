@@ -80,16 +80,14 @@ public class QueryService extends Service {
 
 
         private void sendMsgErrorToActivity(int state){
-            boolean network=NetWorkInfoUtils.isNetWorkAlive(QueryService.this);
-            if(network){
-                if (mMessageSender == null) {
-                    mMessageSender = mQueryBind.getMsgSeneder();
-                }
-                mMessageSender.sendMsgError(state);
-                //网络状态正常的时候才向activity发送错误请求
-            }else{
-                Log.i("lzw","网路异常没有向activity发送");
-            }
+          if(NetWorkInfoUtils.isNetWorkAlive(QueryService.this)) {
+              if (mMessageSender == null) {
+                  mMessageSender = getmMessageSender();
+                  mMessageSender.sendMsgError(state);
+              }
+          }else{
+               Log.i("lzw","网络异常不发送activity");
+          }
         }
 
     };
