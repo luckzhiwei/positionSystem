@@ -17,6 +17,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -70,6 +71,7 @@ public class RegulatorActivity extends Activity  {
     private boolean isClear = true;
     private ManagerListThread managerListThread;
     private RenameThread renameThread;
+    private WindowManager wm;
     protected LocationUtils mLocationUtils;
     protected LocationClient locationClient;
     protected CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
@@ -162,6 +164,7 @@ public class RegulatorActivity extends Activity  {
                 this.findViewById(R.id.txt_regulatoractivity_title);
         this.layout = (LinearLayout)
                 this.findViewById(R.id.myregulator_activity_layout);
+        wm=(WindowManager)getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
 
     }
 
@@ -552,7 +555,8 @@ public class RegulatorActivity extends Activity  {
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View mPopwindow = inflater.inflate(R.layout.man_popwindow, null, false);
-        final PopupWindow popWindow = new PopupWindow(mPopwindow, 700, 350, true);
+        int height=wm.getDefaultDisplay().getHeight()/3;
+        final PopupWindow popWindow = new PopupWindow(mPopwindow,wm.getDefaultDisplay().getWidth() , height, true);
         bindButtonID(mPopwindow, popWindow);
         popWindow.showAtLocation(parent, Gravity.BOTTOM, 0, 0);
     }
