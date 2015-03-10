@@ -234,6 +234,20 @@ public class UserInfoUtils {
     }
 
     /**
+     * 通过文件得到家庭账号
+     * @return
+     */
+    public String getFamilyName(){
+        String familyName="null";
+        String userinfo=this.getUserInfo();
+        if (userinfo!=null){
+            Map<String,String> tmpMap=this.buildUserInfoMap(userinfo);
+            familyName=tmpMap.get("famliyName");
+        }
+        return familyName;
+    }
+
+    /**
      * 判断是否二次登录
      *
      * @return
