@@ -3,10 +3,12 @@ package org.dreamfly.positionsystem.Activity;
 
 import android.app.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.util.Log;
 
+import android.view.KeyEvent;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
@@ -93,13 +95,20 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
         mMapView.onPause();
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode,KeyEvent event){
+        if (keyCode==KeyEvent.KEYCODE_BACK){
+            Intent intent=new Intent(PositionActivity.this,ManagerActivity.class);
+            startActivity(intent);
+            finish();
+            return true;
+        }
+        return super.onKeyDown(keyCode,event);
+    }
+
     private void initial() {
         this.bindID();
         dealIntent();
-//        mLocationUtils = new LocationUtils(this);
-//        mLocationUtils.LocationInfo();
-//        this.locationInfo();
-//
         mcoder = GeoCoder.newInstance();
         mcoder.setOnGetGeoCodeResultListener(this);
         txtPositionLatitute.setText(sb);

@@ -66,10 +66,10 @@ public class ManagerActivity extends Activity {
     private DefineListView managerActivityListView;
     private TextView txtManagerActivityTitle, txtManagertgetDeviceName;
     private LinearLayout layout;
+    private Button btnRefresh;
     private ProgressBar proManactivity;
     private DefineDialog mDefineDialog;
     private View contentview;
-
     private User oneManager = new User();
     private User oneRegulator = new User();
 
@@ -191,13 +191,10 @@ public class ManagerActivity extends Activity {
         }
         this.telNumSave(mInformation);
         this.sendIdtoSever();
-        //发送请求至服务器，获取服务器上的联系人列表
 
-        try {
-            // this.testDealresponse();
-        } catch (Exception e) {
-        }
-        //本地测试
+
+
+
     }
 
     private void bindID() {
@@ -212,9 +209,13 @@ public class ManagerActivity extends Activity {
                 this.findViewById(R.id.manageractivity_txt2_name);
         this.layout = (LinearLayout)
                 this.findViewById(R.id.manageractivity_layout);
+        this.btnRefresh=(Button)
+                this.findViewById(R.id.btn_manageractivity_refresh);
+
         wm=(WindowManager)getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
 
     }
+
 
     private void serviceIntital() {
 
@@ -229,11 +230,11 @@ public class ManagerActivity extends Activity {
             }
 
             public void sendMsgError(int state) {
-//                Message msg = new Message();
-//                Bundle bd = new Bundle();
-//                bd.putInt("errorstate", state);
-//                msg.setData(bd);
-//                queryServiceHandler.sendMessage(msg);
+                Message msg = new Message();
+                Bundle bd = new Bundle();
+                bd.putInt("errorstate", state);
+                msg.setData(bd);
+                queryServiceHandler.sendMessage(msg);
             }
 
         };
@@ -248,6 +249,13 @@ public class ManagerActivity extends Activity {
      * 为每个条目增加监听事件
      */
     private void setListViewListener() {
+        this.btnRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendIdtoSever();
+                btnRefresh.setVisibility(View.INVISIBLE);
+            }
+        });
         this.managerActivityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 setDialogShow(position);
@@ -331,7 +339,8 @@ public class ManagerActivity extends Activity {
             return;
         }
         if (list.size() == 0) {
-            layout.setBackgroundResource(R.drawable.manager_background_none);
+            layout.setBackgroundResource(R.drawable.manageractivity_nonelist);
+            btnRefresh.setVisibility(View.VISIBLE);
         } else {
             layout.setBackgroundResource(R.color.white_layout);
         }
@@ -455,7 +464,8 @@ public class ManagerActivity extends Activity {
 
     protected Map prepareNameListParams(int pos, EditText mEditText) {
         Map<String, String> params = new HashMap<String, String>();
-        params.put("fromid", mdata.getString("tableid", mInformation.getDeviceId()));
+        UserInfoUtils userInfoUtils=new UserInfoUtils(this);
+        params.put("fromid",userInfoUtils.getServerId()+"");
         Cursor cur = mDataBase.Selector(pos - 1, TABLENAME);
         if (cur.moveToNext()) {
             params.put("toid", cur.getString(cur.getColumnIndex("subid")));
@@ -488,6 +498,18 @@ public class ManagerActivity extends Activity {
             }
             if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
                     equals(ComParameter.STATE_SECOND)) {
+                //弹出按钮再请求一次
+                proManactivity.setVisibility(View.GONE);
+                Button btnRetry=(Button)findViewById(R.id.btn_manageractivity_retry);
+                btnRetry.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        proManactivity.setVisibility(View.VISIBLE);
+                        sendIdtoSever();
+
+                    }
+                });
+                btnRetry.setVisibility(View.VISIBLE);
                 //如果第一次连接失败,下一次重新请求服务器
                 mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE,
                         ComParameter.STATE_FIRST);
@@ -509,7 +531,13 @@ public class ManagerActivity extends Activity {
     private Handler renameHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
             if (msg.getData().getInt("renamestate") == ComParameter.STATE_RIGHT) {
-                dealRenameMessage();
+                Map<String,String> resultMap=renameThread.getResultMap();
+                if(renameThread!=null) {
+                    dealRenameMessage(resultMap);
+                }
+                else {
+                    ToastUtils.showToast(getApplicationContext(),"网络状况不佳请稍后");
+                }
 
             } else if (msg.getData().getInt("renamestate") == ComParameter.STATE_ERROR) {
                 ToastUtils.showToast(getApplicationContext(), ComParameter.ERRORINFO);
@@ -518,13 +546,13 @@ public class ManagerActivity extends Activity {
     };
     private Handler queryServiceHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
-//            String userlcation = msg.getData().getString("userlocation");
-//
-//            if (msg.getData().getInt("errorstate") == ComParameter.STATE_ERROR) {
-//                dealLocationFail();
-//            } else {
-//                dealUserLocation(userlcation);
-//            }
+            String userlcation = msg.getData().getString("userlocation");
+
+            if (msg.getData().getInt("errorstate") == ComParameter.STATE_ERROR) {
+                dealLocationFail();
+            } else {
+                dealUserLocation(userlcation);
+            }
         }
     };
 
@@ -544,6 +572,8 @@ public class ManagerActivity extends Activity {
             Intent intent = new Intent(ManagerActivity.this, PositionActivity.class);
             intent.putExtra("userlocation", userlocation);
             startActivity(intent);
+            finish();
+
             //跳转到PositionActivity中去
         }
     }
@@ -580,19 +610,21 @@ public class ManagerActivity extends Activity {
     };
 
     private void dealEnrollLoadMsg(Map<String, String> resultMap) {
-        if (resultMap.get("state").equals("success")) {
-            //有关与进入数据加载界面的UI处理
-          setContentView(R.layout.manager_layout_first);
-
+        if(resultMap.get("state")==null){
+            ToastUtils.showToast(getApplicationContext(),"网络状况异常,请重试");
         }
         else {
-            ToastUtils.showToast(getApplicationContext(), "获取失败,尝试重新获取");
-        }
+            if (resultMap.get("state").equals("success")) {
+                //有关与进入数据加载界面的UI处理
+                setContentView(R.layout.manager_layout_first);
 
+            } else {
+                ToastUtils.showToast(getApplicationContext(), "获取失败,尝试重新获取");
+            }
+        }
     }
 
-    private void dealRenameMessage() {
-        Map<String, String> resultMap = renameThread.getResultMap();
+    private void dealRenameMessage(Map<String, String> resultMap) {
         String state = resultMap.get("state");
         if (state != null) {
             if (state.equals("success")) {
@@ -626,28 +658,38 @@ public class ManagerActivity extends Activity {
      * @param resultMap
      */
     protected void dealListFromSever(Map<String, String> resultMap) {
-
-        if(resultMap.get("connectedstate").equals("n")){
-            mdata.putString("itemslength","length",""+0);
+        if(resultMap.get("connectedstate")==null){
+            ToastUtils.showToast(getApplicationContext(),"处理异常,请稍后再刷新");
         }
         else {
-            mdata.putString("itemslength", "length", resultMap.get("length"));
+            if (resultMap.get("connectedstate").equals("n")) {
+                mdata.putString("itemslength", "length", "" + 0);
+            } else {
+                mdata.putString("itemslength", "length", resultMap.get("length"));
+            }
+            //如果第一次请求失败,按下那个按钮请求又成功了,在这里修改一下登陆状态
+            if(mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE).
+                    equals(ComParameter.STATE_FIRST)){
+                mdata.putString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE,
+                        ComParameter.STATE_SECOND);
+                setDataBase(resultMap);
+            }
+            if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
+                    equals(ComParameter.STATE_SECOND)) {
+                setDataBase(resultMap);
+            } else {
+                dealDataBase(resultMap);
+            }
+            ToastUtils.showToast(getApplicationContext(),"联系人列表更新成功");
+            this.setContentView(R.layout.manager_layout);
+            loadList();
+            managerActivityListView.setIsFreshing(false);
+            //设置listview的加载状态为不刷新
+            managerActivityListView.dynSetHeadViewHeight(0);
+            userTouchDistance = 0;
+            //每一次启动对本地数据库的操作是不一样的
         }
 
-        if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
-                equals(ComParameter.STATE_SECOND)) {
-            setDataBase(resultMap);
-        } else {
-            dealDataBase(resultMap);
-        }
-        //每一次启动对本地数据库的操作是不一样的
-
-        this.setContentView(R.layout.manager_layout);
-        loadList();
-        managerActivityListView.setIsFreshing(false);
-        //设置listview的加载状态为不刷新
-        managerActivityListView.dynSetHeadViewHeight(0);
-        userTouchDistance = 0;
 
     }
 

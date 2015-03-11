@@ -43,7 +43,7 @@ public class LoginActivity extends Activity {
     private EditText editextLoginactivityPassword;
     private DefineDialog mIsManagerDialog;
     private ProgressBar proLoginActivity;
-
+    private String telnum = null;
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
     private BaseThread loginReuquestThread;
     private DefinedShared mdata = new DefinedShared(this);
@@ -81,6 +81,7 @@ public class LoginActivity extends Activity {
         this.proLoginActivity = (ProgressBar)
                 findViewById(R.id.progressBar_loginactivity);
         proLoginActivity.setVisibility(View.GONE);
+        telnum = mInformation.getDeviceTelNum();
         this.bindListener();
 
 
@@ -90,7 +91,7 @@ public class LoginActivity extends Activity {
      * 注册组件的监听器
      */
     private void bindListener() {
-        final UserInfoUtils user=new UserInfoUtils(this);
+        final UserInfoUtils user = new UserInfoUtils(this);
         //跳入注册界面的事件监听
         this.txtLoginactivityRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -107,15 +108,19 @@ public class LoginActivity extends Activity {
                 if (checkoutInputDataFormat()) {
                     UserInfoUtils secLoginUtils = new UserInfoUtils(LoginActivity.this);
                     if (!secLoginUtils.isSecLogin()) {
-                        showIsManagerDialog();
+                        if (telnum == null||telnum.equals(" ")) {
+                            setDialogShow();
+                        } else {
+                            showIsManagerDialog();
+                        }
                     } else {
 
-                        if (edittextLoginactivityUsername.getText().toString().equals(user.getFamilyName())) {
-                            proLoginActivity.setVisibility(View.VISIBLE);
-                            sendSecLoginInfoToServer();
-                        } else {
-                            ToastUtils.showToast(getApplicationContext(), "请输入上一次已经登陆过的账号");
-                        }
+//                        if (edittextLoginactivityUsername.getText().toString().equals(user.getFamilyName())) {
+//                            proLoginActivity.setVisibility(View.VISIBLE);
+                        sendSecLoginInfoToServer();
+//                        } else {
+//                            ToastUtils.showToast(getApplicationContext(), "请输入上一次已经登陆过的账号");
+//                        }
 
                     }
                 }
@@ -232,8 +237,8 @@ public class LoginActivity extends Activity {
         Map<String, String> params = new HashMap<String, String>();
         params.put("username", edittextLoginactivityUsername.getText().toString());
         params.put("password", editextLoginactivityPassword.getText().toString());
-        UserInfoUtils severIdUtils=new UserInfoUtils(this);
-        params.put("id",severIdUtils.getServerId()+"");
+        UserInfoUtils severIdUtils = new UserInfoUtils(this);
+        params.put("id", severIdUtils.getServerId() + "");
         return (params);
     }
 
@@ -246,8 +251,7 @@ public class LoginActivity extends Activity {
         } else {
             params.put("type", "user");
         }
-//        params.put("phonenum", this.mInformation.getDeviceTelNum());
-        params.put("phonenum","15828539365");
+        params.put("phonenum", telnum);
         params.put("deviceid", this.mInformation.getDeviceId());
 
         params.put("devicename", this.mInformation.getCurrentDeviceName());
@@ -346,9 +350,9 @@ public class LoginActivity extends Activity {
          * @param type
          */
         private void dealAfterLogin(String type) {
-            UserInfoUtils tmpUtils=new UserInfoUtils(LoginActivity.this);
-            String userid=tmpUtils.getServerId()+"";
-            writeUserInfo(type,mInformation,userid,edittextLoginactivityUsername.getText().toString());
+            UserInfoUtils tmpUtils = new UserInfoUtils(LoginActivity.this);
+            String userid = tmpUtils.getServerId() + "";
+            writeUserInfo(type, mInformation, userid, edittextLoginactivityUsername.getText().toString());
             if (type.equals("manager")) {
                 Intent in = new Intent().setClass(LoginActivity.this, ManagerActivity.class);
                 startActivity(in);
@@ -360,5 +364,34 @@ public class LoginActivity extends Activity {
             }
         }
     };
+
+    private void setDialogShow() {
+        DefineDialog mDefineDialog = new DefineDialog(LoginActivity.this).buiider(true).
+                setTitle("请正确输入您的电话号码:").setDefineDialogCanceable(true).setPosBtnTxt("确定").
+                setNegBtnTxt("取消").show();
+
+        PositiveButtonListener positiveButtonListener = new PositiveButtonListener
+                (mDefineDialog, mDefineDialog.getEditText());
+
+        mDefineDialog.setPosBtnClickListener(positiveButtonListener);
+    }
+
+    private class PositiveButtonListener implements View.OnClickListener {
+        private DefineDialog mDialog;
+        private EditText editText;
+
+        public PositiveButtonListener(DefineDialog mDialog, EditText editText) {
+            this.mDialog = mDialog;
+            this.editText = editText;
+        }
+
+        @Override
+        public void onClick(View v) {
+            telnum = editText.getText().toString();
+            mDialog.dismiss();
+            showIsManagerDialog();
+
+        }
+    }
 }
 

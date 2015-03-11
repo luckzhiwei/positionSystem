@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.EditText;
 
@@ -60,7 +61,9 @@ public class RegulatorActivity extends Activity  {
     private TextView txtRegulatorActivityTitle;
     private LinearLayout layout;
     private DefineDialog mDefineDialog;
+    private Button btnRefresh;
     private RegulatorAdapter mRegulatordapter;
+    private ProgressBar proRegulator;
     private User oneRegulator = new User();
     private ManagerActivity manager = new ManagerActivity();
     private ComParameter com = new ComParameter();
@@ -104,7 +107,7 @@ public class RegulatorActivity extends Activity  {
     protected void onResume() {
         super.onResume();
         this.bindID();
-
+        this.serviceIntital();
         Log.i("lzw", "manage_intial");
         //从数据库读取上一次的地理位置
         if (!mdata.getString(ComParameter.LOADING_STATE, ComParameter.CLICKING_STATE)
@@ -152,19 +155,29 @@ public class RegulatorActivity extends Activity  {
         this.telNumSave(mInformation);
 
         this.sendIdtoSever();
-        this.serviceIntital();
+
+
+
 
     }
 
     private void bindID() {
         contentview=this.findViewById(R.id.myregulator_activity_layout);
+        this.proRegulator=(ProgressBar)
+                this.findViewById(R.id.progressBar_manactivity);
         this.listViewRegulatorActivityReglutorList = (DefineListView)
                 this.findViewById(R.id.listivew_regulatoractivity_regulatorlist);
         this.txtRegulatorActivityTitle = (TextView)
                 this.findViewById(R.id.txt_regulatoractivity_title);
         this.layout = (LinearLayout)
                 this.findViewById(R.id.myregulator_activity_layout);
+        this.btnRefresh=(Button)
+                this.findViewById(R.id.btn_regulator_refresh);
         wm=(WindowManager)getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+        if(proRegulator==null){
+            Log.i("zyl175","progressbar is null");
+        }
+
 
     }
 
@@ -196,6 +209,13 @@ public class RegulatorActivity extends Activity  {
 
 
     private void setCLickListener() {
+        this.btnRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendIdtoSever();
+                btnRefresh.setVisibility(View.INVISIBLE);
+            }
+        });
         this.listViewRegulatorActivityReglutorList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 setDialogShow(position);
@@ -266,7 +286,8 @@ public class RegulatorActivity extends Activity  {
 
     public void changeRegBackground(List<User> list) {
         if (list.size() == 0) {
-            layout.setBackgroundResource(R.drawable.regulator_background);
+            layout.setBackgroundResource(R.drawable.regulatoractivity_nonelist);
+            btnRefresh.setVisibility(View.VISIBLE);
         } else {
             layout.setBackgroundResource(R.color.white_layout);
         }
@@ -375,7 +396,8 @@ public class RegulatorActivity extends Activity  {
 
     protected Map prepareNameListParams(int pos, EditText mEditText) {
         Map<String, String> params = new HashMap<String, String>();
-        params.put("fromid", mdata.getString("tableid", mInformation.getDeviceId()));
+        UserInfoUtils userInfoUtils=new UserInfoUtils(this);
+        params.put("fromid",userInfoUtils.getServerId()+"");
         Cursor cur = mDataBase.Selector(pos - 1, ComParameter.MANTABLENAME);
         if (cur.moveToNext()) {
             params.put("toid", cur.getString(cur.getColumnIndex("subid")));
@@ -387,8 +409,10 @@ public class RegulatorActivity extends Activity  {
     private Handler renameHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
             if (msg.getData().getInt("renamestate") == ComParameter.STATE_RIGHT) {
-                dealRenameMessage();
-
+                Map<String,String> resultMap=renameThread.getResultMap();
+                if(renameThread!=null) {
+                    dealRenameMessage(resultMap);
+                }
             } else if (msg.getData().getInt("renamestate") == ComParameter.STATE_ERROR) {
                 ToastUtils.showToast(getApplicationContext(), ComParameter.ERRORINFO);
             }
@@ -416,8 +440,8 @@ public class RegulatorActivity extends Activity  {
         }
     };
 
-    private void dealRenameMessage() {
-        Map<String, String> resultMap = renameThread.getResultMap();
+    private void dealRenameMessage(Map<String, String> resultMap) {
+
         String state = resultMap.get("state");
         if (state != null) {
             if (state.equals("success")) {
@@ -453,6 +477,17 @@ public class RegulatorActivity extends Activity  {
             }
             if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
                     equals(ComParameter.STATE_SECOND)) {
+                //弹出按钮再请求一次
+                proRegulator.setVisibility(View.GONE);
+                Button btnRetry=(Button)findViewById(R.id.btn_manageractivity_retry);
+                btnRetry.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        sendIdtoSever();
+                        proRegulator.setVisibility(View.VISIBLE);
+                    }
+                });
+                btnRetry.setVisibility(View.VISIBLE);
                 //如果第一次连接失败,下一次重新请求服务器
                 mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE,
                         ComParameter.STATE_FIRST);
@@ -477,25 +512,39 @@ public class RegulatorActivity extends Activity  {
      * @param resultMap
      */
     protected void dealListFromSever(Map<String, String> resultMap) {
-
-        if(resultMap.get("connectedstate").equals("n")){
-            mdata.putString("itemslength","length",""+0);
+        if(resultMap.get("connectedstate")==null){
+            ToastUtils.showToast(getApplicationContext(),"处理异常,请稍后再刷新");
+            return;
         }
         else {
-            mdata.putString("itemslength", "length", resultMap.get("length"));
+            if (resultMap.get("connectedstate").equals("n")) {
+                mdata.putString("itemslength", "length", "" + 0);
+            } else {
+                mdata.putString("itemslength", "length", resultMap.get("length"));
+            }
+            //如果第一次请求失败,按下那个按钮请求又成功了,在这里修改一下登陆状态
+            if(mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE).
+                    equals(ComParameter.STATE_FIRST)){
+                mdata.putString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE,
+                        ComParameter.STATE_SECOND);
+                setDataBase(resultMap);
+            }
+            if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
+                    equals(ComParameter.STATE_SECOND)) {
+                setDataBase(resultMap);
+
+            } else {
+                dealDataBase(resultMap);
+            }
+            ToastUtils.showToast(getApplicationContext(),"联系人列表更新成功");
+            //每一次启动对本地数据库的操作是不一样的
+            setContentView(R.layout.regulator_layout);
+            loadList();
+            listViewRegulatorActivityReglutorList.dynSetHeadViewHeight(0);
+            userTouchDistance = 0;
+            listViewRegulatorActivityReglutorList.setIsFreshing(false);
         }
-        //如果是首次启动
-        if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
-                equals(ComParameter.STATE_SECOND)) {
-            setDataBase(resultMap);
-        } else {
-            dealDataBase(resultMap);
-        }
-        setContentView(R.layout.regulator_layout);
-        loadList();
-        listViewRegulatorActivityReglutorList.dynSetHeadViewHeight(0);
-        userTouchDistance = 0;
-        listViewRegulatorActivityReglutorList.setIsFreshing(false);
+
     }
 
     /**

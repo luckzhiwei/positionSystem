@@ -6,20 +6,35 @@
     android:background="#f7f9fb"
     android:id="@+id/myregulator_activity_layout">
 
-    <LinearLayout
-        android:gravity="center"
+    <RelativeLayout
+
         android:background="#f04800"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="50dp"
+        android:id="@+id/regulatoractivity_layout2">
 
         <TextView
             android:id="@+id/txt_regulatoractivity_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:textSize="22sp"
             android:textColor="#ffffff"
             android:text="被管理者界面" />
-    </LinearLayout>
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="刷新"
+            android:visibility="invisible"
+            android:id="@+id/btn_regulator_refresh"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+
+    </RelativeLayout>
 
     <org.dreamfly.positionsystem.Custom.DefineListView
         android:listSelector="@android:color/transparent"
