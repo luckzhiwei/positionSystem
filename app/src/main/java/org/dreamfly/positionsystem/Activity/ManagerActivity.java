@@ -194,7 +194,7 @@ public class ManagerActivity extends Activity {
             this.loadList();
         }
         this.telNumSave(mInformation);
-
+        this.sendSecLoginToServer();
         this.sendIdtoSever();
 
 
@@ -219,17 +219,17 @@ public class ManagerActivity extends Activity {
 
     }
 
-    private void sendSecLoginToServer(){
-           this.secLoginThread=new LoginRequestThread(secLoginHandler,"secloginstate");
-           UserInfoUtils mUtils=new UserInfoUtils(this);
-           Map<String,String> info=mUtils.getUserInfoMap();
-           Map<String,String> params=new HashMap<String,String>();
-           params.put("id",info.get("userrID"));
-           params.put("username",info.get("famliyName"));
-           params.put("password",info.get("password"));
-           String requestURL=ComParameter.HOST+"user_login.action";
-           this.secLoginThread.setRequestPrepare(requestURL,params);
-           this.secLoginThread.start();
+    private void sendSecLoginToServer() {
+        this.secLoginThread = new LoginRequestThread(secLoginHandler, "secloginstate");
+        UserInfoUtils mUtils = new UserInfoUtils(this);
+        Map<String, String> info = mUtils.getUserInfoMap();
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("id", info.get("userrID"));
+        params.put("username", info.get("famliyName"));
+        params.put("password", info.get("password"));
+        String requestURL = ComParameter.HOST + "user_login.action";
+        this.secLoginThread.setRequestPrepare(requestURL, params);
+        this.secLoginThread.start();
     }
 
     private void serviceIntital() {
@@ -354,7 +354,7 @@ public class ManagerActivity extends Activity {
             return;
         }
         if (list.size() == 0) {
-            layout.setBackgroundResource(R.drawable.manageractivity_nonelist);
+            layout.setBackgroundResource(R.drawable.manager_none);
             btnRefresh.setVisibility(View.VISIBLE);
         } else {
             layout.setBackgroundResource(R.color.white_layout);
@@ -587,9 +587,14 @@ public class ManagerActivity extends Activity {
              * @param resultMap
              */
         private void dealSecLoginMsg(Map<String,String> resultMap){
-             if(resultMap.get("loginstate").equals("unlogin")){
-                   ToastUtils.showToast(getApplicationContext(),"与服务器连接失败，尝试重新登录");
-             }
+            if (resultMap.get("loginstate")==null){
+                Log.i("lzw","man-L591 哈希表处理异常");
+            }
+            else {
+                if (resultMap.get("loginstate").equals("unlogin")) {
+                    ToastUtils.showToast(getApplicationContext(), "与服务器连接失败，尝试重新登录");
+                }
+            }
         }
     };
     /**

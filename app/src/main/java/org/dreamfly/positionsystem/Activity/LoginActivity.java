@@ -106,8 +106,13 @@ public class LoginActivity extends Activity {
         this.btnLoginactivityLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 if (checkoutInputDataFormat()) {
-                     showIsManagerDialog();
-                    //弹出对话框
+                    if(telnum==null||telnum.equals(" ")){
+                        setDialogShow();
+                    }
+                    else {
+                        showIsManagerDialog();
+                        //弹出对话框
+                    }
                 }
             }
         });

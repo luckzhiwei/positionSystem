@@ -54,13 +54,13 @@ public class RegulatorAdapter extends ManagerAdapter {
             holder=new ViewHolder();
             this.bindID(contentview, holder);
             this.setManItemInfo(holder, position, mDataBase);
-            this.setClickListener(holder, position, mDataBase);
+            //this.setClickListener(holder, position, mDataBase);
             contentview.setTag(holder);
         }
         else {
             holder = (ViewHolder) contentview.getTag();
             this.setManItemInfo(holder, position, mDataBase);
-            this.setClickListener(holder, position, mDataBase);
+            //this.setClickListener(holder, position, mDataBase);
         }
         return contentview;
     }
@@ -82,14 +82,14 @@ public class RegulatorAdapter extends ManagerAdapter {
                 (TextView)contentview.findViewById(R.id.regulatoractivity_txt2_name);
         holder.txtRegulatorItemMarkName=
                 (TextView)contentview.findViewById(R.id.regulatoractivity_txt2_name);
-        holder.txtRegulatorItemLastLocation=
-                (TextView)contentview.findViewById(R.id.regulatoractivity_txt2_location);
         holder.txtRegulatorLastTouchTime=
                 (TextView)contentview.findViewById(R.id.regulatoractivity_txt3_time);
-        holder.btnRegulatorItemPhone=
-                (Button)contentview.findViewById(R.id.regulatoractivity_btn_phone);
-        holder.btnRegulatorItemposition=
-                (Button)contentview.findViewById(R.id.regulatoractivity_btn_position);
+//        holder.txtRegulatorItemLastLocation=
+//                (TextView)contentview.findViewById(R.id.regulatoractivity_txt2_location);
+//        holder.btnRegulatorItemPhone=
+//                (Button)contentview.findViewById(R.id.regulatoractivity_btn_phone);
+//        holder.btnRegulatorItemposition=
+//                (Button)contentview.findViewById(R.id.regulatoractivity_btn_position);
         holder.imvRegulatorItemUserHead=
                 (ImageView)contentview.findViewById(R.id.regulatoractivity_imv1);
 
@@ -129,7 +129,7 @@ public class RegulatorAdapter extends ManagerAdapter {
         cur = mDataBase.Selector(position,MANTABLENAME);
         while (cur.moveToNext()) {
             holder.txtRegulatorLastTouchTime.setText(cur.getString(cur.getColumnIndex("time")));
-            holder.txtRegulatorItemLastLocation.setText(cur.getString(cur.getColumnIndex("position")));
+            //holder.txtRegulatorItemLastLocation.setText(cur.getString(cur.getColumnIndex("position")));
             //如果用户已经修改了备注名,就显示备注名,否则显示设备名
             if(cur.getString(cur.getColumnIndex("subname")).equals("null")){
                 holder.txtRegulatorgetDeviceName.setText(cur.getString(cur.getColumnIndex("name")));

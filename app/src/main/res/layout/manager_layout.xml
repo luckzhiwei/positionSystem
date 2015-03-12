@@ -27,11 +27,12 @@
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:text="刷新"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/manageractivity_refresh_btn"
             android:id="@+id/btn_manageractivity_refresh"
             android:visibility="invisible"
+            android:layout_margin="5dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />

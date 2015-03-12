@@ -37,6 +37,8 @@ import org.dreamfly.positionsystem.Database.DefinedShared;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Services.QuerySerivcesBinder;
 import org.dreamfly.positionsystem.Services.QueryService;
+import org.dreamfly.positionsystem.Thread.BaseThread;
+import org.dreamfly.positionsystem.Thread.LoginRequestThread;
 import org.dreamfly.positionsystem.Thread.ManagerListThread;
 import org.dreamfly.positionsystem.Thread.RenameThread;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
@@ -74,6 +76,7 @@ public class RegulatorActivity extends Activity  {
     private boolean isClear = true;
     private ManagerListThread managerListThread;
     private RenameThread renameThread;
+    private BaseThread secLoginThread;
     private WindowManager wm;
     protected LocationUtils mLocationUtils;
     protected LocationClient locationClient;
@@ -153,7 +156,7 @@ public class RegulatorActivity extends Activity  {
             this.loadList();
         }
         this.telNumSave(mInformation);
-
+        this.sendSecLoginToSever();
         this.sendIdtoSever();
 
 
@@ -179,6 +182,19 @@ public class RegulatorActivity extends Activity  {
         }
 
 
+    }
+
+    private void sendSecLoginToSever() {
+        this.secLoginThread = new LoginRequestThread(secLoginHandler, "secloginstate");
+        UserInfoUtils mUtils = new UserInfoUtils(this);
+        Map<String, String> info = mUtils.getUserInfoMap();
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("id", info.get("userrID"));
+        params.put("username", info.get("famliyName"));
+        params.put("password", info.get("password"));
+        String requestURL = ComParameter.HOST + "user_login.action";
+        this.secLoginThread.setRequestPrepare(requestURL, params);
+        this.secLoginThread.start();
     }
 
     private void serviceIntital() {
@@ -286,7 +302,7 @@ public class RegulatorActivity extends Activity  {
 
     public void changeRegBackground(List<User> list) {
         if (list.size() == 0) {
-            layout.setBackgroundResource(R.drawable.regulatoractivity_nonelist);
+            layout.setBackgroundResource(R.drawable.regulator_none);
             btnRefresh.setVisibility(View.VISIBLE);
         } else {
             layout.setBackgroundResource(R.color.white_layout);
@@ -438,6 +454,26 @@ public class RegulatorActivity extends Activity  {
                 //跳转到PositionActivity中去
             }
         }
+    };
+    private Handler secLoginHandler = new Handler(Looper.getMainLooper()) {
+        public void handleMessage(Message msg) {
+            if (msg.getData().getInt("secloginstate") == ComParameter.STATE_RIGHT) {
+                dealSecLoginMessage(secLoginThread.getResultMap());
+            } else {
+                Log.i("lzw", "二次登录失败");
+            }
+        }
+
+        private void dealSecLoginMessage(Map<String, String> resultMap) {
+            if (resultMap.get("loginstate") == null) {
+                Log.i("lzw", "reg-L468 哈希表处理异常");
+            } else {
+                if (resultMap.get("loginstate").equals("unlogin")) {
+                    ToastUtils.showToast(getApplicationContext(), "与服务器连接失败,尝试重新登陆");
+                }
+            }
+        }
+
     };
 
     private void dealRenameMessage(Map<String, String> resultMap) {
@@ -653,13 +689,7 @@ public class RegulatorActivity extends Activity  {
     private void dealAfterlogout() {
         mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOGIN_STATE, ComParameter.STATE_THIRD);
         this.logoutUserInfoUtils = new UserInfoUtils(this);
-        Map<String, String> tmpMap = this.logoutUserInfoUtils.getUserInfoMap();
-        tmpMap.remove("username");
-        tmpMap.remove("password");
-        tmpMap.remove("type");
-        //注销清楚本地缓存的文件信息
-        tmpMap.put("loginstate", "seclogin");
-        this.logoutUserInfoUtils.updateUserInfo(tmpMap);
+        this.logoutUserInfoUtils.clearUserInfo();
         startActivity(new Intent(RegulatorActivity.this, LoginActivity.class));
     }
     private ServiceConnection mConnection = new ServiceConnection() {
