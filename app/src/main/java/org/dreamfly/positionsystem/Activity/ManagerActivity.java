@@ -39,7 +39,9 @@ import org.dreamfly.positionsystem.Database.DefinedShared;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Services.QuerySerivcesBinder;
 import org.dreamfly.positionsystem.Services.QueryService;
+import org.dreamfly.positionsystem.Thread.BaseThread;
 import org.dreamfly.positionsystem.Thread.LocationGetThread;
+import org.dreamfly.positionsystem.Thread.LoginRequestThread;
 import org.dreamfly.positionsystem.Thread.ManagerListThread;
 import org.dreamfly.positionsystem.Thread.RenameThread;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
@@ -96,6 +98,8 @@ public class ManagerActivity extends Activity {
 
     private UserInfoUtils logoutUserInfoUtils;
     private QueryService.MsgSender mMessageSender;
+
+    private BaseThread secLoginThread;
 
 
     /**
@@ -190,9 +194,8 @@ public class ManagerActivity extends Activity {
             this.loadList();
         }
         this.telNumSave(mInformation);
+
         this.sendIdtoSever();
-
-
 
 
     }
@@ -216,6 +219,18 @@ public class ManagerActivity extends Activity {
 
     }
 
+    private void sendSecLoginToServer(){
+           this.secLoginThread=new LoginRequestThread(secLoginHandler,"secloginstate");
+           UserInfoUtils mUtils=new UserInfoUtils(this);
+           Map<String,String> info=mUtils.getUserInfoMap();
+           Map<String,String> params=new HashMap<String,String>();
+           params.put("id",info.get("userrID"));
+           params.put("username",info.get("famliyName"));
+           params.put("password",info.get("password"));
+           String requestURL=ComParameter.HOST+"user_login.action";
+           this.secLoginThread.setRequestPrepare(requestURL,params);
+           this.secLoginThread.start();
+    }
 
     private void serviceIntital() {
 
@@ -555,7 +570,28 @@ public class ManagerActivity extends Activity {
             }
         }
     };
+    /**
+     * 处理二次登录的线程的handler
+     */
+    private Handler secLoginHandler=new Handler(Looper.getMainLooper()){
+        public void handleMessage(Message msg) {
+             if(msg.getData().getInt("secloginstate")==ComParameter.STATE_RIGHT){
+                 this.dealSecLoginMsg(secLoginThread.getResultMap());
+             }else{
+                 Log.i("lzw","二次登录失败");
+             }
+        }
 
+            /**
+             * 处理二次登录的情况
+             * @param resultMap
+             */
+        private void dealSecLoginMsg(Map<String,String> resultMap){
+             if(resultMap.get("loginstate").equals("unlogin")){
+                   ToastUtils.showToast(getApplicationContext(),"与服务器连接失败，尝试重新登录");
+             }
+        }
+    };
     /**
      * 处理UI跳转
      *
@@ -659,7 +695,7 @@ public class ManagerActivity extends Activity {
      */
     protected void dealListFromSever(Map<String, String> resultMap) {
         if(resultMap.get("connectedstate")==null){
-            ToastUtils.showToast(getApplicationContext(),"处理异常,请稍后再刷新");
+            ToastUtils.showToast(getApplicationContext(), "处理异常,请稍后再刷新");
         }
         else {
             if (resultMap.get("connectedstate").equals("n")) {
@@ -833,16 +869,10 @@ public class ManagerActivity extends Activity {
     private void dealAfterlogout() {
         mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOGIN_STATE, ComParameter.STATE_THIRD);
         this.logoutUserInfoUtils = new UserInfoUtils(this);
-        Map<String, String> tmpMap = this.logoutUserInfoUtils.getUserInfoMap();
-        if(tmpMap!=null) {
-            tmpMap.remove("username");
-            tmpMap.remove("password");
-            //注销清楚本地缓存的文件信息
-            tmpMap.put("loginstate", "seclogin");
-            this.logoutUserInfoUtils.updateUserInfo(tmpMap);
-        }
-        //写入二次登录的时候的情况
+        this.logoutUserInfoUtils.clearUserInfo();;
+        //清空本地缓存文件的数据,初始化为未登录状态
         this.startActivity(new Intent(ManagerActivity.this, LoginActivity.class));
+
     }
 
 

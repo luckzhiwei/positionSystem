@@ -8,7 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by asus on 2015/1/28.
+ * Created by lzw on 2015/1/28.
+ * 二次登录的Thread的子类
  */
 public class LoginRequestThread extends BaseThread {
 

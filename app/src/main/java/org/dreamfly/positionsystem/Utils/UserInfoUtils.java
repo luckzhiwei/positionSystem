@@ -234,7 +234,25 @@ public class UserInfoUtils {
     }
 
     /**
-     * 通过文件得到家庭账号
+     * 返回文件缓存保存的密码字符
+     * @return
+     */
+    public String getPassword(){
+        String password=null;
+        String userinfo=this.getUserInfo();
+        if(userinfo!=null){
+            Map<String,String> tmpMap=this.getUserInfoMap();
+            password=tmpMap.get("password");
+            if(password!=null){
+                  return(password);
+            }
+
+        }
+        return(password);
+    }
+
+    /**
+     * 获取用户帐号
      * @return
      */
     public String getFamilyName(){
@@ -244,26 +262,7 @@ public class UserInfoUtils {
             Map<String,String> tmpMap=this.buildUserInfoMap(userinfo);
             familyName=tmpMap.get("famliyName");
         }
-        return familyName;
+        return (familyName);
     }
 
-    /**
-     * 判断是否二次登录
-     *
-     * @return
-     */
-    public boolean isSecLogin() {
-        boolean issecLogin = false;
-        String userInfo = this.getUserInfo();
-        if (userInfo != null) {
-            Map<String, String> tmpMap = this.buildUserInfoMap(userInfo);
-            String loginstate = tmpMap.get("loginstate");
-            if (loginstate.equals("seclogin")) {
-                issecLogin = true;
-            } else {
-                issecLogin = false;
-            }
-        }
-        return (issecLogin);
-    }
 }

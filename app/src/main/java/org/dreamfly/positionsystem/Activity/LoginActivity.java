@@ -106,23 +106,8 @@ public class LoginActivity extends Activity {
         this.btnLoginactivityLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 if (checkoutInputDataFormat()) {
-                    UserInfoUtils secLoginUtils = new UserInfoUtils(LoginActivity.this);
-                    if (!secLoginUtils.isSecLogin()) {
-                        if (telnum == null||telnum.equals(" ")) {
-                            setDialogShow();
-                        } else {
-                            showIsManagerDialog();
-                        }
-                    } else {
-
-//                        if (edittextLoginactivityUsername.getText().toString().equals(user.getFamilyName())) {
-//                            proLoginActivity.setVisibility(View.VISIBLE);
-                        sendSecLoginInfoToServer();
-//                        } else {
-//                            ToastUtils.showToast(getApplicationContext(), "请输入上一次已经登陆过的账号");
-//                        }
-
-                    }
+                     showIsManagerDialog();
+                    //弹出对话框
                 }
             }
         });
@@ -172,7 +157,7 @@ public class LoginActivity extends Activity {
      * @param mInformation 得到的本机信息
      */
     private void writeUserInfo(String isManager, CurrentInformationUtils mInformation
-            , String userId, String userName) {
+            , String userId, String userName,String password) {
         UserInfoUtils mUserInfoUitls = new UserInfoUtils(LoginActivity.this);
         HashMap<String, String> hashmap = new HashMap<String, String>();
         hashmap.put("loginstate", "login");
@@ -185,6 +170,8 @@ public class LoginActivity extends Activity {
         //记录用户登录的帐号名字
         hashmap.put("devName", mInformation.getCurrentDeviceName());
         //记录本机的设备名字
+        hashmap.put("password",password);
+        //写入登录密码
         mUserInfoUitls.updateUserInfo(hashmap);
     }
 
@@ -200,15 +187,7 @@ public class LoginActivity extends Activity {
         this.loginReuquestThread.start();
     }
 
-    /**
-     * 二次登陆向服务器请求
-     */
-    private void sendSecLoginInfoToServer() {
-        this.secLoginRequestThread = new LoginRequestThread(secHandler, "loginstate");
-        String requestURL = ComParameter.HOST + "user_login.action";
-        this.secLoginRequestThread.setRequestPrepare(requestURL, this.prepareSecLoginParams());
-        this.secLoginRequestThread.start();
-    }
+
 
     /**
      * 防止输入为空的情况发生
@@ -228,19 +207,6 @@ public class LoginActivity extends Activity {
         return (true);
     }
 
-    /**
-     * 二次登陆的服务器请求参数
-     *
-     * @return
-     */
-    private Map prepareSecLoginParams() {
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("username", edittextLoginactivityUsername.getText().toString());
-        params.put("password", editextLoginactivityPassword.getText().toString());
-        UserInfoUtils severIdUtils = new UserInfoUtils(this);
-        params.put("id", severIdUtils.getServerId() + "");
-        return (params);
-    }
 
     private Map prepareLoginParams(boolean isManager) {
         Map<String, String> params = new HashMap<String, String>();
@@ -253,7 +219,6 @@ public class LoginActivity extends Activity {
         }
         params.put("phonenum", telnum);
         params.put("deviceid", this.mInformation.getDeviceId());
-
         params.put("devicename", this.mInformation.getCurrentDeviceName());
         return (params);
 
@@ -287,10 +252,10 @@ public class LoginActivity extends Activity {
                     writeUserInfo(resultMap.get("type"),
                             mInformation,
                             resultMap.get("dataBaseId"),
-                            edittextLoginactivityUsername.getText().toString());
+                            edittextLoginactivityUsername.getText().toString()
+                           ,editextLoginactivityPassword.getText().toString());
                     this.dealAfterLogin(resultMap.get("type"));
                 } else if (loginstate.equals("unlogin")) {
-                    Log.i("lzw", "unlogin_deal");
                     ToastUtils.showToast(getApplication(), resultMap.get("failReason"));
                 }
             } else {
@@ -318,52 +283,7 @@ public class LoginActivity extends Activity {
         }
     };
 
-    private Handler secHandler = new Handler(Looper.getMainLooper()) {
-        public void handleMessage(Message msg) {
-            if (msg.getData().getInt("loginstate") == ComParameter.STATE_RIGHT) {
-                this.dealSecLogintMessage();
-            } else if (msg.getData().getInt("loginstate") == ComParameter.STATE_ERROR) {
-                ToastUtils.showToast(getApplicationContext(), ComParameter.ERRORINFO);
-            }
-            proLoginActivity.setVisibility(View.GONE);
 
-        }
-
-        private void dealSecLogintMessage() {
-            Map<String, String> resultMap = secLoginRequestThread.getResultMap();
-            String loginstate = resultMap.get("loginstate");
-            if (loginstate != null) {
-                if (loginstate.equals("login")) {
-                    this.dealAfterLogin(resultMap.get("type"));
-
-                } else if (loginstate.equals("unlogin")) {
-                    Log.i("lzw", "unlogin_deal");
-                    ToastUtils.showToast(getApplication(), resultMap.get("failReason"));
-                }
-            } else {
-                Log.i("zyl", "请求失败");
-            }
-        }
-
-        /**
-         * 二次登录的登录成功的处理
-         * @param type
-         */
-        private void dealAfterLogin(String type) {
-            UserInfoUtils tmpUtils = new UserInfoUtils(LoginActivity.this);
-            String userid = tmpUtils.getServerId() + "";
-            writeUserInfo(type, mInformation, userid, edittextLoginactivityUsername.getText().toString());
-            if (type.equals("manager")) {
-                Intent in = new Intent().setClass(LoginActivity.this, ManagerActivity.class);
-                startActivity(in);
-                finish();
-            } else if (type.equals("unmanager")) {
-                Intent in = new Intent().setClass(LoginActivity.this, RegulatorActivity.class);
-                startActivity(in);
-                finish();
-            }
-        }
-    };
 
     private void setDialogShow() {
         DefineDialog mDefineDialog = new DefineDialog(LoginActivity.this).buiider(true).
