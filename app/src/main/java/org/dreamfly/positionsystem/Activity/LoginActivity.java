@@ -43,7 +43,7 @@ public class LoginActivity extends Activity {
     private EditText editextLoginactivityPassword;
     private DefineDialog mIsManagerDialog;
     private ProgressBar proLoginActivity;
-    private String telnum = null;
+    private String telnum;
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(this);
     private BaseThread loginReuquestThread;
     private DefinedShared mdata = new DefinedShared(this);
@@ -82,6 +82,9 @@ public class LoginActivity extends Activity {
                 findViewById(R.id.progressBar_loginactivity);
         proLoginActivity.setVisibility(View.GONE);
         telnum = mInformation.getDeviceTelNum();
+
+        Log.i("lzw",telnum);
+
         this.bindListener();
 
 
@@ -106,7 +109,8 @@ public class LoginActivity extends Activity {
         this.btnLoginactivityLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 if (checkoutInputDataFormat()) {
-                    if(telnum==null||telnum.equals(" ")){
+                    if(telnum.length()!=11||telnum.length()!=14){
+
                         setDialogShow();
                     }
                     else {
@@ -291,6 +295,7 @@ public class LoginActivity extends Activity {
 
 
     private void setDialogShow() {
+
         DefineDialog mDefineDialog = new DefineDialog(LoginActivity.this).buiider(true).
                 setTitle("请正确输入您的电话号码:").setDefineDialogCanceable(true).setPosBtnTxt("确定").
                 setNegBtnTxt("取消").show();
