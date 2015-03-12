@@ -109,7 +109,8 @@ public class LoginActivity extends Activity {
         this.btnLoginactivityLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 if (checkoutInputDataFormat()) {
-                    if(telnum.length()!=11||telnum.length()!=14){
+                    Log.i("112lzw",telnum.length()+" ");
+                    if(!(telnum.length()==11||telnum.length()==14)){
 
                         setDialogShow();
                     }
