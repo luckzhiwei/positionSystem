@@ -423,6 +423,7 @@ public class ManagerActivity extends Activity {
                 .equals(ComParameter.STATE_FIRST)) {
             //第一次启动加载界面
             this.setContentView(R.layout.manager_layout_first);
+            contentview=this.findViewById(R.id.manfirst);
             mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE,
                     ComParameter.STATE_SECOND);
         } else {
@@ -703,6 +704,7 @@ public class ManagerActivity extends Activity {
             ToastUtils.showToast(getApplicationContext(), "处理异常,请稍后再刷新");
         }
         else {
+            contentview = this.findViewById(R.id.manageractivity_layout);
             if (resultMap.get("connectedstate").equals("n")) {
                 mdata.putString("itemslength", "length", "" + 0);
             } else {

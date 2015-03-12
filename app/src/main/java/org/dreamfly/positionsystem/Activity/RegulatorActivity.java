@@ -359,6 +359,7 @@ public class RegulatorActivity extends Activity  {
         if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE)
                 .equals(ComParameter.STATE_FIRST)) {
             this.setContentView(R.layout.manager_layout_first);
+            contentview=this.findViewById(R.id.manfirst);
             mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE,
                     ComParameter.STATE_SECOND);
         } else {
@@ -553,6 +554,7 @@ public class RegulatorActivity extends Activity  {
             return;
         }
         else {
+            contentview=this.findViewById(R.id.myregulator_activity_layout);
             if (resultMap.get("connectedstate").equals("n")) {
                 mdata.putString("itemslength", "length", "" + 0);
             } else {
