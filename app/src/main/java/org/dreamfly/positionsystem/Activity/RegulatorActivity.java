@@ -140,6 +140,9 @@ public class RegulatorActivity extends Activity  {
             }
         }
         if (keyCode == KeyEvent.KEYCODE_MENU) {
+            if(contentview==null){
+                contentview=this.findViewById(R.id.manfirst);
+            }
             this.showPopwindow(this, contentview);
         }
         return false;
@@ -690,6 +693,9 @@ public class RegulatorActivity extends Activity  {
         mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOGIN_STATE, ComParameter.STATE_THIRD);
         this.logoutUserInfoUtils = new UserInfoUtils(this);
         this.logoutUserInfoUtils.clearUserInfo();
+        for (int i=0;i<getData().size();i++){
+            mDataBase.delitems(i,ComParameter.MANTABLENAME);
+        }
         startActivity(new Intent(RegulatorActivity.this, LoginActivity.class));
     }
     private ServiceConnection mConnection = new ServiceConnection() {

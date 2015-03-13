@@ -181,6 +181,9 @@ public class ManagerActivity extends Activity {
 
         }
         if (keyCode == KeyEvent.KEYCODE_MENU) {
+            if(contentview==null){
+                contentview=this.findViewById(R.id.manfirst);
+            }
             this.showPopwindow(this, contentview);
         }
         return false;
@@ -720,6 +723,7 @@ public class ManagerActivity extends Activity {
                     equals(ComParameter.STATE_SECOND)) {
                 setDataBase(resultMap);
             } else {
+                Log.i("zyl725","dealDatabase");
                 dealDataBase(resultMap);
             }
             ToastUtils.showToast(getApplicationContext(),"联系人列表更新成功");
@@ -875,8 +879,12 @@ public class ManagerActivity extends Activity {
     private void dealAfterlogout() {
         mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOGIN_STATE, ComParameter.STATE_THIRD);
         this.logoutUserInfoUtils = new UserInfoUtils(this);
-        this.logoutUserInfoUtils.clearUserInfo();;
+        this.logoutUserInfoUtils.clearUserInfo();
         //清空本地缓存文件的数据,初始化为未登录状态
+        for (int i=0;i<getData().size();i++){
+            mDataBase.delitems(i,ComParameter.TABLENAME);
+        }
+        //清空sqlite数据
         this.startActivity(new Intent(ManagerActivity.this, LoginActivity.class));
 
     }
