@@ -140,6 +140,9 @@ public class RegulatorActivity extends Activity  {
             }
         }
         if (keyCode == KeyEvent.KEYCODE_MENU) {
+            if(contentview==null){
+                contentview=this.findViewById(R.id.manfirst);
+            }
             this.showPopwindow(this, contentview);
         }
         return false;
@@ -359,7 +362,6 @@ public class RegulatorActivity extends Activity  {
         if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE)
                 .equals(ComParameter.STATE_FIRST)) {
             this.setContentView(R.layout.manager_layout_first);
-            contentview=this.findViewById(R.id.manfirst);
             mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE,
                     ComParameter.STATE_SECOND);
         } else {
@@ -554,7 +556,6 @@ public class RegulatorActivity extends Activity  {
             return;
         }
         else {
-            contentview=this.findViewById(R.id.myregulator_activity_layout);
             if (resultMap.get("connectedstate").equals("n")) {
                 mdata.putString("itemslength", "length", "" + 0);
             } else {
@@ -692,6 +693,9 @@ public class RegulatorActivity extends Activity  {
         mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOGIN_STATE, ComParameter.STATE_THIRD);
         this.logoutUserInfoUtils = new UserInfoUtils(this);
         this.logoutUserInfoUtils.clearUserInfo();
+        for (int i=0;i<getData().size();i++){
+            mDataBase.delitems(i,ComParameter.MANTABLENAME);
+        }
         startActivity(new Intent(RegulatorActivity.this, LoginActivity.class));
     }
     private ServiceConnection mConnection = new ServiceConnection() {

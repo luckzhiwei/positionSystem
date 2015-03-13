@@ -180,6 +180,9 @@ public class ManagerActivity extends Activity {
 
         }
         if (keyCode == KeyEvent.KEYCODE_MENU) {
+            if(contentview==null){
+                contentview=this.findViewById(R.id.manfirst);
+            }
             this.showPopwindow(this, contentview);
         }
         return false;
@@ -423,7 +426,6 @@ public class ManagerActivity extends Activity {
                 .equals(ComParameter.STATE_FIRST)) {
             //第一次启动加载界面
             this.setContentView(R.layout.manager_layout_first);
-            contentview=this.findViewById(R.id.manfirst);
             mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE,
                     ComParameter.STATE_SECOND);
         } else {
@@ -704,7 +706,6 @@ public class ManagerActivity extends Activity {
             ToastUtils.showToast(getApplicationContext(), "处理异常,请稍后再刷新");
         }
         else {
-            contentview = this.findViewById(R.id.manageractivity_layout);
             if (resultMap.get("connectedstate").equals("n")) {
                 mdata.putString("itemslength", "length", "" + 0);
             } else {
@@ -721,6 +722,7 @@ public class ManagerActivity extends Activity {
                     equals(ComParameter.STATE_SECOND)) {
                 setDataBase(resultMap);
             } else {
+                Log.i("zyl725","dealDatabase");
                 dealDataBase(resultMap);
             }
             ToastUtils.showToast(getApplicationContext(),"联系人列表更新成功");
@@ -876,8 +878,12 @@ public class ManagerActivity extends Activity {
     private void dealAfterlogout() {
         mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOGIN_STATE, ComParameter.STATE_THIRD);
         this.logoutUserInfoUtils = new UserInfoUtils(this);
-        this.logoutUserInfoUtils.clearUserInfo();;
+        this.logoutUserInfoUtils.clearUserInfo();
         //清空本地缓存文件的数据,初始化为未登录状态
+        for (int i=0;i<getData().size();i++){
+            mDataBase.delitems(i,ComParameter.TABLENAME);
+        }
+        //清空sqlite数据
         this.startActivity(new Intent(ManagerActivity.this, LoginActivity.class));
 
     }
