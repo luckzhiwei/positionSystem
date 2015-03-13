@@ -55,6 +55,7 @@ public class ManagerAdapter extends BaseAdapter {
     protected LocationGetThread mLocationGetThread;
 
     public ManagerAdapter(List<User> mRegulatorList, Context context, DataBase mDataBase,Handler mHandler) {
+        Log.i("zyl ma58","adapter被调用");
         this.mRegulatorList = mRegulatorList;
         this.mContext = context;
         this.mDataBase = mDataBase;
@@ -62,9 +63,11 @@ public class ManagerAdapter extends BaseAdapter {
     }
 
     public int getCount() {
-
+        Log.i("zyl 66",mRegulatorList.size()+"");
         return (this.mRegulatorList.size());
+
     }
+
 
     public Object getItem(int position) {
         return (this.mRegulatorList.get(position));
@@ -83,6 +86,7 @@ public class ManagerAdapter extends BaseAdapter {
      */
     public View getView(int position, View contentview, ViewGroup arg2) {//加载XML视图文件
 
+        Log.i("zyl ma86","getView 被调用");
         ViewHolder holder;
         this.regulator = this.mRegulatorList.get(position);
         if (contentview == null) {
@@ -291,6 +295,7 @@ public class ManagerAdapter extends BaseAdapter {
                 holder.txtManagertgetDeviceName.setText(cur.getString(cur.getColumnIndex("subname")));
             }
         }
+        Log.i("zyl294","加载数据方法调用");
         cur.close();
     }
 

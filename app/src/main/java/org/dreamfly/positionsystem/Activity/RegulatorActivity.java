@@ -59,6 +59,7 @@ import java.util.Map;
  */
 public class RegulatorActivity extends Activity  {
 
+    private static RegulatorActivity regulatorActivity;
     private DefineListView listViewRegulatorActivityReglutorList;
     private TextView txtRegulatorActivityTitle;
     private LinearLayout layout;
@@ -89,7 +90,9 @@ public class RegulatorActivity extends Activity  {
     protected String lat;
     protected String lon;
 
-
+    public RegulatorActivity(){
+        regulatorActivity=this;
+    }
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SDKInitializer.initialize(getApplicationContext());
@@ -105,6 +108,11 @@ public class RegulatorActivity extends Activity  {
     protected void onStop() {
         super.onStop();
         //this.unbindLocationService();
+    }
+
+    protected void onDestroy(){
+        super.onDestroy();
+        unbindLocationService();
     }
 
     protected void onResume() {
@@ -358,7 +366,7 @@ public class RegulatorActivity extends Activity  {
         }
     }
     private void isFirstConnect() {
-        mdata.putString(ComParameter.LOADING_STATE, ComParameter.IDENTITY_STATE, "regulator");
+        mdata.putString(ComParameter.LOADING_STATE, ComParameter.IDENTITY_STATE, "unmanager");
         if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE)
                 .equals(ComParameter.STATE_FIRST)) {
             this.setContentView(R.layout.manager_layout_first);
@@ -744,6 +752,9 @@ public class RegulatorActivity extends Activity  {
         unbindService(mConnection);
     }
 
+    public static RegulatorActivity getRegulatorActivity(){
+        return regulatorActivity;
+    }
 }
 
 

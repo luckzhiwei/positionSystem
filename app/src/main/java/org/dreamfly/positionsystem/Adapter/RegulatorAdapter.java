@@ -2,6 +2,7 @@ package org.dreamfly.positionsystem.Adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -139,6 +140,7 @@ public class RegulatorAdapter extends ManagerAdapter {
             }
         }
         cur.close();
+        Log.i("zyl reg143","加载reg数据方法调用");
     }
 
     /**

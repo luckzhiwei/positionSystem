@@ -65,7 +65,7 @@ import java.util.Map;
  */
 public class ManagerActivity extends Activity {
 
-
+    private static ManagerActivity managerActivity;
     private DefineListView managerActivityListView;
     private TextView txtManagerActivityTitle, txtManagertgetDeviceName;
     private LinearLayout layout;
@@ -86,6 +86,7 @@ public class ManagerActivity extends Activity {
     private int userTouchDistance;
     private WindowManager wm;
     private float touchY;
+
     protected LocationUtils mLocationUtils;
     protected LocationClient locationClient;
     protected String lat;
@@ -102,7 +103,9 @@ public class ManagerActivity extends Activity {
 
     private BaseThread secLoginThread;
 
-
+    public ManagerActivity(){
+        managerActivity=this;
+    }
     /**
      * 重写onCreate方法,完成数据初始化,加载操作
      *
@@ -690,6 +693,7 @@ public class ManagerActivity extends Activity {
      * 加载list数据
      */
     private void loadList() {
+        Log.i("zyl man696","加载列表方法调用");
         this.bindID();
         this.setListViewListener();
         this.mManagerAdapter = new ManagerAdapter(this.getData(), this, mDataBase,getLocationHandler);
@@ -943,6 +947,10 @@ public class ManagerActivity extends Activity {
     private void unbindLocationService() {
         Log.i("service", "[SERVICE] Unbind");
         unbindService(mConnection);
+    }
+
+    public static ManagerActivity getManagerActivity(){
+        return managerActivity;
     }
 
 }

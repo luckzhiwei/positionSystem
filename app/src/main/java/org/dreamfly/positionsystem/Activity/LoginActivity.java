@@ -277,12 +277,14 @@ public class LoginActivity extends Activity {
             if (type.equals("manager")) {
                 mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE,
                         ComParameter.STATE_FIRST);
+                mdata.putString(ComParameter.LOADING_STATE,ComParameter.IDENTITY_STATE,"manager");
                 in = new Intent().setClass(LoginActivity.this, ManagerActivity.class);
                 startActivity(in);
                 finish();
             } else if (type.equals("unmanager")) {
                 mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE,
                         ComParameter.STATE_FIRST);
+                mdata.putString(ComParameter.LOADING_STATE,ComParameter.IDENTITY_STATE,"unmanager");
                 in = new Intent().setClass(LoginActivity.this, RegulatorActivity.class);
                 startActivity(in);
                 finish();

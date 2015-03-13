@@ -34,6 +34,7 @@ public class QueryService extends Service {
     private NotificationManager manager;
     private BaiduLocationService mLocation;
     private MsgSender mMessageSender;
+    private ManagerActivity managerActivity;
 
     public IBinder onBind(Intent intent) {
         return (mQueryBind);
