@@ -1,6 +1,7 @@
 package org.dreamfly.positionsystem.Activity;
 
 import android.app.Activity;
+import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -887,11 +888,19 @@ public class ManagerActivity extends Activity {
                 QueryService service= ((QuerySerivcesBinder)myBinder).getService();
                 service.setMsgSender(mMessageSender);
                 binder.startQuery();
-            //绑定到轮询线程要做的事情
+                //绑定到轮询线程要做的事情
         }
 
         public void onServiceDisconnected(ComponentName className) {
             mService = null;
+        }
+    };
+    private ServiceConnection networkSerConnetion=new ServiceConnection(){
+        public void onServiceConnected(ComponentName className, IBinder myBinder) {
+
+        }
+        public void onServiceDisconnected(ComponentName className) {
+
         }
     };
 

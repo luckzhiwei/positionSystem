@@ -55,7 +55,6 @@ public class LoginActivity extends Activity {
         this.setContentView(R.layout.login_layout);
         this.initial();
 
-
     }
 
     @Override
@@ -82,9 +81,6 @@ public class LoginActivity extends Activity {
                 findViewById(R.id.progressBar_loginactivity);
         proLoginActivity.setVisibility(View.GONE);
         telnum = mInformation.getDeviceTelNum();
-
-        Log.i("lzw",telnum);
-
         this.bindListener();
 
 
@@ -110,12 +106,10 @@ public class LoginActivity extends Activity {
             public void onClick(View view) {
                 if (checkoutInputDataFormat()) {
                     if(telnum.length()!=11||telnum.length()!=14){
-
                         setDialogShow();
                     }
                     else {
                         showIsManagerDialog();
-                        //弹出对话框
                     }
                 }
             }

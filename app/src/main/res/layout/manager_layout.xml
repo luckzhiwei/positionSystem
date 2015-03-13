@@ -39,17 +39,36 @@
 
     </RelativeLayout>
     <LinearLayout
+        android:id="@+id/linearlayout_manageractivity_shownetwork"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:orientation="horizontal"
+            android:background="#D4D470"
+            android:gravity="center"
+            android:layout_height="50dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:gravity="center"
+                android:textColor="#000000"
+                android:text="网络未能连接，请检查网络设置"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    <LinearLayout
         android:background="#EEFFFF"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="fill_parent">
         <org.dreamfly.positionsystem.Custom.DefineListView
             android:listSelector="@android:color/transparent"
             android:id="@+id/delistiview_manageractivity_showmanger"
             android:layout_width="fill_parent"
             android:divider="@null"
             android:background="@android:color/transparent"
-            android:layout_height="wrap_content">
+            android:layout_height="fill_parent">
         </org.dreamfly.positionsystem.Custom.DefineListView>
-
+    </LinearLayout>
     </LinearLayout>
 </LinearLayout>

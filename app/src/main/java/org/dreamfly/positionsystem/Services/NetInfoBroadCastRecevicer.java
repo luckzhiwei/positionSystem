@@ -5,7 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.widget.Toast;
+
+import org.dreamfly.positionsystem.CommonParameter.ComParameter;
 
 /**
  * Created by asus on 2015/1/22.
@@ -13,6 +18,11 @@ import android.widget.Toast;
 public class NetInfoBroadCastRecevicer extends BroadcastReceiver {
 
     private int conType;
+    private Handler mHandler;
+    public NetInfoBroadCastRecevicer(Handler mHandler){
+           this.mHandler=mHandler;
+    }
+
 
     //网络连接类型
     public void onReceive(Context mContext, Intent intent) {
@@ -23,10 +33,9 @@ public class NetInfoBroadCastRecevicer extends BroadcastReceiver {
             ConnectivityManager mConectivityManager =
                     (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
             if (this.dealNetworkInfoChanged(mConectivityManager)) {
-                //网络是正常的
-            } else {
-
-                Toast.makeText(mContext, "网络连接不可用", Toast.LENGTH_SHORT).show();
+                this.sendNetInfoServiceMsg(ComParameter.STATE_RIGHT);
+             } else {
+                this.sendNetInfoServiceMsg(ComParameter.STATE_ERROR);
                 //提示用户网络不正常
             }
         }
@@ -90,6 +99,18 @@ public class NetInfoBroadCastRecevicer extends BroadcastReceiver {
         }
 
     }
+
+    /**
+     * 向service发送挽网络状态
+     * @param state
+     */
+     private void sendNetInfoServiceMsg(int state){
+         Message msg=new Message();
+         Bundle bd=new Bundle();
+         bd.putInt("netState",state);
+         msg.setData(bd);
+         this.mHandler.sendMessage(msg);
+     }
 
 
 }

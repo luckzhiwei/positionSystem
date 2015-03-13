@@ -25,7 +25,6 @@ public class QuerySerivcesBinder extends Binder {
         this.queryService=queryService;
     }
 
-
     /**
      * 启动轮询线程
      */
