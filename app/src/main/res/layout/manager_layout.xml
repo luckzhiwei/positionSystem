@@ -42,6 +42,7 @@
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:layout_height="wrap_content">
+
         <LinearLayout
             android:id="@+id/linearlayout_manageractivity_shownetwork"
             android:layout_width="fill_parent"
