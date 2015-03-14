@@ -41,7 +41,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="vertical"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/manageractivity_layout2"
+        android:background="#EEFFFF">
         <LinearLayout
             android:id="@+id/linearlayout_manageractivity_shownetwork"
             android:layout_width="fill_parent"
@@ -67,7 +69,7 @@
             android:layout_width="fill_parent"
             android:divider="@null"
             android:background="@android:color/transparent"
-            android:layout_height="fill_parent">
+            android:layout_height="wrap_content">
         </org.dreamfly.positionsystem.Custom.DefineListView>
     </LinearLayout>
     </LinearLayout>
