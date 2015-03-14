@@ -29,6 +29,7 @@
             android:id="@+id/definedialog_edittext"
             android:textColor="#000000"
             android:cursorVisible="true"
+            android:textCursorDrawable="@color/black"
             android:background="@drawable/definedialog_edittext_background" />
     </LinearLayout>
     <View
