@@ -362,6 +362,7 @@ public class ManagerActivity extends Activity {
         }
         if (list.size() == 0) {
             layout.setBackgroundResource(R.drawable.manager_none);
+            Log.i("zyl365","0条目切换背景");
             btnRefresh.setVisibility(View.VISIBLE);
         } else {
             layout.setBackgroundResource(R.color.white_layout);
