@@ -136,10 +136,10 @@ public class LoginActivity extends Activity {
     private View.OnClickListener managerClickListener = new View.OnClickListener() {
         public void onClick(View view) {
             mIsManagerDialog.dismiss();
-
             sendLoginInfoToServer(true);
             proLoginActivity.setVisibility(View.VISIBLE);
             ToastUtils.showToast(getApplicationContext(), "正在登录,请稍后");
+            btnLoginactivityLogin.setClickable(false);
 
         }
     };
@@ -152,6 +152,7 @@ public class LoginActivity extends Activity {
             sendLoginInfoToServer(false);
             proLoginActivity.setVisibility(View.VISIBLE);
             ToastUtils.showToast(getApplicationContext(), "正在登录,请稍后");
+            btnLoginactivityLogin.setClickable(false);
         }
     };
 
@@ -238,13 +239,12 @@ public class LoginActivity extends Activity {
         public void handleMessage(Message msg) {
             if (msg.getData().getInt("firstloginstate") == ComParameter.STATE_RIGHT) {
                 this.dealFirstLogintMessage();
-
             } else if (msg.getData().getInt("firstloginstate") == ComParameter.STATE_ERROR) {
                 ToastUtils.showToast(getApplicationContext(), ComParameter.ERRORINFO);
             }
             proLoginActivity.setVisibility(View.GONE);
-
-        }
+            btnLoginactivityLogin.setClickable(true);
+    }
 
         /**
          * 处理首次登录情况的函数
@@ -266,7 +266,7 @@ public class LoginActivity extends Activity {
                     ToastUtils.showToast(getApplication(), resultMap.get("failReason"));
                 }
             } else {
-                Log.i("lzw", "null");
+                 ToastUtils.showToast(getApplication(),ComParameter.ERRORINFO);
             }
         }
 

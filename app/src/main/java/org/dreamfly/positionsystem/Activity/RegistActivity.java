@@ -95,6 +95,7 @@ public class RegistActivity extends Activity {
                 requestRegisterThread.start();
                 ToastUtils.showToast(getApplication(), "请求服务器中...");
                 proRegistActivity.setVisibility(View.VISIBLE);
+                btnRegisterActivityRegister.setClickable(false);
             }
         }
     };
@@ -126,7 +127,6 @@ public class RegistActivity extends Activity {
                         ToastUtils.showToast(getApplicationContext(), "注册成功!");
                         editRegisterActivityPassword.setText("");
                         editRegisterActivityUsername.setText("");
-
                         Intent in = new Intent().setClass(RegistActivity.this, LoginActivity.class);
                         startActivity(in);
                         finish();
@@ -137,6 +137,8 @@ public class RegistActivity extends Activity {
                         editRegisterActivityUsername.setText("");
 
                     }
+                }else{
+                    ToastUtils.showToast(getApplicationContext(),ComParameter.ERRORINFO);
                 }
 
 
@@ -144,6 +146,8 @@ public class RegistActivity extends Activity {
                 ToastUtils.showToast(getApplicationContext(), ComParameter.ERRORINFO);
             }
             proRegistActivity.setVisibility(View.GONE);
+            btnRegisterActivityRegister.setClickable(true);
+
         }
     };
 }

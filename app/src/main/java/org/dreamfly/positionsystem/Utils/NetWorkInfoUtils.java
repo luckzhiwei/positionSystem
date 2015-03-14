@@ -26,6 +26,9 @@ public class NetWorkInfoUtils {
                          case ConnectivityManager.TYPE_WIFI:
                               isAlive=true;
                               break;
+                         case ConnectivityManager.TYPE_WIMAX:
+                              isAlive=true;
+                              break;
                          default:
                                isAlive=false;
                                break;

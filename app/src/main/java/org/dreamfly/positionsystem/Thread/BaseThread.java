@@ -9,6 +9,7 @@ import org.dreamfly.positionsystem.CommonParameter.ComParameter;
 import org.dreamfly.positionsystem.Utils.HttpUtils;
 import org.dreamfly.positionsystem.Utils.NetWorkInfoUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -86,7 +87,6 @@ public abstract class BaseThread extends Thread {
      * 将服务器的返回的结果（字符）交给子类的实例化的方法来
      */
     public void run() {
-
         this.checkRequestMap();
         try {
             String responseStr =
@@ -94,6 +94,7 @@ public abstract class BaseThread extends Thread {
                             ComParameter.ENCODE_UTF_8, ComParameter.ENCODE_UTF_8);
             if (!this.dealRequestState(responseStr)) {
                 this.setLoadState(this.stateId, ComParameter.STATE_ERROR);
+                Log.i("lzw","发送加载错误的异常");
                 this.mHandler.sendMessage(this.msg);
                 return;
                 //结束线程中的方法
@@ -129,8 +130,7 @@ public abstract class BaseThread extends Thread {
      * @param str
      * @return
      */
-    protected boolean dealRequestState(String str) {
-
+    protected boolean dealRequestState(String str)throws  IOException{
         if (str != null) {
             if (str.equals("paramsException")) {
                 return (false);

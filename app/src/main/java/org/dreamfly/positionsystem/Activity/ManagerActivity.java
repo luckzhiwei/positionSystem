@@ -595,9 +595,8 @@ public class ManagerActivity extends Activity {
              */
         private void dealSecLoginMsg(Map<String,String> resultMap){
             if (resultMap.get("loginstate")==null){
-                Log.i("lzw","man-L591 哈希表处理异常");
-            }
-            else {
+                 ToastUtils.showToast(getApplicationContext(),ComParameter.ERRORINFO);
+            }else {
                 if (resultMap.get("loginstate").equals("unlogin")) {
                     ToastUtils.showToast(getApplicationContext(), "与服务器连接失败，尝试重新登录");
                 }
@@ -659,13 +658,12 @@ public class ManagerActivity extends Activity {
 
     private void dealEnrollLoadMsg(Map<String, String> resultMap) {
         if(resultMap.get("state")==null){
-            ToastUtils.showToast(getApplicationContext(),"网络状况异常,请重试");
+            ToastUtils.showToast(getApplicationContext(),ComParameter.ERRORINFO);
         }
         else {
             if (resultMap.get("state").equals("success")) {
-                //有关与进入数据加载界面的UI处理
                 setContentView(R.layout.manager_layout_first);
-
+                //有关与进入数据加载界面的UI处理
             } else {
                 ToastUtils.showToast(getApplicationContext(), "获取失败,尝试重新获取");
             }
@@ -684,7 +682,7 @@ public class ManagerActivity extends Activity {
                 ToastUtils.showToast(getApplication(), resultMap.get("failReason"));
             }
         } else {
-            Log.i("zyl", "请求失败");
+             ToastUtils.showToast(getApplicationContext(),ComParameter.ERRORINFO);
         }
     }
 
@@ -949,8 +947,5 @@ public class ManagerActivity extends Activity {
         unbindService(mConnection);
     }
 
-    public static ManagerActivity getManagerActivity(){
-        return managerActivity;
-    }
 
 }

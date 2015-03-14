@@ -30,9 +30,7 @@ public class ComParameter {
           public final static int DEAL_JSON=2;
 
           public final static String ERRORINFO=
-          "由于网络等其他问题,加载数据失败,请稍后再试";
-
-
+          "连接超时，请稍后再试";
 
           public final static String PACKAGE_NAME="org.dreamfly.positionsystem";
 

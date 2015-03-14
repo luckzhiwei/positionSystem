@@ -52,8 +52,7 @@ public class HttpUtils {
         List<NameValuePair> list = getRequestParams(requestParams);
         if (list != null) {
             HttpPost post = bulidHttpPost(list, requestPath);
-             mHttpClient = CustomHttpclient.getSigleTonInstance();
-
+            mHttpClient = CustomHttpclient.getSigleTonInstance();
             if(mHttpClient!=null) {
                 InputStream ServerInputStream = getServetReponse(mHttpClient, post);
                 if (ServerInputStream != null)
@@ -152,10 +151,9 @@ public class HttpUtils {
     private static InputStream getServetReponse(HttpClient mHttpCLient, HttpPost post) {
         try {
             HttpResponse mResponse = mHttpCLient.execute(post);
-            //向服务器做请求连接
-                mEntity = mResponse.getEntity();
-                return (mEntity.getContent());
-
+                //向服务器做请求连接
+            mEntity = mResponse.getEntity();
+            return (mEntity.getContent());
         } catch (SocketTimeoutException e) {
             //请求超时异常捕捉
             Log.i("lzw","connection_timeout");
