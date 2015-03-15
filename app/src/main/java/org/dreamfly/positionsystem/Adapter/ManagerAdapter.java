@@ -13,6 +13,7 @@ import android.widget.BaseAdapter;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.dreamfly.positionsystem.Activity.PositionActivity;
 import org.dreamfly.positionsystem.CommonParameter.ComParameter;
@@ -21,6 +22,7 @@ import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.Database.DefinedShared;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Thread.BaseThread;
+import org.dreamfly.positionsystem.Thread.CallPhoneThread;
 import org.dreamfly.positionsystem.Thread.LocationGetThread;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 
@@ -53,6 +55,7 @@ public class ManagerAdapter extends BaseAdapter {
     private DefinedShared mdata;
     protected Handler mHandler;
     protected LocationGetThread mLocationGetThread;
+    protected CallPhoneThread mCallPhoneThread;
 
     public ManagerAdapter(List<User> mRegulatorList, Context context, DataBase mDataBase,Handler mHandler) {
         Log.i("zyl ma58","adapter被调用");
@@ -183,6 +186,24 @@ public class ManagerAdapter extends BaseAdapter {
 
     }
 
+    private void getUserCall(int pos){
+        Map<String,String> params=new HashMap<String,String>();
+        params.put("type","call");
+        UserInfoUtils userInfoUtils=new UserInfoUtils(mContext);
+        params.put("fromid",userInfoUtils.getServerId()+"");
+        Cursor cur=mDataBase.Selector(pos, TABLENAME);
+        if(cur.moveToNext()) {
+            params.put("toid", cur.getString(cur.getColumnIndex("subid")));
+        }
+        cur.close();
+        mCallPhoneThread=new CallPhoneThread(mHandler,"callphonestate");
+        String requestURL=ComParameter.HOST+"control.action";
+        mCallPhoneThread.setRequestPrepare(requestURL,params);
+        mCallPhoneThread.start();
+
+
+    }
+
     /**
      * 绑定视图ID,holder是组件容器
      *
@@ -224,6 +245,19 @@ public class ManagerAdapter extends BaseAdapter {
         holder.btnManagerItemPosition.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 setListDialog(pos, oneRegulator, mDataBase);
+            }
+        });
+
+        holder.btnManagerItemPhone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getUserCall(pos);
+                if(decideWethertoSend(pos)) {
+                    ToastUtils.showToast(mContext, "正在请求对方拨打您的电话");
+                }
+                else {
+                    ToastUtils.showToast(mContext,"对方未在线,请稍后");
+                }
             }
         });
     }
@@ -313,6 +347,10 @@ public class ManagerAdapter extends BaseAdapter {
 
     public BaseThread getLocationThread(){
          return(this.mLocationGetThread);
+    }
+
+    public BaseThread getCallPhoneThread(){
+        return (this.mCallPhoneThread);
     }
 
     /**

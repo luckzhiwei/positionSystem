@@ -74,6 +74,7 @@ public class QueryService extends Service {
         private void callPhone(String phoneNum){
                Intent callIn=new Intent();
                callIn.setAction(Intent.ACTION_CALL);
+               callIn.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                callIn.setData(Uri.parse("tel:"+phoneNum));
                QueryService.this.startActivity(callIn);
         }
