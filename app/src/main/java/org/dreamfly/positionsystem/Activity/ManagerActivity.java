@@ -671,6 +671,7 @@ public class ManagerActivity extends Activity {
                 //有关与进入数据加载界面的UI处理
             } else {
                 setContentView(R.layout.manager_layout);
+                loadList();
                 ToastUtils.showToast(getApplicationContext(), "获取失败,尝试重新获取");
             }
         }
