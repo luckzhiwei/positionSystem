@@ -654,6 +654,8 @@ public class ManagerActivity extends Activity {
                }
             } else if (state == ComParameter.STATE_ERROR) {
                 ToastUtils.showToast(getApplicationContext(), "获取失败");
+                setContentView(R.layout.manager_layout);
+                loadList();
             }
         }
     };
