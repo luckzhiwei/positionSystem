@@ -664,9 +664,11 @@ public class ManagerActivity extends Activity {
         }
         else {
             if (resultMap.get("state").equals("success")) {
-                setContentView(R.layout.manager_layout_first);
+                ToastUtils.showToast(getApplication(),"请求发送成功,正在等待对方传送地理位置");
+                //setContentView(R.layout.manager_layout_first);
                 //有关与进入数据加载界面的UI处理
             } else {
+                setContentView(R.layout.manager_layout);
                 ToastUtils.showToast(getApplicationContext(), "获取失败,尝试重新获取");
             }
         }
@@ -696,7 +698,8 @@ public class ManagerActivity extends Activity {
         Log.i("zyl man696","加载列表方法调用");
         this.bindID();
         this.setListViewListener();
-        this.mManagerAdapter = new ManagerAdapter(this.getData(), this, mDataBase,getLocationHandler);
+        this.mManagerAdapter = new ManagerAdapter(this.getData(), this,
+                mDataBase,getLocationHandler,this);
         this.managerActivityListView.setAdapter(this.mManagerAdapter);
     }
 
@@ -948,6 +951,7 @@ public class ManagerActivity extends Activity {
         Log.i("service", "[SERVICE] Unbind");
         unbindService(mConnection);
     }
+
 
 
 }

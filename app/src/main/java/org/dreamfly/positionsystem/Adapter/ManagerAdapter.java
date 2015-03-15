@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dreamfly.positionsystem.Activity.ManagerActivity;
 import org.dreamfly.positionsystem.Activity.PositionActivity;
 import org.dreamfly.positionsystem.CommonParameter.ComParameter;
 import org.dreamfly.positionsystem.Custom.DefineDialog;
@@ -53,16 +54,19 @@ public class ManagerAdapter extends BaseAdapter {
     private final static String TABLENAME="regulatoritems";
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(mContext);
     private DefinedShared mdata;
+    private ManagerActivity managerActivity;
     protected Handler mHandler;
     protected LocationGetThread mLocationGetThread;
     protected CallPhoneThread mCallPhoneThread;
 
-    public ManagerAdapter(List<User> mRegulatorList, Context context, DataBase mDataBase,Handler mHandler) {
+    public ManagerAdapter(List<User> mRegulatorList, Context context, DataBase mDataBase,
+                          Handler mHandler,ManagerActivity managerActivity) {
         Log.i("zyl ma58","adapter被调用");
         this.mRegulatorList = mRegulatorList;
         this.mContext = context;
         this.mDataBase = mDataBase;
         this.mHandler=mHandler;
+        this.managerActivity=managerActivity;
     }
 
     public int getCount() {
@@ -152,6 +156,7 @@ public class ManagerAdapter extends BaseAdapter {
         public void onClick(View view) {
             ToastUtils.showToast(mContext,"正在获取对方的地理位置");
             if(decideWethertoSend(pos)) {
+                changeBackground(true);
                 this.getUserLocationFromSever(pos);
             }
         }
@@ -369,6 +374,12 @@ public class ManagerAdapter extends BaseAdapter {
         }
         cur.close();
         return  true;
+    }
+
+    public void changeBackground(boolean isChanged){
+        if (isChanged){
+            managerActivity.setContentView(R.layout.manager_layout_first);
+        }
     }
 
 

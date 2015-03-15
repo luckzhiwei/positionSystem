@@ -35,7 +35,7 @@ public class RegulatorAdapter extends ManagerAdapter {
      * @param mDataBase
      */
     public RegulatorAdapter(List<User>mRegulatorList,Context context,DataBase mDataBase,android.os.Handler mHandler) {
-        super(mRegulatorList,context,mDataBase,mHandler);
+        super(mRegulatorList,context,mDataBase,mHandler,null);
     }
 
     @Override
