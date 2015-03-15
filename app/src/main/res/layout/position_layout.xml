@@ -5,14 +5,9 @@
     android:id="@+id/position_layout">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="50dp"
+        android:background="@color/blue">
 
-        <ImageView
-            android:id="@+id/positionactivity_imv_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scaleType="fitXY"
-            android:src="@drawable/regulatoractivity_head"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -28,44 +23,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-        <TextView
-            android:id="@+id/txt_position_latitute"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="31.193832 "
-            android:textColor="#000000"
-            android:textSize="20sp" />
-        <TextView
-            android:id="@+id/txt_position_longitute"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:textColor="#000000"
-            android:text="105.21232 "
-            android:textSize="20sp"/>
 
-        </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-        `<Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btn_positionactivity_geo"
-            android:text="转换成文字"
-            android:textColor="#000000"/>
          <TextView
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
              android:id="@+id/txt_position_location"
-             android:layout_margin="10dp"
+             android:layout_margin="20dp"
              android:textColor="#000000"
              android:textSize="20sp"
              android:text="当前位置是:埃塞俄比亚"/>

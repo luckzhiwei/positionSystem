@@ -55,7 +55,7 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
     private DataBase mDataBase = new DataBase(this);
     private DefinedShared mdata = new DefinedShared(this);
     private LocationUtils mLocationUtils;
-    private MapView mMapView ;
+    private MapView mMapView;
     private BaiduMap mBaiduMap;
     private String sb, sb1;
     private boolean isFirstLoc = true;
@@ -96,14 +96,14 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
     }
 
     @Override
-    public boolean onKeyDown(int keyCode,KeyEvent event){
-        if (keyCode==KeyEvent.KEYCODE_BACK){
-            Intent intent=new Intent(PositionActivity.this,ManagerActivity.class);
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Intent intent = new Intent(PositionActivity.this, ManagerActivity.class);
             startActivity(intent);
             finish();
             return true;
         }
-        return super.onKeyDown(keyCode,event);
+        return super.onKeyDown(keyCode, event);
     }
 
     private void initial() {
@@ -111,11 +111,9 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
         dealIntent();
         mcoder = GeoCoder.newInstance();
         mcoder.setOnGetGeoCodeResultListener(this);
-        txtPositionLatitute.setText(sb);
-        txtPositionLongitute.setText(sb1);
         if (dealIntent()) {
-            Log.i("zyl","mapsuccess");
-            MapInfo(txtPositionLatitute, txtPositionLongitute, isFirstLoc);
+            Log.i("zyl", "mapsuccess");
+            MapInfo(isFirstLoc);
             codeChanging();
         }
     }
@@ -125,10 +123,8 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
      * 绑定控件ID
      */
     private void bindID() {
-        txtPositionLatitute = (TextView) this.findViewById(R.id.txt_position_latitute);
-        txtPositionLongitute = (TextView) this.findViewById(R.id.txt_position_longitute);
         txtPositionLocation = (TextView) this.findViewById(R.id.txt_position_location);
-        btnPositionActivityGeo = (Button) this.findViewById(R.id.btn_positionactivity_geo);
+
         mMapView = (MapView) this.findViewById(R.id.bmapView);
 
 
@@ -163,8 +159,8 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
     private void codeChanging() {
 
         LatLng ptCenter = new LatLng(
-                (Float.valueOf(txtPositionLatitute.getText().toString())),
-                Float.valueOf(txtPositionLongitute.getText().toString()));
+                (Float.valueOf(sb)),
+                Float.valueOf(sb1));
         mcoder.reverseGeoCode(new ReverseGeoCodeOption().location(ptCenter));
 
     }
@@ -172,7 +168,7 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
     /**
      * 百度地图服务
      */
-    protected void MapInfo(TextView txt1, TextView txt2, boolean isFirstLoc) {
+    protected void MapInfo(boolean isFirstLoc) {
         //初始化百度地图
         mBaiduMap = mMapView.getMap();
         //设置类型:普通地图
@@ -183,26 +179,26 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
         mBaiduMap.setMyLocationEnabled(true);
         //从经纬度中得到地理位置
         MyLocationData locData = new MyLocationData.Builder().accuracy(0).direction(100)
-                .latitude(Float.valueOf(txt1.getText().toString())).
-                        longitude(Float.valueOf(txt2.getText().toString())).build();
+                .latitude(Float.valueOf(sb)).
+                        longitude(Float.valueOf(sb1)).build();
 
         mBaiduMap.setMyLocationData(locData);
         //设置定位标记标记图案
         MyLocationConfiguration config = new MyLocationConfiguration
-                (mCurrentMode, true, BitmapDescriptorFactory.fromResource(R.drawable.icon_marka));
+                (mCurrentMode, true, BitmapDescriptorFactory.fromResource(R.drawable.icon_geo));
         mBaiduMap.setMyLocationConfigeration(config);
-        Log.i("zyl","184success");
+        Log.i("zyl", "184success");
         //如果是第一次定位,定位到指定地点
         if (isFirstLoc) {
             this.isFirstLoc = false;
 
             LatLng ll = new LatLng
-                    (Float.valueOf(txt1.getText().toString()), Float.valueOf(txt2.getText().toString()));
+                    (Float.valueOf(sb), Float.valueOf(sb1));
             //设置默认比例尺
             float f = mBaiduMap.getMaxZoomLevel();
             MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(ll, f - 3);
             mBaiduMap.animateMapStatus(u);
-            Log.i("zyl","194success");
+            Log.i("zyl", "194success");
         }
 
 
