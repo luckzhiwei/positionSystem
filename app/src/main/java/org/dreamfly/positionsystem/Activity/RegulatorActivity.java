@@ -166,7 +166,7 @@ public class RegulatorActivity extends Activity  {
             //如果是第一次启动,不在这里加载列表数据(第一次请求的数据从网络获得)
             this.loadList();
         }
-        this.telNumSave(mInformation);
+
         this.sendSecLoginToSever();
         this.sendIdtoSever();
 
@@ -366,7 +366,7 @@ public class RegulatorActivity extends Activity  {
         }
     }
     private void isFirstConnect() {
-        mdata.putString(ComParameter.LOADING_STATE, ComParameter.IDENTITY_STATE, "unmanager");
+
         if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE)
                 .equals(ComParameter.STATE_FIRST)) {
             this.setContentView(R.layout.manager_layout_first);
@@ -386,10 +386,6 @@ public class RegulatorActivity extends Activity  {
         this.setCLickListener();
     }
 
-    protected void telNumSave(CurrentInformationUtils mInformation) {
-        Log.i("zyl", mInformation.getDeviceTelNum());
-        mDataBase.items_changeValue(ComParameter.DEVICE, "telnumber", mInformation.getDeviceTelNum(), 0);
-    }
 
     /**
      * 向服务器发送请求

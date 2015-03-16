@@ -106,11 +106,8 @@ public class LoginActivity extends Activity {
             public void onClick(View view) {
                 if (checkoutInputDataFormat()) {
 
-                    Log.i("112lzw",telnum.length()+" ");
-                    if(!(telnum.length()==11||telnum.length()==14)){
-
-
-                        setDialogShow();
+                    if(telnum==null||!(telnum.matches("(\\d{11})|(\\+86?\\d{11})"))){
+                         setDialogShow();
                     }
                     else {
                         showIsManagerDialog();
@@ -319,7 +316,12 @@ public class LoginActivity extends Activity {
         public void onClick(View v) {
             telnum = editText.getText().toString();
             mDialog.dismiss();
-            showIsManagerDialog();
+            if(!(telnum.matches("(\\d{11})|(\\+86?\\d{11})"))){
+                setDialogShow();
+            }
+            else {
+                showIsManagerDialog();
+            }
 
         }
     }

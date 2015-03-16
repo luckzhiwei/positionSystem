@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:background="@color/white_define"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_define"
     android:id="@+id/position_layout">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -15,43 +18,41 @@
             android:layout_centerInParent="true"
             android:textSize="20sp"
             android:textColor="#ffffff"
-            android:id="@+id/txt_manageractivity_title"
-            />
+            android:id="@+id/txt_manageractivity_title" />
     </RelativeLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
 
-        <LinearLayout
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent_blue"
+        android:orientation="vertical">
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-         <TextView
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:id="@+id/txt_position_location"
-             android:layout_margin="20dp"
-             android:textColor="#000000"
-             android:textSize="20sp"
-             android:text="当前位置是:埃塞俄比亚"/>
-        </LinearLayout>
-
+            android:id="@+id/txt_position_location"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:textColor="#000000"
+            android:textSize="19sp"
+            android:text="当前位置是:埃塞俄比亚" />
     </LinearLayout>
+
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-     <com.baidu.mapapi.map.MapView
-        android:id="@+id/bmapView"
-        android:apiKey="MAP API KEY"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:clickable="true" />
+        <com.baidu.mapapi.map.MapView
+            android:id="@+id/bmapView"
+            android:apiKey="MAP API KEY"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:clickable="true" />
 
-     </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

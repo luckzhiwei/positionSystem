@@ -200,7 +200,7 @@ public class ManagerActivity extends Activity {
             //如果是第一次启动,不在这里加载列表数据(第一次请求的数据从网络获得)
             this.loadList();
         }
-        this.telNumSave(mInformation);
+
         this.sendSecLoginToServer();
         this.sendIdtoSever();
 
@@ -427,7 +427,7 @@ public class ManagerActivity extends Activity {
      */
     private void ifFirstConnect() {
         //用sharedpreference存储登陆状态
-        mdata.putString(ComParameter.LOADING_STATE, ComParameter.IDENTITY_STATE, "manager");
+
         if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE)
                 .equals(ComParameter.STATE_FIRST)) {
             //第一次启动加载界面
@@ -440,13 +440,7 @@ public class ManagerActivity extends Activity {
         }
     }
 
-    /**
-     * 存储本机号码
-     */
-    protected void telNumSave(CurrentInformationUtils mInformation) {
-        Log.i("zyl", mInformation.getDeviceTelNum());
-        mDataBase.items_changeValue(DEVICE, "telnumber", mInformation.getDeviceTelNum(), 0);
-    }
+
 
 
     /**

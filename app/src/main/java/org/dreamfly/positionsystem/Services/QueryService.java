@@ -133,18 +133,9 @@ public class QueryService extends Service {
      */
     private void showNotification() {
         CharSequence text = "亲子安全卫士";
-
         Notification notification = new Notification();
         notification.icon = R.drawable.positionsystemlogo;
-        Intent i = new Intent();
-        if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.IDENTITY_STATE).equals("manager")) {
-            i.setComponent(new ComponentName(this, ManagerActivity.class));
-
-        } else {
-            i.setComponent(new ComponentName(this, RegulatorActivity.class));
-        }
-        PendingIntent mPendingIntent = PendingIntent.getActivity(QueryService.this, 0, i, 0);
-        notification.setLatestEventInfo(this, text, "正在为您的亲人提供您的地理位置", mPendingIntent);
+        notification.setLatestEventInfo(this, text, "正在为您的亲人提供您的地理位置", null);
         manager.notify(0, notification);
     }
 

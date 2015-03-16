@@ -49,7 +49,7 @@ public class IndexActivity extends Activity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.setContentView(R.layout.index_layout);
         DataBase mDataBase = new DataBase(this);
-        dataBaseStart(this, mDataBase);
+        //dataBaseStart(this, mDataBase);
         imv_indexactivity_background = (ImageView) findViewById(R.id.imv_indexactivity_background);
         /**
          * 设置图片渐变的函数

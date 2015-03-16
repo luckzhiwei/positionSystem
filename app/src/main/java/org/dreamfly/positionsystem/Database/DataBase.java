@@ -34,8 +34,6 @@ public class DataBase extends SQLiteOpenHelper{
                     +"subid TEXT,"+ "name TEXT," +"subname TEXT," + "position TEXT," + "time TEXT," +"isconnect  TEXT"+ ");");
             db.execSQL("CREATE TABLE manageritems(" + "id INTEGER primary key ," + "name TEXT," +
                    "subid TEXT,"+ "subname TEXT," + "position TEXT," + "time TEXT," +"isconnect  TEXT"+ ");");
-            db.execSQL("CREATE TABLE deviceinformation("+"id INTEGER primary key,"+
-            "telnumber TEXT,"+"location TEXT,"+"latitude TEXT,"+"longitude TEXT"+");");
             Log.v(TAG, "create table ok");
         }
         catch (Exception e){
@@ -48,10 +46,8 @@ public class DataBase extends SQLiteOpenHelper{
     {
         String sql = "DROP TABLE IF EXISTS " + TABLE_NAME;
         String sql1="DROP TABLE IF EXISTS " + "manageritems";
-        String sql2="DROP TABLE IF EXISTS"+"deviceinformation";
         db.execSQL(sql);
         db.execSQL(sql1);
-        db.execSQL(sql2);
         onCreate(db);
     }
 

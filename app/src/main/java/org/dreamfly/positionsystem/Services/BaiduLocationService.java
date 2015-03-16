@@ -78,10 +78,7 @@ public class BaiduLocationService implements OnGetGeoCoderResultListener {
             }
 
             lat = location.getLatitude() + "";
-
             lon = location.getLongitude() + "";
-            mDataBase.items_changeValue(ComParameter.DEVICE, "latitude", lat, 0);
-            mDataBase.items_changeValue(ComParameter.DEVICE, "longitude", lon, 0);
             DefinedShared mDefineShare = new DefinedShared(context);
             mDefineShare.putString("longitude", "longitude", lat + "");
             mDefineShare.putString("latitude", "latitude", lon + "");
@@ -127,7 +124,6 @@ public class BaiduLocationService implements OnGetGeoCoderResultListener {
             return;
         }
         String s = result.getAddress();
-        mDataBase.items_changeValue(ComParameter.DEVICE, "location", s, 0);
         //将获得的地址保存
         SharedPreferences mpreference = context.getSharedPreferences("address", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = mpreference.edit();
