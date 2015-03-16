@@ -94,7 +94,7 @@ public abstract class BaseThread extends Thread {
                             ComParameter.ENCODE_UTF_8, ComParameter.ENCODE_UTF_8);
             if (!this.dealRequestState(responseStr)) {
                 this.setLoadState(this.stateId, ComParameter.STATE_ERROR);
-                Log.i("lzw","发送加载错误的异常");
+                Log.i("lzw", "发送加载错误的异常");
                 this.mHandler.sendMessage(this.msg);
                 return;
                 //结束线程中的方法
@@ -127,17 +127,18 @@ public abstract class BaseThread extends Thread {
 
     /**
      * 根据httpUtils类返回的字符串来确定请求成功与否
+     *
      * @param str
      * @return
      */
-    protected boolean dealRequestState(String str)throws  IOException{
+    protected boolean dealRequestState(String str) throws IOException {
         if (str != null) {
             if (str.equals("paramsException")) {
                 return (false);
             } else if (str.equals("singleTonException")) {
                 return (false);
             } else if (str.equals("InterNetException")) {
-                this.setLoadState("NetWorkException",ComParameter.STATE_ERROR_NETWORK);
+                this.setLoadState("NetWorkException", ComParameter.STATE_ERROR_NETWORK);
                 this.mHandler.sendMessage(this.msg);
                 return (false);
             } else if (str.equals("switchException")) {
@@ -146,26 +147,24 @@ public abstract class BaseThread extends Thread {
                 return (true);
             }
         } else {
-            Log.i("lzw","null");
+            Log.i("lzw", "null");
             return (false);
         }
     }
 
-    protected void checkRequestMap()
-    {
-        Iterator it=this.requestParams.entrySet().iterator();
-        while(it.hasNext())
-        {
-            Map.Entry<String,String> entry=(Map.Entry<String,String>)it.next();
-            Log.i("lzw",entry.getKey());
-            Log.i("lzw",entry.getValue());
+    protected void checkRequestMap() {
+        Iterator it = this.requestParams.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, String> entry = (Map.Entry<String, String>) it.next();
+            Log.i("lzw", entry.getKey());
+            Log.i("lzw", entry.getValue());
         }
     }
 
     /**
      * 关闭http请求
      */
-    public void closeHttp(){
+    public void closeHttp() {
         HttpUtils.shutDownConnection();
     }
 

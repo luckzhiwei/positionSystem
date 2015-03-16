@@ -57,7 +57,7 @@ import java.util.Map;
  * Created by zhengyl on 15-1-13.
  * 被管理者界面Activity类
  */
-public class RegulatorActivity extends Activity  {
+public class RegulatorActivity extends Activity {
 
     private static RegulatorActivity regulatorActivity;
     private DefineListView listViewRegulatorActivityReglutorList;
@@ -90,9 +90,10 @@ public class RegulatorActivity extends Activity  {
     protected String lat;
     protected String lon;
 
-    public RegulatorActivity(){
-        regulatorActivity=this;
+    public RegulatorActivity() {
+        regulatorActivity = this;
     }
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SDKInitializer.initialize(getApplicationContext());
@@ -101,6 +102,7 @@ public class RegulatorActivity extends Activity  {
         this.isFirstConnect();
         this.initial();
     }
+
     @Override
     /**
      * 重写onStop()方法
@@ -110,7 +112,7 @@ public class RegulatorActivity extends Activity  {
         //this.unbindLocationService();
     }
 
-    protected void onDestroy(){
+    protected void onDestroy() {
         super.onDestroy();
         unbindLocationService();
     }
@@ -148,8 +150,8 @@ public class RegulatorActivity extends Activity  {
             }
         }
         if (keyCode == KeyEvent.KEYCODE_MENU) {
-            if(contentview==null){
-                contentview=this.findViewById(R.id.manfirst);
+            if (contentview == null) {
+                contentview = this.findViewById(R.id.manfirst);
             }
             this.showPopwindow(this, contentview);
         }
@@ -171,13 +173,11 @@ public class RegulatorActivity extends Activity  {
         this.sendIdtoSever();
 
 
-
-
     }
 
     private void bindID() {
-        contentview=this.findViewById(R.id.myregulator_activity_layout);
-        this.proRegulator=(ProgressBar)
+        contentview = this.findViewById(R.id.myregulator_activity_layout);
+        this.proRegulator = (ProgressBar)
                 this.findViewById(R.id.progressBar_manactivity);
         this.listViewRegulatorActivityReglutorList = (DefineListView)
                 this.findViewById(R.id.listivew_regulatoractivity_regulatorlist);
@@ -185,11 +185,11 @@ public class RegulatorActivity extends Activity  {
                 this.findViewById(R.id.txt_regulatoractivity_title);
         this.layout = (LinearLayout)
                 this.findViewById(R.id.myregulator_activity_layout);
-        this.btnRefresh=(Button)
+        this.btnRefresh = (Button)
                 this.findViewById(R.id.btn_regulator_refresh);
-        wm=(WindowManager)getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
-        if(proRegulator==null){
-            Log.i("zyl175","progressbar is null");
+        wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+        if (proRegulator == null) {
+            Log.i("zyl175", "progressbar is null");
         }
 
 
@@ -211,18 +211,19 @@ public class RegulatorActivity extends Activity  {
     private void serviceIntital() {
         if (!mdata.getString(ComParameter.LOADING_STATE, ComParameter.SERVICE_STATE)
                 .equals(ComParameter.STATE_SECOND)) {
-            this.mMessageSender=new QueryService.MsgSender() {
+            this.mMessageSender = new QueryService.MsgSender() {
                 public void sendMsgLocationToShow(String userLcation) {
-                    Message msg=new Message();
-                    Bundle bd=new Bundle();
-                    bd.putString("userlocation",userLcation);
+                    Message msg = new Message();
+                    Bundle bd = new Bundle();
+                    bd.putString("userlocation", userLcation);
                     msg.setData(bd);
                     queryServiceHandler.sendMessage(msg);
                 }
-                public void sendMsgError(int state){
-                    Message msg=new Message();
-                    Bundle bd=new Bundle();
-                    bd.putInt("errorstate",state);
+
+                public void sendMsgError(int state) {
+                    Message msg = new Message();
+                    Bundle bd = new Bundle();
+                    bd.putInt("errorstate", state);
                     msg.setData(bd);
                     queryServiceHandler.sendMessage(msg);
                 }
@@ -264,10 +265,10 @@ public class RegulatorActivity extends Activity  {
                     if (listViewRegulatorActivityReglutorList.getFirstVisiblePosition() == 0
                             && userTouchDistance > 250) {
                         listViewRegulatorActivityReglutorList.dynSetHeadViewHeight(250);
-                      if(!listViewRegulatorActivityReglutorList.getIsFreshing()) {
-                          listViewRegulatorActivityReglutorList.setIsFreshing(true);
-                          sendIdtoSever();
-                      }
+                        if (!listViewRegulatorActivityReglutorList.getIsFreshing()) {
+                            listViewRegulatorActivityReglutorList.setIsFreshing(true);
+                            sendIdtoSever();
+                        }
                         userTouchDistance = 0;
                     }
 
@@ -286,8 +287,8 @@ public class RegulatorActivity extends Activity  {
     public List<User> getData() {
         List<User> list = new ArrayList<User>();
         String length = mdata.getString("itemslength", "length");
-        if(length.equals("")){
-            length=""+0;
+        if (length.equals("")) {
+            length = "" + 0;
         }
         int k = Integer.parseInt(length);
         if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
@@ -361,10 +362,11 @@ public class RegulatorActivity extends Activity  {
             oneRegulator.setMangerMarks(mEditText.getText().toString());
             Log.v("textstring", oneRegulator.getMangerMarks());
             tellSeverRename(pos, mEditText);
-            oneRegulator.setDataBaseID(pos-1);
+            oneRegulator.setDataBaseID(pos - 1);
             mDialog.dismiss();
         }
     }
+
     private void isFirstConnect() {
 
         if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE)
@@ -381,7 +383,7 @@ public class RegulatorActivity extends Activity  {
 
     private void loadList() {
         this.bindID();
-        this.mRegulatordapter = new RegulatorAdapter(this.getData(), this, mDataBase,mHandler);
+        this.mRegulatordapter = new RegulatorAdapter(this.getData(), this, mDataBase, mHandler);
         this.listViewRegulatorActivityReglutorList.setAdapter(mRegulatordapter);
         this.setCLickListener();
     }
@@ -396,6 +398,7 @@ public class RegulatorActivity extends Activity  {
         this.managerListThread.setRequestPrepare(requestURL, this.prepareListParams());
         this.managerListThread.start();
     }
+
     /**
      * 发送修改备注名请求
      *
@@ -411,16 +414,16 @@ public class RegulatorActivity extends Activity  {
     protected Map prepareListParams() {
 
         Map<String, String> params = new HashMap<String, String>();
-        UserInfoUtils userInfoUtils=new UserInfoUtils(this);
-        String userID=userInfoUtils.getServerId()+"";
+        UserInfoUtils userInfoUtils = new UserInfoUtils(this);
+        String userID = userInfoUtils.getServerId() + "";
         params.put("id", userID);
         return params;
     }
 
     protected Map prepareNameListParams(int pos, EditText mEditText) {
         Map<String, String> params = new HashMap<String, String>();
-        UserInfoUtils userInfoUtils=new UserInfoUtils(this);
-        params.put("fromid",userInfoUtils.getServerId()+"");
+        UserInfoUtils userInfoUtils = new UserInfoUtils(this);
+        params.put("fromid", userInfoUtils.getServerId() + "");
         Cursor cur = mDataBase.Selector(pos - 1, ComParameter.MANTABLENAME);
         if (cur.moveToNext()) {
             params.put("toid", cur.getString(cur.getColumnIndex("subid")));
@@ -429,11 +432,12 @@ public class RegulatorActivity extends Activity  {
         cur.close();
         return params;
     }
+
     private Handler renameHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
             if (msg.getData().getInt("renamestate") == ComParameter.STATE_RIGHT) {
-                Map<String,String> resultMap=renameThread.getResultMap();
-                if(renameThread!=null) {
+                Map<String, String> resultMap = renameThread.getResultMap();
+                if (renameThread != null) {
                     dealRenameMessage(resultMap);
                 }
             } else if (msg.getData().getInt("renamestate") == ComParameter.STATE_ERROR) {
@@ -441,10 +445,10 @@ public class RegulatorActivity extends Activity  {
             }
         }
     };
-    private Handler queryServiceHandler=new Handler(Looper.getMainLooper()){
+    private Handler queryServiceHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
-            String userlcation=msg.getData().getString("userlocation");
-            if(userlcation!=null){
+            String userlcation = msg.getData().getString("userlocation");
+            if (userlcation != null) {
                 dealUserLocation(userlcation);
             }
 
@@ -454,10 +458,10 @@ public class RegulatorActivity extends Activity  {
          * 处理UI跳转
          * @param userlocation
          */
-        private void dealUserLocation(String userlocation){
-            if(userlocation.equals("null")){
+        private void dealUserLocation(String userlocation) {
+            if (userlocation.equals("null")) {
                 //提示用户处理失败
-            }else{
+            } else {
                 //跳转到PositionActivity中去
             }
         }
@@ -511,18 +515,19 @@ public class RegulatorActivity extends Activity  {
             }
 
         }
+
         private void dealErrorMsg(Message msg) {
 
             if (msg.getData().getInt("NetWorkException") == ComParameter.STATE_ERROR_NETWORK) {
                 ToastUtils.showToast(getApplicationContext(), "网络连接超时，请稍候尝试");
-            }else{
-                 ToastUtils.showToast(getApplication(),"加载错误，请稍候重试");
+            } else {
+                ToastUtils.showToast(getApplication(), "加载错误，请稍候重试");
             }
             if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
                     equals(ComParameter.STATE_SECOND)) {
                 //弹出按钮再请求一次
                 proRegulator.setVisibility(View.GONE);
-                Button btnRetry=(Button)findViewById(R.id.btn_manageractivity_retry);
+                Button btnRetry = (Button) findViewById(R.id.btn_manageractivity_retry);
                 btnRetry.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -538,9 +543,9 @@ public class RegulatorActivity extends Activity  {
             if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
                     equals(ComParameter.STATE_THIRD)) {
 
-                    listViewRegulatorActivityReglutorList = (DefineListView)
+                listViewRegulatorActivityReglutorList = (DefineListView)
                         findViewById(R.id.listivew_regulatoractivity_regulatorlist);
-                    listViewRegulatorActivityReglutorList.dynSetHeadViewHeight(0);
+                listViewRegulatorActivityReglutorList.dynSetHeadViewHeight(0);
                 //第二次请求失败，列表上部的视图消失
                 listViewRegulatorActivityReglutorList.setIsFreshing(false);
             }
@@ -555,20 +560,19 @@ public class RegulatorActivity extends Activity  {
      * @param resultMap
      */
     protected void dealListFromSever(Map<String, String> resultMap) {
-        if(resultMap.get("connectedstate")==null){
-            ToastUtils.showToast(getApplicationContext(),"处理异常,请稍后再刷新");
+        if (resultMap.get("connectedstate") == null) {
+            ToastUtils.showToast(getApplicationContext(), "处理异常,请稍后再刷新");
             return;
-        }
-        else {
+        } else {
             if (resultMap.get("connectedstate").equals("n")) {
                 mdata.putString("itemslength", "length", "" + 0);
             } else {
                 mdata.putString("itemslength", "length", resultMap.get("length"));
             }
             //如果第一次请求失败,按下那个按钮请求又成功了,在这里修改一下登陆状态
-            if(mdata.getString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE).
-                    equals(ComParameter.STATE_FIRST)){
-                mdata.putString(ComParameter.LOADING_STATE,ComParameter.LOADING_STATE,
+            if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
+                    equals(ComParameter.STATE_FIRST)) {
+                mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE,
                         ComParameter.STATE_SECOND);
                 setDataBase(resultMap);
             }
@@ -579,7 +583,7 @@ public class RegulatorActivity extends Activity  {
             } else {
                 dealDataBase(resultMap);
             }
-            ToastUtils.showToast(getApplicationContext(),"联系人列表更新成功");
+            ToastUtils.showToast(getApplicationContext(), "联系人列表更新成功");
             //每一次启动对本地数据库的操作是不一样的
             setContentView(R.layout.regulator_layout);
             loadList();
@@ -597,8 +601,8 @@ public class RegulatorActivity extends Activity  {
      */
     private void setDataBase(Map<String, String> resultMap) {
         //记录从服务器获取的列表长度
-        if(resultMap.get("connectedstate").equals("n")){
-            mdata.putString("itemslength","length",""+0);
+        if (resultMap.get("connectedstate").equals("n")) {
+            mdata.putString("itemslength", "length", "" + 0);
         }
         String length = mdata.getString("itemslength", "length");
         int k = Integer.parseInt(length);
@@ -634,12 +638,13 @@ public class RegulatorActivity extends Activity  {
         }
 
         //更新数据
-        for (int i=0;i<length;i++){
-            mDataBase.items_changeValue(ComParameter.MANTABLENAME,"isconnect",resultMap.get("isconnect"+i+""),i);
+        for (int i = 0; i < length; i++) {
+            mDataBase.items_changeValue(ComParameter.MANTABLENAME, "isconnect", resultMap.get("isconnect" + i + ""), i);
         }
         //将这次的长度作为下一次更新的"上次长度"
         mdata.putString("itemslength", "lastlength", lenth);
     }
+
     /**
      * 显示popwindow替代菜单栏效果
      *
@@ -650,11 +655,12 @@ public class RegulatorActivity extends Activity  {
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View mPopwindow = inflater.inflate(R.layout.man_popwindow, null, false);
-        int height=wm.getDefaultDisplay().getHeight()/3;
-        final PopupWindow popWindow = new PopupWindow(mPopwindow,wm.getDefaultDisplay().getWidth() , height, true);
+        int height = wm.getDefaultDisplay().getHeight() / 3;
+        final PopupWindow popWindow = new PopupWindow(mPopwindow, wm.getDefaultDisplay().getWidth(), height, true);
         bindButtonID(mPopwindow, popWindow);
         popWindow.showAtLocation(parent, Gravity.BOTTOM, 0, 0);
     }
+
     /**
      * 为按钮绑定监听并设置监听事件
      *
@@ -697,15 +703,16 @@ public class RegulatorActivity extends Activity  {
         mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOGIN_STATE, ComParameter.STATE_THIRD);
         this.logoutUserInfoUtils = new UserInfoUtils(this);
         this.logoutUserInfoUtils.clearUserInfo();
-        for (int i=0;i<getData().size();i++){
-            mDataBase.delitems(i,ComParameter.MANTABLENAME);
+        for (int i = 0; i < getData().size(); i++) {
+            mDataBase.delitems(i, ComParameter.MANTABLENAME);
         }
         startActivity(new Intent(RegulatorActivity.this, LoginActivity.class));
     }
+
     private ServiceConnection mConnection = new ServiceConnection() {
 
         public void onServiceConnected(ComponentName className, IBinder myBinder) {
-            QuerySerivcesBinder binder= (QuerySerivcesBinder)myBinder;
+            QuerySerivcesBinder binder = (QuerySerivcesBinder) myBinder;
             binder.setMsgSender(mMessageSender);
             binder.startQuery();
         }
@@ -748,7 +755,7 @@ public class RegulatorActivity extends Activity  {
         unbindService(mConnection);
     }
 
-    public static RegulatorActivity getRegulatorActivity(){
+    public static RegulatorActivity getRegulatorActivity() {
         return regulatorActivity;
     }
 }

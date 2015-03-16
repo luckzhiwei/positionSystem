@@ -130,7 +130,7 @@ public class IndexActivity extends Activity {
         Intent in = null;
         UserInfoUtils mUserInfoUtils = new UserInfoUtils(IndexActivity.this);
         if (!mUserInfoUtils.isLogin()) {
-             in = new Intent(IndexActivity.this, LoginActivity.class);
+            in = new Intent(IndexActivity.this, LoginActivity.class);
             //没有登录或者注销登录的情况都是满足这个条件的
         } else {
             if (mUserInfoUtils.isManager()) {

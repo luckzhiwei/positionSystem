@@ -6,73 +6,62 @@ package org.dreamfly.positionsystem.bean;
 public class User {
     private int dataBaseID;//数据库中的主键
 
-    private String  deviceName;//设备名
+    private String deviceName;//设备名
 
-    private String  lastDateTouch;//最近一次联系的时间
+    private String lastDateTouch;//最近一次联系的时间
 
-    private String   mangerMarks;//备注
+    private String mangerMarks;//备注
 
-    private String  isOnLine;//是否在线(Sqlite 没有布尔类型,用y n String代替 )
+    private String isOnLine;//是否在线(Sqlite 没有布尔类型,用y n String代替 )
 
-    private String  lastLocation;//最近一次定位信息
+    private String lastLocation;//最近一次定位信息
 
-    public void setDataBaseID(int dataBaseID)
-    {
-        this.dataBaseID=dataBaseID;
+    public void setDataBaseID(int dataBaseID) {
+        this.dataBaseID = dataBaseID;
     }
 
-    public int getDataBaseID()
-    {
+    public int getDataBaseID() {
         return (this.dataBaseID);
     }
 
-    public void setDeviceNma(String deviceName)
-    {
-        this.deviceName=deviceName;
+    public void setDeviceNma(String deviceName) {
+        this.deviceName = deviceName;
     }
 
-    public String getDeviceName()
-    {
-        return(this.deviceName);
+    public String getDeviceName() {
+        return (this.deviceName);
     }
 
-    public void  setLastDateTouch(String lastDateTouch)
-    {
-        this.lastDateTouch=lastDateTouch;
+    public void setLastDateTouch(String lastDateTouch) {
+        this.lastDateTouch = lastDateTouch;
     }
 
-    public String getLastDateTouch()
-    {
-        return(this.lastDateTouch);
+    public String getLastDateTouch() {
+        return (this.lastDateTouch);
     }
 
-    public void setMangerMarks(String mangerMarks)
-    {
-        this.mangerMarks=mangerMarks;
+    public void setMangerMarks(String mangerMarks) {
+        this.mangerMarks = mangerMarks;
     }
 
-    public String getMangerMarks()
-    {
-        return(this.mangerMarks);
+    public String getMangerMarks() {
+        return (this.mangerMarks);
     }
 
-    public  void setLastLocation(String lastLocation)
-    {
-        this.lastLocation=lastLocation;
+    public void setLastLocation(String lastLocation) {
+        this.lastLocation = lastLocation;
     }
 
-    public String getLastLocation()
-    {
-        return(this.lastLocation);
+    public String getLastLocation() {
+        return (this.lastLocation);
     }
 
-    public void setIsOnLine(String isOnLine)
-    {
-        this.isOnLine=isOnLine;
+    public void setIsOnLine(String isOnLine) {
+        this.isOnLine = isOnLine;
     }
-    public String getOnLine()
-    {
-        return(this.isOnLine);
+
+    public String getOnLine() {
+        return (this.isOnLine);
     }
 
 }

@@ -9,11 +9,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import org.dreamfly.positionsystem.Custom.DefineDialog;
 import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
 import org.dreamfly.positionsystem.bean.User;
+
 import java.util.List;
 import java.util.logging.Handler;
 
@@ -26,39 +28,46 @@ public class RegulatorAdapter extends ManagerAdapter {
     private Cursor cur;
     private DefineDialog mDefineDialog = null;
     protected android.os.Handler mHandler;
-    private static  final String MANTABLENAME="manageritems";
+    private static final String MANTABLENAME = "manageritems";
 
     /**
      * o构造方法继承自父类
+     *
      * @param mRegulatorList
      * @param context
      * @param mDataBase
      */
-    public RegulatorAdapter(List<User>mRegulatorList,Context context,DataBase mDataBase,android.os.Handler mHandler) {
-        super(mRegulatorList,context,mDataBase,mHandler,null);
+    public RegulatorAdapter(List<User> mRegulatorList, Context context, DataBase mDataBase, android.os.Handler mHandler) {
+        super(mRegulatorList, context, mDataBase, mHandler, null);
     }
 
     @Override
-    public int getCount(){return (this.mRegulatorList.size());}
+    public int getCount() {
+        return (this.mRegulatorList.size());
+    }
+
     @Override
-    public Object getItem(int position) {return (this.mRegulatorList.get(position));}
+    public Object getItem(int position) {
+        return (this.mRegulatorList.get(position));
+    }
+
     @Override
     public long getItemId(int position) {
         return (position);
     }
+
     @Override
-    public View getView(int position,View contentview,ViewGroup arg2){
+    public View getView(int position, View contentview, ViewGroup arg2) {
         ViewHolder holder;
-        this.regulator=mRegulatorList.get(position);
-        if(contentview==null){
+        this.regulator = mRegulatorList.get(position);
+        if (contentview == null) {
             contentview = LayoutInflater.from(this.mContext).inflate(R.layout.regulator_items, null);
-            holder=new ViewHolder();
+            holder = new ViewHolder();
             this.bindID(contentview, holder);
             this.setManItemInfo(holder, position, mDataBase);
             //this.setClickListener(holder, position, mDataBase);
             contentview.setTag(holder);
-        }
-        else {
+        } else {
             holder = (ViewHolder) contentview.getTag();
             this.setManItemInfo(holder, position, mDataBase);
             //this.setClickListener(holder, position, mDataBase);
@@ -66,7 +75,7 @@ public class RegulatorAdapter extends ManagerAdapter {
         return contentview;
     }
 
-    private class ViewHolder extends ManagerAdapter.ViewHolder{
+    private class ViewHolder extends ManagerAdapter.ViewHolder {
 
         TextView txtRegulatorItemMarkName;
         TextView txtRegulatorLastTouchTime;
@@ -77,79 +86,81 @@ public class RegulatorAdapter extends ManagerAdapter {
         ImageView imvRegulatorItemUserHead;
     }
 
-    private void bindID(View contentview, ViewHolder holder){
+    private void bindID(View contentview, ViewHolder holder) {
 
-        holder.txtRegulatorgetDeviceName=
-                (TextView)contentview.findViewById(R.id.regulatoractivity_txt2_name);
-        holder.txtRegulatorItemMarkName=
-                (TextView)contentview.findViewById(R.id.regulatoractivity_txt2_name);
-        holder.txtRegulatorLastTouchTime=
-                (TextView)contentview.findViewById(R.id.regulatoractivity_txt3_time);
+        holder.txtRegulatorgetDeviceName =
+                (TextView) contentview.findViewById(R.id.regulatoractivity_txt2_name);
+        holder.txtRegulatorItemMarkName =
+                (TextView) contentview.findViewById(R.id.regulatoractivity_txt2_name);
+        holder.txtRegulatorLastTouchTime =
+                (TextView) contentview.findViewById(R.id.regulatoractivity_txt3_time);
 //        holder.txtRegulatorItemLastLocation=
 //                (TextView)contentview.findViewById(R.id.regulatoractivity_txt2_location);
 //        holder.btnRegulatorItemPhone=
 //                (Button)contentview.findViewById(R.id.regulatoractivity_btn_phone);
 //        holder.btnRegulatorItemposition=
 //                (Button)contentview.findViewById(R.id.regulatoractivity_btn_position);
-        holder.imvRegulatorItemUserHead=
-                (ImageView)contentview.findViewById(R.id.regulatoractivity_imv1);
+        holder.imvRegulatorItemUserHead =
+                (ImageView) contentview.findViewById(R.id.regulatoractivity_imv1);
 
     }
 
     /**
      * 自定义对话框确定监听类继承自manageradapter的监听类
      */
-    public class RegPositiveButtonListener extends PositiveButtonListener{
+    public class RegPositiveButtonListener extends PositiveButtonListener {
         public RegPositiveButtonListener(int pos, final User oneRegulator, DataBase mDataBase,
-                                         DefineDialog mDefineDialog){
-            super(pos,oneRegulator,mDataBase,mDefineDialog);
+                                         DefineDialog mDefineDialog) {
+            super(pos, oneRegulator, mDataBase, mDefineDialog);
         }
+
         @Override
-        public void onClick(View view){
+        public void onClick(View view) {
             oneRegulator.setLastLocation("上次的位置:" + s[pos]);
-            mDataBase.items_changeValue(MANTABLENAME,"position", oneRegulator.getLastLocation(), pos);
+            mDataBase.items_changeValue(MANTABLENAME, "position", oneRegulator.getLastLocation(), pos);
             oneRegulator.setLastDateTouch(mInformation.getCurrentTime());
-            mDataBase.items_changeValue(MANTABLENAME,"time", oneRegulator.getLastDateTouch(), pos);
+            mDataBase.items_changeValue(MANTABLENAME, "time", oneRegulator.getLastDateTouch(), pos);
             mDefineDialog.dismiss();
             sendposition(pos);
         }
     }
 
-    private void setManItemInfo(ViewHolder holder, int position, DataBase mDataBase){
-        this.initManItems(holder,mDataBase,position);
-        this.changeManPortrait(holder,position,mDataBase);
+    private void setManItemInfo(ViewHolder holder, int position, DataBase mDataBase) {
+        this.initManItems(holder, mDataBase, position);
+        this.changeManPortrait(holder, position, mDataBase);
     }
 
     /**
      * 从本地数据表manageritems中读取相应的数据,初始化条目
+     *
      * @param holder
      * @param mDataBase
      * @param position
      */
-    public void initManItems( ViewHolder holder,DataBase mDataBase,int position){
-        cur = mDataBase.Selector(position,MANTABLENAME);
+    public void initManItems(ViewHolder holder, DataBase mDataBase, int position) {
+        cur = mDataBase.Selector(position, MANTABLENAME);
         while (cur.moveToNext()) {
             holder.txtRegulatorLastTouchTime.setText(cur.getString(cur.getColumnIndex("time")));
             //holder.txtRegulatorItemLastLocation.setText(cur.getString(cur.getColumnIndex("position")));
             //如果用户已经修改了备注名,就显示备注名,否则显示设备名
-            if(cur.getString(cur.getColumnIndex("subname")).equals("null")){
+            if (cur.getString(cur.getColumnIndex("subname")).equals("null")) {
                 holder.txtRegulatorgetDeviceName.setText(cur.getString(cur.getColumnIndex("name")));
-            }
-            else {
+            } else {
                 holder.txtRegulatorgetDeviceName.setText(cur.getString(cur.getColumnIndex("subname")));
             }
         }
         cur.close();
-        Log.i("zyl reg143","加载reg数据方法调用");
+        Log.i("zyl reg143", "加载reg数据方法调用");
     }
 
     /**
      * 该方法用于实现头像交替变换,如果网络未连接,显示灰色头像
+     *
      * @param holder
      * @param position
      */
-    public void changeManPortrait(ViewHolder holder,int position,DataBase mDataBase) {
-        cur=mDataBase.Selector(position,MANTABLENAME);
+    public void changeManPortrait(ViewHolder holder, int position, DataBase mDataBase) {
+        cur = mDataBase.Selector(position, MANTABLENAME);
         while (cur.moveToNext()) {
             String connection = cur.getString(cur.getColumnIndex("isconnect"));
             if (connection.equals("false")) {
@@ -175,6 +186,7 @@ public class RegulatorAdapter extends ManagerAdapter {
 
     /**
      * 为地理位置按钮绑定监听事件
+     *
      * @param holder
      * @param pos
      * @param mDataBase
@@ -188,8 +200,10 @@ public class RegulatorAdapter extends ManagerAdapter {
             }
         });
     }
+
     /**
      * 为确定按钮绑定监听事件
+     *
      * @param pos
      * @param oneRegulator
      * @param mDataBase
@@ -199,12 +213,11 @@ public class RegulatorAdapter extends ManagerAdapter {
                 .setTitle("是否获取地理位置").show();
         RegPositiveButtonListener mPositiveButtonListener =
 
-                new RegPositiveButtonListener(pos, oneRegulator, mDataBase,mDefineDialog);
+                new RegPositiveButtonListener(pos, oneRegulator, mDataBase, mDefineDialog);
 
         mDefineDialog.setPosBtnClickListener(mPositiveButtonListener);
 
     }
-
 
 
 }

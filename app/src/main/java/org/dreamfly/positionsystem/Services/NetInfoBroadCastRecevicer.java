@@ -19,8 +19,9 @@ public class NetInfoBroadCastRecevicer extends BroadcastReceiver {
 
     private int conType;
     private Handler mHandler;
-    public NetInfoBroadCastRecevicer(Handler mHandler){
-           this.mHandler=mHandler;
+
+    public NetInfoBroadCastRecevicer(Handler mHandler) {
+        this.mHandler = mHandler;
     }
 
 
@@ -34,7 +35,7 @@ public class NetInfoBroadCastRecevicer extends BroadcastReceiver {
                     (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
             if (this.dealNetworkInfoChanged(mConectivityManager)) {
                 this.sendNetInfoServiceMsg(ComParameter.STATE_RIGHT);
-             } else {
+            } else {
                 this.sendNetInfoServiceMsg(ComParameter.STATE_ERROR);
                 //提示用户网络不正常
             }
@@ -102,15 +103,16 @@ public class NetInfoBroadCastRecevicer extends BroadcastReceiver {
 
     /**
      * 向service发送挽网络状态
+     *
      * @param state
      */
-     private void sendNetInfoServiceMsg(int state){
-         Message msg=new Message();
-         Bundle bd=new Bundle();
-         bd.putInt("netState",state);
-         msg.setData(bd);
-         this.mHandler.sendMessage(msg);
-     }
+    private void sendNetInfoServiceMsg(int state) {
+        Message msg = new Message();
+        Bundle bd = new Bundle();
+        bd.putInt("netState", state);
+        msg.setData(bd);
+        this.mHandler.sendMessage(msg);
+    }
 
 
 }

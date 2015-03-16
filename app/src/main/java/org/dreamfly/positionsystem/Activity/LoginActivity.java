@@ -106,10 +106,9 @@ public class LoginActivity extends Activity {
             public void onClick(View view) {
                 if (checkoutInputDataFormat()) {
 
-                    if(telnum==null||!(telnum.matches("(\\d{11})|(\\+86?\\d{11})"))){
-                         setDialogShow();
-                    }
-                    else {
+                    if (telnum == null || !(telnum.matches("(\\d{11})|(\\+86?\\d{11})"))) {
+                        setDialogShow();
+                    } else {
                         showIsManagerDialog();
                     }
                 }
@@ -162,7 +161,7 @@ public class LoginActivity extends Activity {
      * @param mInformation 得到的本机信息
      */
     private void writeUserInfo(String isManager, CurrentInformationUtils mInformation
-            , String userId, String userName,String password) {
+            , String userId, String userName, String password) {
         UserInfoUtils mUserInfoUitls = new UserInfoUtils(LoginActivity.this);
         HashMap<String, String> hashmap = new HashMap<String, String>();
         hashmap.put("loginstate", "login");
@@ -175,7 +174,7 @@ public class LoginActivity extends Activity {
         //记录用户登录的帐号名字
         hashmap.put("devName", mInformation.getCurrentDeviceName());
         //记录本机的设备名字
-        hashmap.put("password",password);
+        hashmap.put("password", password);
         //写入登录密码
         mUserInfoUitls.updateUserInfo(hashmap);
     }
@@ -191,7 +190,6 @@ public class LoginActivity extends Activity {
         this.loginReuquestThread.setRequestPrepare(requestURL, this.prepareLoginParams(isManager));
         this.loginReuquestThread.start();
     }
-
 
 
     /**
@@ -241,7 +239,7 @@ public class LoginActivity extends Activity {
             }
             proLoginActivity.setVisibility(View.GONE);
             btnLoginactivityLogin.setClickable(true);
-    }
+        }
 
         /**
          * 处理首次登录情况的函数
@@ -257,13 +255,13 @@ public class LoginActivity extends Activity {
                             mInformation,
                             resultMap.get("dataBaseId"),
                             edittextLoginactivityUsername.getText().toString()
-                           ,editextLoginactivityPassword.getText().toString());
+                            , editextLoginactivityPassword.getText().toString());
                     this.dealAfterLogin(resultMap.get("type"));
                 } else if (loginstate.equals("unlogin")) {
                     ToastUtils.showToast(getApplication(), resultMap.get("failReason"));
                 }
             } else {
-                 ToastUtils.showToast(getApplication(),ComParameter.ERRORINFO);
+                ToastUtils.showToast(getApplication(), ComParameter.ERRORINFO);
             }
         }
 
@@ -274,21 +272,20 @@ public class LoginActivity extends Activity {
             if (type.equals("manager")) {
                 mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE,
                         ComParameter.STATE_FIRST);
-                mdata.putString(ComParameter.LOADING_STATE,ComParameter.IDENTITY_STATE,"manager");
+                mdata.putString(ComParameter.LOADING_STATE, ComParameter.IDENTITY_STATE, "manager");
                 in = new Intent().setClass(LoginActivity.this, ManagerActivity.class);
                 startActivity(in);
                 finish();
             } else if (type.equals("unmanager")) {
                 mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE,
                         ComParameter.STATE_FIRST);
-                mdata.putString(ComParameter.LOADING_STATE,ComParameter.IDENTITY_STATE,"unmanager");
+                mdata.putString(ComParameter.LOADING_STATE, ComParameter.IDENTITY_STATE, "unmanager");
                 in = new Intent().setClass(LoginActivity.this, RegulatorActivity.class);
                 startActivity(in);
                 finish();
             }
         }
     };
-
 
 
     private void setDialogShow() {
@@ -316,10 +313,9 @@ public class LoginActivity extends Activity {
         public void onClick(View v) {
             telnum = editText.getText().toString();
             mDialog.dismiss();
-            if(!(telnum.matches("(\\d{11})|(\\+86?\\d{11})"))){
+            if (!(telnum.matches("(\\d{11})|(\\+86?\\d{11})"))) {
                 setDialogShow();
-            }
-            else {
+            } else {
                 showIsManagerDialog();
             }
 

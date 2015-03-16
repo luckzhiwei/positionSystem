@@ -14,11 +14,11 @@ public class FirstLoginRequestThread extends BaseThread {
         super(mHandler, stateId);
     }
 
-    protected void dealReponseString(String responseString) throws Exception{
+    protected void dealReponseString(String responseString) throws Exception {
         this.resultMap = new HashMap<String, String>();
         String tmpArrStr[] = responseString.split(":");
         if (tmpArrStr[1].equals("login")) {
-            String tmpArrStr1[]=tmpArrStr[2].split("[+]");
+            String tmpArrStr1[] = tmpArrStr[2].split("[+]");
 
             this.resultMap.put(tmpArrStr[0], tmpArrStr[1]);
             this.resultMap.put("type", tmpArrStr1[0]);
@@ -30,8 +30,8 @@ public class FirstLoginRequestThread extends BaseThread {
             this.resultMap.put("failReason", tmpArrStr[2]);
         }
 
-        Log.i("lzw",responseString);
+        Log.i("lzw", responseString);
 
 
-       }
+    }
 }

@@ -47,15 +47,15 @@ public class DefineDialog {
     /**
      * 初始化dialog的视图,加载自定义的layout文件
      * 如有需要,加载含有edittext的layout文件
+     *
      * @param isAddEdittext 是否加载含有edittext的对话框layout文件
      * @return (返回自身, 链式调用)
      */
     public DefineDialog buiider(boolean isAddEdittext) {
         View dialogView;
-        if(!isAddEdittext) {
-             dialogView = LayoutInflater.from(this.mContext).inflate(R.layout.dialogdef_layout, null);
-        }
-        else {
+        if (!isAddEdittext) {
+            dialogView = LayoutInflater.from(this.mContext).inflate(R.layout.dialogdef_layout, null);
+        } else {
             dialogView = LayoutInflater.from(this.mContext).inflate
                     (R.layout.dialogdef_edittext_layout, null);
         }
@@ -78,7 +78,7 @@ public class DefineDialog {
         this.txtDefineDialogTitile = (TextView) contentView.findViewById(R.id.txt_definedialog_title);
         this.btnDefineDialogPositive = (Button) contentView.findViewById(R.id.btn_dialogdefine_positive);
         this.btnDefineDialogNegetive = (Button) contentView.findViewById(R.id.btn_dialogdefine_negetive);
-        this.defineDialogEditText=(EditText)contentView.findViewById(R.id.definedialog_edittext);
+        this.defineDialogEditText = (EditText) contentView.findViewById(R.id.definedialog_edittext);
 
     }
 
@@ -150,7 +150,7 @@ public class DefineDialog {
         this.mDefDialog.dismiss();
     }
 
-    public EditText getEditText(){
+    public EditText getEditText() {
         return this.defineDialogEditText;
     }
 }

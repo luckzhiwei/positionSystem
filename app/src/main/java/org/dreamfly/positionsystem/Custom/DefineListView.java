@@ -122,8 +122,8 @@ public class DefineListView extends ListView {
         this.isFreshing = isFreshing;
     }
 
-    public boolean getIsFreshing(){
-         return (this.isFreshing);
+    public boolean getIsFreshing() {
+        return (this.isFreshing);
     }
 
 }

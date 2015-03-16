@@ -7,18 +7,19 @@ import android.os.Binder;
  */
 public class NetInfoServiceBinder extends Binder {
 
-       private NetWorkInfoService.NetWorkInfoMsgSender mSender;
-       public NetInfoServiceBinder(){
+    private NetWorkInfoService.NetWorkInfoMsgSender mSender;
 
-       }
+    public NetInfoServiceBinder() {
 
-       public void setNetWorkInfoMsgSender(NetWorkInfoService.NetWorkInfoMsgSender mSender){
-             this.mSender=mSender;
-       }
+    }
 
-       public NetWorkInfoService.NetWorkInfoMsgSender getNetWorkInfoMsgSender() {
-           return(this.mSender);
-       }
+    public void setNetWorkInfoMsgSender(NetWorkInfoService.NetWorkInfoMsgSender mSender) {
+        this.mSender = mSender;
+    }
+
+    public NetWorkInfoService.NetWorkInfoMsgSender getNetWorkInfoMsgSender() {
+        return (this.mSender);
+    }
 
 
 }

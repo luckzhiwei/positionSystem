@@ -235,32 +235,34 @@ public class UserInfoUtils {
 
     /**
      * 返回文件缓存保存的密码字符
+     *
      * @return
      */
-    public String getPassword(){
-        String password=null;
-        String userinfo=this.getUserInfo();
-        if(userinfo!=null){
-            Map<String,String> tmpMap=this.getUserInfoMap();
-            password=tmpMap.get("password");
-            if(password!=null){
-                  return(password);
+    public String getPassword() {
+        String password = null;
+        String userinfo = this.getUserInfo();
+        if (userinfo != null) {
+            Map<String, String> tmpMap = this.getUserInfoMap();
+            password = tmpMap.get("password");
+            if (password != null) {
+                return (password);
             }
 
         }
-        return(password);
+        return (password);
     }
 
     /**
      * 获取用户帐号
+     *
      * @return
      */
-    public String getFamilyName(){
-        String familyName="null";
-        String userinfo=this.getUserInfo();
-        if (userinfo!=null){
-            Map<String,String> tmpMap=this.buildUserInfoMap(userinfo);
-            familyName=tmpMap.get("famliyName");
+    public String getFamilyName() {
+        String familyName = "null";
+        String userinfo = this.getUserInfo();
+        if (userinfo != null) {
+            Map<String, String> tmpMap = this.buildUserInfoMap(userinfo);
+            familyName = tmpMap.get("famliyName");
         }
         return (familyName);
     }

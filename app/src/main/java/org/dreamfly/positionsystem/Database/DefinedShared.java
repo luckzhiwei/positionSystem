@@ -13,33 +13,34 @@ public class DefinedShared {
 
     private Context context;
 
-    public DefinedShared(Context context){
-        this.context=context;
+    public DefinedShared(Context context) {
+        this.context = context;
     }
 
     /**
      * 用sharedpreference对象存储数据
-     * @param key 键
+     *
+     * @param key   键
      * @param Value 值
-     * @param name 文件名
+     * @param name  文件名
      */
-    public  void putString(String name,String key,String Value){
-        SharedPreferences mSharedPreferences =context.getSharedPreferences(name, Activity.MODE_PRIVATE);
+    public void putString(String name, String key, String Value) {
+        SharedPreferences mSharedPreferences = context.getSharedPreferences(name, Activity.MODE_PRIVATE);
 
-        SharedPreferences.Editor editor=mSharedPreferences.edit();
-        editor.putString(key,Value);
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString(key, Value);
         editor.commit();
     }
 
 
     /**
      * 用sharedpreference对象存储数据
-     * @param name 文件名
-     * @param key 键
      *
+     * @param name 文件名
+     * @param key  键
      */
-    public String getString(String name,String key){
-        SharedPreferences mSharedPreferences =context.getSharedPreferences(name, Activity.MODE_PRIVATE);
-        return mSharedPreferences.getString(key,"");
+    public String getString(String name, String key) {
+        SharedPreferences mSharedPreferences = context.getSharedPreferences(name, Activity.MODE_PRIVATE);
+        return mSharedPreferences.getString(key, "");
     }
 }

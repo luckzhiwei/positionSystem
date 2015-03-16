@@ -13,7 +13,7 @@ import org.dreamfly.positionsystem.CommonParameter.ComParameter;
  * 监听网络状态的serivce
  * Created by lzw on 2015/3/13.
  */
-public class NetWorkInfoService  extends Service {
+public class NetWorkInfoService extends Service {
 
     private NetInfoServiceBinder mBinder;
     private NetWorkInfoMsgSender mSender;
@@ -24,31 +24,31 @@ public class NetWorkInfoService  extends Service {
     }
 
 
-    public void onCreate(){
-         super.onCreate();
-         this.mBinder=new NetInfoServiceBinder();
-         this.mNetInfoBroadCastReceiver=new NetInfoBroadCastRecevicer(mHandler);
+    public void onCreate() {
+        super.onCreate();
+        this.mBinder = new NetInfoServiceBinder();
+        this.mNetInfoBroadCastReceiver = new NetInfoBroadCastRecevicer(mHandler);
 
     }
 
-    public interface NetWorkInfoMsgSender{
+    public interface NetWorkInfoMsgSender {
         public void sendNetWorkInfo(int NetWorkState);
     }
 
     /**
      * 将BroadCastReceiver中发送的网络状态发送给activity,使得前端视图变化
      */
-    private Handler mHandler=new Handler(){
-        public void handleMessage(Message msg){
-            int state=msg.getData().getInt("netSate");
+    private Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            int state = msg.getData().getInt("netSate");
             sendInfoMsg(state);
         }
 
-        private void sendInfoMsg(int netInfoState){
-             if(mSender==null){
-                   mSender=mBinder.getNetWorkInfoMsgSender();
-                   mSender.sendNetWorkInfo(netInfoState);
-             }
+        private void sendInfoMsg(int netInfoState) {
+            if (mSender == null) {
+                mSender = mBinder.getNetWorkInfoMsgSender();
+                mSender.sendNetWorkInfo(netInfoState);
+            }
         }
     };
 }

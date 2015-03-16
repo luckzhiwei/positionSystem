@@ -15,13 +15,13 @@ public class CallPhoneThread extends BaseThread {
     }
 
     protected void dealReponseString(String responseString) {
-           this.resultMap=new HashMap<String,String>();
-           String [] strArr=responseString.split(":");
-           if(strArr.length==2){
-                  resultMap.put(strArr[0],strArr[1]);
-           }else if(strArr.length==3){
-                  resultMap.put(strArr[0],strArr[1]);
-                  resultMap.put("failReason",strArr[2]);
-           }
+        this.resultMap = new HashMap<String, String>();
+        String[] strArr = responseString.split(":");
+        if (strArr.length == 2) {
+            resultMap.put(strArr[0], strArr[1]);
+        } else if (strArr.length == 3) {
+            resultMap.put(strArr[0], strArr[1]);
+            resultMap.put("failReason", strArr[2]);
+        }
     }
 }

@@ -26,12 +26,13 @@ public class CurrentInformationUtils {
     private Context context;
 
 
-
-    public CurrentInformationUtils(Context context){
-        this.context=context;
+    public CurrentInformationUtils(Context context) {
+        this.context = context;
     }
+
     /**
      * 获取系统时间
+     *
      * @return
      */
     public String getCurrentTime() {
@@ -52,6 +53,7 @@ public class CurrentInformationUtils {
 
     /**
      * 用于初始化地理位置的字符串数组
+     *
      * @param i 位于listview的条目位置
      * @return
      */
@@ -66,6 +68,7 @@ public class CurrentInformationUtils {
 
     /**
      * 得到用于初始化设备名称的字符串数组
+     *
      * @param i 位于listview的条目位置
      * @return
      */
@@ -77,38 +80,36 @@ public class CurrentInformationUtils {
     }
 
     /**
-     *获取本机的设备名称
+     * 获取本机的设备名称
+     *
      * @return
      */
-    public String getCurrentDeviceName(){
-        Build bd=new Build();
-        String model=bd.MODEL;
-        Log.i("position",model);
-        return  model;
+    public String getCurrentDeviceName() {
+        Build bd = new Build();
+        String model = bd.MODEL;
+        Log.i("position", model);
+        return model;
     }
 
     /**
      * 获取设备的ID标识号
+     *
      * @return
      */
-    public String  getDeviceId()
-    {
-        TelephonyManager tm=(TelephonyManager)this.context.getSystemService(Context.TELEPHONY_SERVICE);
+    public String getDeviceId() {
+        TelephonyManager tm = (TelephonyManager) this.context.getSystemService(Context.TELEPHONY_SERVICE);
         return (tm.getDeviceId());
     }
 
     /**
      * 获取设备的手机号码
+     *
      * @return
      */
-    public String getDeviceTelNum(){
-        TelephonyManager tm=(TelephonyManager)this.context.getSystemService(Context.TELEPHONY_SERVICE);
+    public String getDeviceTelNum() {
+        TelephonyManager tm = (TelephonyManager) this.context.getSystemService(Context.TELEPHONY_SERVICE);
         return (tm.getLine1Number());
     }
-
-
-    
-
 
 
 }

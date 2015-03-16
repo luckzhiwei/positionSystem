@@ -45,13 +45,13 @@ import android.widget.Toast;
 
 public class ManagerAdapter extends BaseAdapter {
 
-    protected   Context mContext;
+    protected Context mContext;
     protected List<User> mRegulatorList;//适配器中应该含有的容器,
-    protected   DataBase mDataBase;
-    protected   User regulator;
+    protected DataBase mDataBase;
+    protected User regulator;
     private Cursor cur;
     private DefineDialog mDefineDialog = null;
-    private final static String TABLENAME="regulatoritems";
+    private final static String TABLENAME = "regulatoritems";
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(mContext);
     private DefinedShared mdata;
     private ManagerActivity managerActivity;
@@ -60,17 +60,17 @@ public class ManagerAdapter extends BaseAdapter {
     protected CallPhoneThread mCallPhoneThread;
 
     public ManagerAdapter(List<User> mRegulatorList, Context context, DataBase mDataBase,
-                          Handler mHandler,ManagerActivity managerActivity) {
-        Log.i("zyl ma58","adapter被调用");
+                          Handler mHandler, ManagerActivity managerActivity) {
+        Log.i("zyl ma58", "adapter被调用");
         this.mRegulatorList = mRegulatorList;
         this.mContext = context;
         this.mDataBase = mDataBase;
-        this.mHandler=mHandler;
-        this.managerActivity=managerActivity;
+        this.mHandler = mHandler;
+        this.managerActivity = managerActivity;
     }
 
     public int getCount() {
-        Log.i("zyl 66",mRegulatorList.size()+"");
+        Log.i("zyl 66", mRegulatorList.size() + "");
         return (this.mRegulatorList.size());
 
     }
@@ -86,6 +86,7 @@ public class ManagerAdapter extends BaseAdapter {
 
     /**
      * 加载xml的条目,实现数据的初始化,为自己的控件设置监听事件
+     *
      * @param position
      * @param contentview
      * @param arg2
@@ -93,7 +94,7 @@ public class ManagerAdapter extends BaseAdapter {
      */
     public View getView(int position, View contentview, ViewGroup arg2) {//加载XML视图文件
 
-        Log.i("zyl ma86","getView 被调用");
+        Log.i("zyl ma86", "getView 被调用");
         ViewHolder holder;
         this.regulator = this.mRegulatorList.get(position);
         if (contentview == null) {
@@ -146,16 +147,17 @@ public class ManagerAdapter extends BaseAdapter {
             this.pos = pos;
             this.oneRegulator = oneRegulator;
             this.mDataBase = mDataBase;
-            this.mDefineDialog=mDefineDialog;
+            this.mDefineDialog = mDefineDialog;
         }
 
         /**
          * 按下按钮后将地理位置信息和定位实现信息保存在数据库中
+         *
          * @param view
          */
         public void onClick(View view) {
-            ToastUtils.showToast(mContext,"正在获取对方的地理位置");
-            if(decideWethertoSend(pos)) {
+            ToastUtils.showToast(mContext, "正在获取对方的地理位置");
+            if (decideWethertoSend(pos)) {
                 changeBackground(true);
                 this.getUserLocationFromSever(pos);
             }
@@ -164,26 +166,26 @@ public class ManagerAdapter extends BaseAdapter {
         /**
          * 向服务器发送获取对方的地理位置的请求
          */
-        private void getUserLocationFromSever(int pos){
-            HashMap<String,String> params=new HashMap<String,String>();
-            params.put("type","location");
-            UserInfoUtils tmpUtils=new UserInfoUtils(mContext);
-            params.put("fromid",tmpUtils.getServerId()+"");
-            Cursor cur=mDataBase.Selector(pos, TABLENAME);
-            if(cur.moveToNext()) {
+        private void getUserLocationFromSever(int pos) {
+            HashMap<String, String> params = new HashMap<String, String>();
+            params.put("type", "location");
+            UserInfoUtils tmpUtils = new UserInfoUtils(mContext);
+            params.put("fromid", tmpUtils.getServerId() + "");
+            Cursor cur = mDataBase.Selector(pos, TABLENAME);
+            if (cur.moveToNext()) {
                 params.put("toid", cur.getString(cur.getColumnIndex("subid")));
             }
             cur.close();
 
-            mLocationGetThread=new LocationGetThread(mHandler,"getlocationstate");
+            mLocationGetThread = new LocationGetThread(mHandler, "getlocationstate");
             String requestURL = ComParameter.HOST + "control.action";
             mLocationGetThread.setRequestPrepare(requestURL, params);
             mLocationGetThread.start();
             oneRegulator.setLastDateTouch(mInformation.getCurrentTime());
-            mDataBase.items_changeValue(TABLENAME,"time", oneRegulator.getLastDateTouch(), pos);
-            mdata=new DefinedShared(mContext);
-            mdata.putString("pos","pos",pos+"");
-            mdata.putString("isfirstconnect","isfirstclick","1");
+            mDataBase.items_changeValue(TABLENAME, "time", oneRegulator.getLastDateTouch(), pos);
+            mdata = new DefinedShared(mContext);
+            mdata.putString("pos", "pos", pos + "");
+            mdata.putString("isfirstconnect", "isfirstclick", "1");
             mDefineDialog.dismiss();
 
 
@@ -191,19 +193,19 @@ public class ManagerAdapter extends BaseAdapter {
 
     }
 
-    private void getUserCall(int pos){
-        Map<String,String> params=new HashMap<String,String>();
-        params.put("type","call");
-        UserInfoUtils userInfoUtils=new UserInfoUtils(mContext);
-        params.put("fromid",userInfoUtils.getServerId()+"");
-        Cursor cur=mDataBase.Selector(pos, TABLENAME);
-        if(cur.moveToNext()) {
+    private void getUserCall(int pos) {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("type", "call");
+        UserInfoUtils userInfoUtils = new UserInfoUtils(mContext);
+        params.put("fromid", userInfoUtils.getServerId() + "");
+        Cursor cur = mDataBase.Selector(pos, TABLENAME);
+        if (cur.moveToNext()) {
             params.put("toid", cur.getString(cur.getColumnIndex("subid")));
         }
         cur.close();
-        mCallPhoneThread=new CallPhoneThread(mHandler,"callphonestate");
-        String requestURL=ComParameter.HOST+"control.action";
-        mCallPhoneThread.setRequestPrepare(requestURL,params);
+        mCallPhoneThread = new CallPhoneThread(mHandler, "callphonestate");
+        String requestURL = ComParameter.HOST + "control.action";
+        mCallPhoneThread.setRequestPrepare(requestURL, params);
         mCallPhoneThread.start();
 
 
@@ -228,18 +230,20 @@ public class ManagerAdapter extends BaseAdapter {
     /**
      * 一个容器的实例填入函数中去
      * 传递必要的参数,调用items初始化方法和变换头像方法
+     *
      * @param
      * @param holder
      */
     public void setItemInfo(ViewHolder holder, int position, DataBase mDataBase) {
 
-        this.initItems(holder,mDataBase,position);
-        this.changePortrait(holder,position,mDataBase);
+        this.initItems(holder, mDataBase, position);
+        this.changePortrait(holder, position, mDataBase);
 
     }
 
     /**
      * 设置监听事件
+     *
      * @param holder
      * @param pos
      * @param mDataBase
@@ -257,11 +261,10 @@ public class ManagerAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 getUserCall(pos);
-                if(decideWethertoSend(pos)) {
+                if (decideWethertoSend(pos)) {
                     ToastUtils.showToast(mContext, "正在请求对方拨打您的电话");
-                }
-                else {
-                    ToastUtils.showToast(mContext,"对方未在线,请稍后");
+                } else {
+                    ToastUtils.showToast(mContext, "对方未在线,请稍后");
                 }
             }
         });
@@ -269,6 +272,7 @@ public class ManagerAdapter extends BaseAdapter {
 
     /**
      * 调用自定义dialog,实现弹出对话框
+     *
      * @param pos
      * @param oneRegulator
      * @param mDataBase
@@ -277,7 +281,7 @@ public class ManagerAdapter extends BaseAdapter {
         mDefineDialog = new DefineDialog(mContext).buiider(false).setDefineDialogCanceable(true)
                 .setTitle("是否获取地理位置").show();
         PositiveButtonListener mPositiveButtonListener =
-                new PositiveButtonListener(pos, oneRegulator, mDataBase,mDefineDialog);
+                new PositiveButtonListener(pos, oneRegulator, mDataBase, mDefineDialog);
 
         mDefineDialog.setPosBtnClickListener(mPositiveButtonListener);
 
@@ -285,11 +289,12 @@ public class ManagerAdapter extends BaseAdapter {
 
     /**
      * 该方法用于实现头像交替变换,如果网络未连接,显示灰色头像
+     *
      * @param holder
      * @param position
      */
-    public void changePortrait(ViewHolder holder,int position,DataBase mDataBase) {
-        cur=mDataBase.Selector(position,TABLENAME);
+    public void changePortrait(ViewHolder holder, int position, DataBase mDataBase) {
+        cur = mDataBase.Selector(position, TABLENAME);
         while (cur.moveToNext()) {
             String connection = cur.getString(cur.getColumnIndex("isconnect"));
             if (connection.equals("n")) {
@@ -314,27 +319,26 @@ public class ManagerAdapter extends BaseAdapter {
     }
 
 
-
     /**
      * 从本地数据库中读取相应的数据,初始化条目
+     *
      * @param holder
      * @param mDataBase
      * @param position
      */
-    public void initItems( ViewHolder holder,DataBase mDataBase,int position){
-        cur = mDataBase.Selector(position,TABLENAME);
+    public void initItems(ViewHolder holder, DataBase mDataBase, int position) {
+        cur = mDataBase.Selector(position, TABLENAME);
         while (cur.moveToNext()) {
             holder.txtManagertmeLastTouchTime.setText(cur.getString(cur.getColumnIndex("time")));
             holder.txtManagerItemLastLocation.setText(cur.getString(cur.getColumnIndex("position")));
             //如果用户已经修改了备注名,就显示备注名,否则显示设备名
-            if(cur.getString(cur.getColumnIndex("subname")).equals("null")){
+            if (cur.getString(cur.getColumnIndex("subname")).equals("null")) {
                 holder.txtManagertgetDeviceName.setText(cur.getString(cur.getColumnIndex("name")));
-            }
-            else {
+            } else {
                 holder.txtManagertgetDeviceName.setText(cur.getString(cur.getColumnIndex("subname")));
             }
         }
-        Log.i("zyl294","加载数据方法调用");
+        Log.i("zyl294", "加载数据方法调用");
         cur.close();
     }
 
@@ -344,44 +348,43 @@ public class ManagerAdapter extends BaseAdapter {
     protected void sendposition(int pos) {
         Intent in = new Intent(mContext, PositionActivity.class);
         mContext.startActivity(in);
-        this.mdata=new DefinedShared(mContext);
-        mdata.putString("pos","pos",pos+"");
-        mdata.putString("isfirstconnect","isfirstclick","1");
+        this.mdata = new DefinedShared(mContext);
+        mdata.putString("pos", "pos", pos + "");
+        mdata.putString("isfirstconnect", "isfirstclick", "1");
 
     }
 
-    public BaseThread getLocationThread(){
-         return(this.mLocationGetThread);
+    public BaseThread getLocationThread() {
+        return (this.mLocationGetThread);
     }
 
-    public BaseThread getCallPhoneThread(){
+    public BaseThread getCallPhoneThread() {
         return (this.mCallPhoneThread);
     }
 
     /**
      * 判断对方是否在线,如果不在线就不让用户获取
+     *
      * @param pos
      * @return
      */
-    private boolean decideWethertoSend(int pos){
-        Cursor cur=mDataBase.Selector(pos,ComParameter.TABLENAME);
-        if (cur.moveToNext()){
-            if(cur.getString(cur.getColumnIndex("isconnect")).equals("n")){
-                ToastUtils.showToast(mContext.getApplicationContext(),"对方不在线,请稍后");
+    private boolean decideWethertoSend(int pos) {
+        Cursor cur = mDataBase.Selector(pos, ComParameter.TABLENAME);
+        if (cur.moveToNext()) {
+            if (cur.getString(cur.getColumnIndex("isconnect")).equals("n")) {
+                ToastUtils.showToast(mContext.getApplicationContext(), "对方不在线,请稍后");
                 return false;
-            }
-            else return true;
+            } else return true;
         }
         cur.close();
-        return  true;
+        return true;
     }
 
-    public void changeBackground(boolean isChanged){
-        if (isChanged){
+    public void changeBackground(boolean isChanged) {
+        if (isChanged) {
             managerActivity.setContentView(R.layout.manager_layout_first);
         }
     }
-
 
 
 }

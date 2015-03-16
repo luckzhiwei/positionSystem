@@ -35,43 +35,46 @@ import java.io.UnsupportedEncodingException;
  * 关于网络处理请求的工具类
  */
 public class HttpUtils {
-    private static HttpClient mHttpClient=null;
-    private static HttpEntity mEntity=null;
+    private static HttpClient mHttpClient = null;
+    private static HttpEntity mEntity = null;
+
     /**
      * 请求服务器的接口函数
+     *
      * @param requestPath//服务器路径
      * @param requestParams//请求参数(HashMap)
      * @param requestEncode//请求的表单的编码格式
      * @param responseEncode//请求的返回体的编码格式
-     * @return  //返回体的内容
+     * @return //返回体的内容
      */
     public static String requestHttpServer
-            (String requestPath,
-             Map<String, String> requestParams,
-             String requestEncode, String responseEncode) {
+    (String requestPath,
+     Map<String, String> requestParams,
+     String requestEncode, String responseEncode) {
         List<NameValuePair> list = getRequestParams(requestParams);
         if (list != null) {
             HttpPost post = bulidHttpPost(list, requestPath);
             mHttpClient = CustomHttpclient.getSigleTonInstance();
-            if(mHttpClient!=null) {
+            if (mHttpClient != null) {
                 InputStream ServerInputStream = getServetReponse(mHttpClient, post);
                 if (ServerInputStream != null)
                 //请求服务器没有异常,比如网络异常，超时异常等，就把数据流转化为字符串
                 {
                     return (switchStreamToString(ServerInputStream, responseEncode));
-                }else{
+                } else {
                     return "InterNetException";
                 }
-            }else{
+            } else {
                 return "singleTonException";
             }
-        }else{
-              return "paramsException";
+        } else {
+            return "paramsException";
         }
     }
 
     /**
      * 将网络中的数据流变成字符串
+     *
      * @param inputstream
      * @param encode
      * @return
@@ -80,18 +83,17 @@ public class HttpUtils {
         StringBuilder strBuilder = new StringBuilder();
         try {
             BufferedReader mBufferReader = new BufferedReader(new InputStreamReader(inputstream, encode));
-            String tmpStr=new String();
-            while((tmpStr=mBufferReader.readLine())!=null)
-            {
-                   strBuilder.append(tmpStr);
+            String tmpStr = new String();
+            while ((tmpStr = mBufferReader.readLine()) != null) {
+                strBuilder.append(tmpStr);
             }
             mBufferReader.close();
             //Log.i("lzw","转换流至字符串");
-            return(strBuilder.toString());
+            return (strBuilder.toString());
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             return "switchException";
-        }catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
             return "switchException";
         }
@@ -151,17 +153,17 @@ public class HttpUtils {
     private static InputStream getServetReponse(HttpClient mHttpCLient, HttpPost post) {
         try {
             HttpResponse mResponse = mHttpCLient.execute(post);
-                //向服务器做请求连接
+            //向服务器做请求连接
             mEntity = mResponse.getEntity();
             return (mEntity.getContent());
         } catch (SocketTimeoutException e) {
             //请求超时异常捕捉
-            Log.i("lzw","connection_timeout");
+            Log.i("lzw", "connection_timeout");
             e.printStackTrace();
         } catch (IOException e) {
             //请求服务器异常捕捉
             e.printStackTrace();
-            Log.i("lzw","IOException");
+            Log.i("lzw", "IOException");
         }
         return (null);
     }
@@ -169,14 +171,14 @@ public class HttpUtils {
     /**
      * 断开连接,取消http请求
      */
-    public static void shutDownConnection(){
+    public static void shutDownConnection() {
 
-        synchronized (mHttpClient){
+        synchronized (mHttpClient) {
             try {
-                if(mEntity!=null)
-                {mEntity.consumeContent();}
-            }
-            catch (Exception e){
+                if (mEntity != null) {
+                    mEntity.consumeContent();
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 

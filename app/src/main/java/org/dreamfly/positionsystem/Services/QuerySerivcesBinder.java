@@ -19,30 +19,30 @@ public class QuerySerivcesBinder extends Binder {
     private QueryService queryService;
     private QueryService.MsgSender msgSeneder;
 
-    public QuerySerivcesBinder(Context mContext,Handler mHandler,QueryService queryService) {
+    public QuerySerivcesBinder(Context mContext, Handler mHandler, QueryService queryService) {
         this.mContext = mContext;
-        this.mHandler=mHandler;
-        this.queryService=queryService;
+        this.mHandler = mHandler;
+        this.queryService = queryService;
     }
 
     /**
      * 启动轮询线程
      */
     public void startQuery() {
-          this.queryThread=new QueryThread(mContext,mHandler);
-          this.queryThread.start();
+        this.queryThread = new QueryThread(mContext, mHandler);
+        this.queryThread.start();
     }
 
-    public  void setMsgSender(QueryService.MsgSender msgSender){
-             this.msgSeneder=msgSender;
+    public void setMsgSender(QueryService.MsgSender msgSender) {
+        this.msgSeneder = msgSender;
     }
 
-    public QueryService.MsgSender getMsgSeneder(){
-        return(this.msgSeneder);
+    public QueryService.MsgSender getMsgSeneder() {
+        return (this.msgSeneder);
     }
 
-    public QueryService getService(){
-        return queryService ;
+    public QueryService getService() {
+        return queryService;
     }
 
 

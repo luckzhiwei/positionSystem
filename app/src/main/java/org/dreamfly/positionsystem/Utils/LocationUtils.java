@@ -12,12 +12,12 @@ public class LocationUtils {
     private Context context;
     private LocationClient mlocationClient;
 
-    public LocationUtils(Context context){
-        this.context=context;
-        this.mlocationClient=new LocationClient(context);
+    public LocationUtils(Context context) {
+        this.context = context;
+        this.mlocationClient = new LocationClient(context);
     }
 
-    public void LocationInfo(){
+    public void LocationInfo() {
         LocationClientOption option = new LocationClientOption();
         option.setOpenGps(true); // 是否打开GPS
         option.setCoorType("bd09ll"); // 设置返回值的坐标类型。
@@ -26,12 +26,13 @@ public class LocationUtils {
         option.setScanSpan(1000);// 设置定时定位的时间间隔。单位毫秒
         mlocationClient.setLocOption(option);
     }
-    public LocationClient getLocationClient(){
+
+    public LocationClient getLocationClient() {
         return this.mlocationClient;
     }
 
-    public void shutdown(){
-        LocationClientOption option=null;
+    public void shutdown() {
+        LocationClientOption option = null;
         mlocationClient.setLocOption(option);
     }
 

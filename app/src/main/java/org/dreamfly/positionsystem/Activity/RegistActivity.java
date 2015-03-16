@@ -64,7 +64,7 @@ public class RegistActivity extends Activity {
         this.bindID();
         this.bindListener();
         proRegistActivity.setVisibility(View.GONE);
-        this.userInfoUtils=new UserInfoUtils(this);
+        this.userInfoUtils = new UserInfoUtils(this);
     }
 
     private void bindID() {
@@ -137,8 +137,8 @@ public class RegistActivity extends Activity {
                         editRegisterActivityUsername.setText("");
 
                     }
-                }else{
-                    ToastUtils.showToast(getApplicationContext(),ComParameter.ERRORINFO);
+                } else {
+                    ToastUtils.showToast(getApplicationContext(), ComParameter.ERRORINFO);
                 }
 
 

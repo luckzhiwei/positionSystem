@@ -14,7 +14,7 @@ public class RegisterRequestThread extends BaseThread {
         super(mHandler, stateId);
     }
 
-    protected void dealReponseString(String responseString) throws Exception{
+    protected void dealReponseString(String responseString) throws Exception {
         this.resultMap = new HashMap<String, String>();
         String tmpStrArr[] = responseString.split(":");
         if (tmpStrArr.length == 2) {
@@ -23,7 +23,7 @@ public class RegisterRequestThread extends BaseThread {
             this.resultMap.put(tmpStrArr[0], tmpStrArr[1]);
             this.resultMap.put("failReason", tmpStrArr[2]);
         }
-        Log.i("lzw","返回字符"+responseString);
+        Log.i("lzw", "返回字符" + responseString);
 
     }
 

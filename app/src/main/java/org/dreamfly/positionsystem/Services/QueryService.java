@@ -50,20 +50,19 @@ public class QueryService extends Service {
 
     }
 
-    private Handler mHandler=new Handler(){
-        public void handleMessage(Message msg){
-            Bundle bd=msg.getData();
-            if(bd.getInt("ACTION")== ComParameter.ACTION_CALLPHONE){
-                  callPhone(bd.getString("callNum"));
-            }
-            else if(bd.getInt("ACTION")==ComParameter.ACTION_LOCATION){
+    private Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            Bundle bd = msg.getData();
+            if (bd.getInt("ACTION") == ComParameter.ACTION_CALLPHONE) {
+                callPhone(bd.getString("callNum"));
+            } else if (bd.getInt("ACTION") == ComParameter.ACTION_LOCATION) {
                 mLocation.locationSave();
                 //存储地理位置到share
-            }else if(bd.get("ACTION")==ComParameter.USER_LOCATION){
+            } else if (bd.get("ACTION") == ComParameter.USER_LOCATION) {
                 showlocationToActivity(bd.getString("userlocation"));
 
-            }else if(bd.getInt("STATE_ERROR")==ComParameter.STATE_ERROR){
-                Log.i("lzw","处理错误轮询问线程的异常");
+            } else if (bd.getInt("STATE_ERROR") == ComParameter.STATE_ERROR) {
+                Log.i("lzw", "处理错误轮询问线程的异常");
                 sendMsgErrorToActivity(ComParameter.STATE_ERROR);
                 //向activity的handler发送错误的消息
             }
@@ -71,47 +70,46 @@ public class QueryService extends Service {
         }
 
 
-        private void callPhone(String phoneNum){
-               Intent callIn=new Intent();
-               callIn.setAction(Intent.ACTION_CALL);
-               callIn.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-               callIn.setData(Uri.parse("tel:"+phoneNum));
-               QueryService.this.startActivity(callIn);
+        private void callPhone(String phoneNum) {
+            Intent callIn = new Intent();
+            callIn.setAction(Intent.ACTION_CALL);
+            callIn.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            callIn.setData(Uri.parse("tel:" + phoneNum));
+            QueryService.this.startActivity(callIn);
         }
 
 
-
-        private void sendMsgErrorToActivity(int state){
-          if(NetWorkInfoUtils.isNetWorkAlive(QueryService.this)) {
-              if (mMessageSender == null) {
-                  mMessageSender = getmMessageSender();
-                  mMessageSender.sendMsgError(state);
-              }
-          }else{
-               Log.i("lzw","网络异常不发送activity");
-          }
+        private void sendMsgErrorToActivity(int state) {
+            if (NetWorkInfoUtils.isNetWorkAlive(QueryService.this)) {
+                if (mMessageSender == null) {
+                    mMessageSender = getmMessageSender();
+                    mMessageSender.sendMsgError(state);
+                }
+            } else {
+                Log.i("lzw", "网络异常不发送activity");
+            }
         }
 
     };
 
-    private void showlocationToActivity(String userLocation){
-        if(mMessageSender==null){
-            mMessageSender=this.getmMessageSender();
+    private void showlocationToActivity(String userLocation) {
+        if (mMessageSender == null) {
+            mMessageSender = this.getmMessageSender();
         }
 
-        if(userLocation!=null){
-            if(mMessageSender==null){
-                Log.i("zyl","实例仍然为空");
+        if (userLocation != null) {
+            if (mMessageSender == null) {
+                Log.i("zyl", "实例仍然为空");
             }
             mMessageSender.sendMsgLocationToShow(userLocation);
-        }else{
+        } else {
             mMessageSender.sendMsgLocationToShow("null");
         }
     }
 
-    public void onCreate(){
-         super.onCreate();
-         initial();
+    public void onCreate() {
+        super.onCreate();
+        initial();
 
     }
 
@@ -123,8 +121,8 @@ public class QueryService extends Service {
         manager = (NotificationManager) this.getSystemService(NOTIFICATION_SERVICE);
 
         this.showNotification();
-         mLocation = new BaiduLocationService(this);
-        this.mQueryBind=new QuerySerivcesBinder(this,mHandler,this);
+        mLocation = new BaiduLocationService(this);
+        this.mQueryBind = new QuerySerivcesBinder(this, mHandler, this);
 
     }
 
@@ -140,18 +138,18 @@ public class QueryService extends Service {
     }
 
     public interface MsgSender {
-            public void sendMsgLocationToShow(String userLcation);
-            public void sendMsgError(int state);
+        public void sendMsgLocationToShow(String userLcation);
+
+        public void sendMsgError(int state);
     }
 
-    public void setMsgSender(MsgSender msgSender){
-        this.mMessageSender=msgSender;
+    public void setMsgSender(MsgSender msgSender) {
+        this.mMessageSender = msgSender;
     }
 
-    public MsgSender getmMessageSender(){
+    public MsgSender getmMessageSender() {
         return this.mMessageSender;
     }
-
 
 
 }
