@@ -37,7 +37,7 @@
             android:layout_marginTop="10dp"
             android:textColor="#000000"
             android:textSize="19sp"
-            android:text="当前位置是:埃塞俄比亚" />
+            android:text="位置初始化中" />
     </LinearLayout>
 
 
