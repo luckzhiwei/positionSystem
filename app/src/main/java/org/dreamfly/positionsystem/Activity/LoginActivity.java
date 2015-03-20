@@ -106,9 +106,13 @@ public class LoginActivity extends Activity {
             public void onClick(View view) {
                 if (checkoutInputDataFormat()) {
 
-                    if (telnum == null || !(telnum.matches("(\\d{11})|(\\+86?\\d{11})"))) {
+                    if (telnum == null || !(telnum.matches("(\\d{11})|(\\+86\\d{11})"))) {
+
                         setDialogShow();
                     } else {
+                        if(telnum.matches("\\+86\\d{11}")){
+                            Log.i("zyl login",telnum.substring(3,14));
+                        }
                         showIsManagerDialog();
                     }
                 }

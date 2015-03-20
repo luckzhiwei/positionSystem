@@ -1,5 +1,7 @@
 package org.dreamfly.positionsystem.CommonParameter;
 
+import java.text.StringCharacterIterator;
+
 /**
  * Created by asus on 2015/1/15.
  */
@@ -56,6 +58,10 @@ public class ComParameter {
     public final static int ACTION_CALLPHONE = 6;
 
     public final static int ACTION_LOCATION = 7;
+
+    public final static int LOCK=0;
+
+    public final static int UNLOCK=1;
 
 
 }

@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.location.Location;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.BaseAdapter;
@@ -23,6 +25,7 @@ import org.dreamfly.positionsystem.Database.DataBase;
 import org.dreamfly.positionsystem.Database.DefinedShared;
 import org.dreamfly.positionsystem.R;
 import org.dreamfly.positionsystem.Thread.BaseThread;
+import org.dreamfly.positionsystem.Thread.BtnLockedThread;
 import org.dreamfly.positionsystem.Thread.CallPhoneThread;
 import org.dreamfly.positionsystem.Thread.LocationGetThread;
 import org.dreamfly.positionsystem.Utils.CurrentInformationUtils;
@@ -55,9 +58,11 @@ public class ManagerAdapter extends BaseAdapter {
     private CurrentInformationUtils mInformation = new CurrentInformationUtils(mContext);
     private DefinedShared mdata;
     private ManagerActivity managerActivity;
-    protected Handler mHandler;
-    protected LocationGetThread mLocationGetThread;
+    private Handler mHandler;
+    private CallHandler callHandler;
+    private LocationGetThread mLocationGetThread;
     protected CallPhoneThread mCallPhoneThread;
+    protected BtnLockedThread btnLockedThread;
 
     public ManagerAdapter(List<User> mRegulatorList, Context context, DataBase mDataBase,
                           Handler mHandler, ManagerActivity managerActivity) {
@@ -69,6 +74,28 @@ public class ManagerAdapter extends BaseAdapter {
         this.managerActivity = managerActivity;
     }
 
+
+    public class CallHandler extends Handler{
+        private ViewHolder holder;
+        public CallHandler(ViewHolder holder){
+            this.holder=holder;
+        }
+        @Override
+        public void handleMessage(Message msg){
+            switch (msg.what){
+                case ComParameter.UNLOCK:
+                    lockBtns(holder,true);
+                    break;
+                case ComParameter.LOCK:
+                    lockBtns(holder,false);
+                    break;
+            }
+        }
+    }
+    private void lockBtns(ViewHolder holder,boolean isClick){
+        holder.btnManagerItemPosition.setEnabled(isClick);
+        holder.btnManagerItemPhone.setEnabled(isClick);
+    }
     public int getCount() {
         Log.i("zyl 66", mRegulatorList.size() + "");
         return (this.mRegulatorList.size());
@@ -193,7 +220,7 @@ public class ManagerAdapter extends BaseAdapter {
 
     }
 
-    private void getUserCall(int pos) {
+    private void getUserCall(int pos,ViewHolder viewHolder) {
         Map<String, String> params = new HashMap<String, String>();
         params.put("type", "call");
         UserInfoUtils userInfoUtils = new UserInfoUtils(mContext);
@@ -207,6 +234,9 @@ public class ManagerAdapter extends BaseAdapter {
         String requestURL = ComParameter.HOST + "control.action";
         mCallPhoneThread.setRequestPrepare(requestURL, params);
         mCallPhoneThread.start();
+        callHandler=new CallHandler(viewHolder);
+        btnLockedThread=new BtnLockedThread(callHandler);
+        btnLockedThread.start();
 
 
     }
@@ -226,6 +256,7 @@ public class ManagerAdapter extends BaseAdapter {
         holder.btnManagerItemPhone = (Button) contentview.findViewById(R.id.manageractivity_btn_phone);
         holder.btnManagerItemPosition = (Button) contentview.findViewById(R.id.manageractivity_btn_position);
     }
+
 
     /**
      * 一个容器的实例填入函数中去
@@ -260,9 +291,9 @@ public class ManagerAdapter extends BaseAdapter {
         holder.btnManagerItemPhone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getUserCall(pos);
+                getUserCall(pos,holder);
                 if (decideWethertoSend(pos)) {
-                    ToastUtils.showToast(mContext, "正在请求对方拨打您的电话");
+                    ToastUtils.showLongToast(mContext, "正在请求对方拨打您的电话,等待期间请勿操作");
                 } else {
                     ToastUtils.showToast(mContext, "对方未在线,请稍后");
                 }
