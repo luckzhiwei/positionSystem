@@ -25,7 +25,7 @@ public class BtnLockedThread extends Thread{
             try {
                 if(stateCode==0){
 
-                    Thread.sleep(1000);
+                    Thread.sleep(200);
                     stateCode=1;
                     Log.i("zylThread","线程启动");
                 }
