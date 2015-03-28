@@ -123,8 +123,12 @@ public class QueryService extends Service {
         mdata.putString(ComParameter.LOADING_STATE, ComParameter.SERVICE_STATE,
                 ComParameter.STATE_SECOND);
         manager = (NotificationManager) this.getSystemService(NOTIFICATION_SERVICE);
-
-        this.showNotification();
+        if(!mdata.getString(ComParameter.LOADING_STATE,ComParameter.IDENTITY_STATE).equals("manager")) {
+            Log.i("zyl127", "executed");
+            this.showNotification();
+        }
+        else
+            this.showManagerNotification();
         mLocation = new BaiduLocationService(this);
         this.mQueryBind = new QuerySerivcesBinder(this, mHandler, this);
 
@@ -137,8 +141,26 @@ public class QueryService extends Service {
         CharSequence text = "亲子安全卫士";
         Notification notification = new Notification();
         notification.icon = R.drawable.positionsystemlogo;
-        notification.setLatestEventInfo(this, text, "正在为您的亲人提供您的地理位置", null);
+        Intent intent=new Intent();
+        intent.setComponent(new ComponentName(this,RegulatorActivity.class));
+        PendingIntent contentIntent=PendingIntent.getActivity(this,0,intent,0);
+        notification.setLatestEventInfo(this, text, "正在为您的亲人提供您的地理位置", contentIntent);
         manager.notify(0, notification);
+    }
+
+    /**
+     * 管理者的通知
+     */
+    private void showManagerNotification(){
+
+        CharSequence text="亲子安全卫士";
+        Notification notification =new Notification();
+        notification.icon=R.drawable.positionsystemlogo;
+        Intent intent=new Intent();
+        intent.setComponent(new ComponentName(this,ManagerActivity.class));
+        PendingIntent contentIntent=PendingIntent.getActivity(this,0,intent,0);
+        notification.setLatestEventInfo(this,text,"\"亲子安全卫士\"正在后台运行",contentIntent);
+        manager.notify(1,notification);
     }
 
     public interface MsgSender {

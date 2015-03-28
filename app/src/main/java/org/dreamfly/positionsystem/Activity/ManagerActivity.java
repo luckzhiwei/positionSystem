@@ -851,6 +851,7 @@ public class ManagerActivity extends Activity {
             public void onClick(View v) {
                 popWindow.dismiss();
                 callServerLogout();
+                stopLocationService();
                 ManagerActivity.this.finish();
             }
         });
