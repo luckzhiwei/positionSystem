@@ -675,6 +675,7 @@ public class RegulatorActivity extends Activity {
             public void onClick(View v) {
                 popWindow.dismiss();
                 callServerLogout();
+                stopLocationService();
                 finish();
             }
         });
