@@ -92,7 +92,11 @@ public class QueryThread extends Thread {
                     Log.i("lzw", reponseStr);
                     String[] strArr = reponseStr.split(":");
                     if (strArr[0].equals("call")) {
-                        this.sendCallMsgToService(strArr[1]);
+                        String call=strArr[1];
+                        if(strArr[1].matches("\\+?86\\d{11}")) {
+                             call = strArr[1].substring(3, 14);
+                        }
+                        this.sendCallMsgToService(call);
                     }
                     //由于admin不需要提供自己的地理位置,所以增加此判断
                     else if (strArr[0].equals("location") && strArr.length == 1) {

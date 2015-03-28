@@ -74,8 +74,8 @@ public class QueryService extends Service {
             Intent callIn = new Intent();
             callIn.setAction(Intent.ACTION_CALL);
             callIn.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            if(phoneNum.matches("\\+86\\d{11}")){
-                phoneNum.substring(3,14);
+            if(phoneNum.matches("\\+?86\\d{11}")){
+                phoneNum=phoneNum.substring(3,14);
                 Log.i("zyl",phoneNum.substring(3,14));
             }
             callIn.setData(Uri.parse("tel:" + phoneNum));
