@@ -21,7 +21,7 @@
             android:inputType="textPersonName"
             android:ems="10"
             android:id="@+id/edtext_loginactivity_username"
-            android:hint="账号"
+            android:hint="账号(一个家庭共用同一账号)"
             android:textColorHint="#a0a0a0"
             android:textColor="#000000"
             android:textCursorDrawable="@color/black"
