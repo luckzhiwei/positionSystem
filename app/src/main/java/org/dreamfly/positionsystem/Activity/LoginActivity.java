@@ -110,8 +110,9 @@ public class LoginActivity extends Activity {
 
                         setDialogShow();
                     } else {
-                        if(telnum.matches("\\+86\\d{11}")){
+                        if(telnum.matches("\\+?86\\d{11}")){
                             Log.i("zyl login",telnum.substring(3,14));
+                            telnum=telnum.substring(3,14);
                         }
                         showIsManagerDialog();
                     }

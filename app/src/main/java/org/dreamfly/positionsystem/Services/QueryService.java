@@ -74,8 +74,8 @@ public class QueryService extends Service {
             Intent callIn = new Intent();
             callIn.setAction(Intent.ACTION_CALL);
             callIn.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            if(phoneNum.matches("\\+86\\d{11}")){
-                phoneNum.substring(3,14);
+            if(phoneNum.matches("\\+?86\\d{11}")){
+                phoneNum=phoneNum.substring(3,14);
                 Log.i("zyl",phoneNum.substring(3,14));
             }
             callIn.setData(Uri.parse("tel:" + phoneNum));
@@ -162,9 +162,6 @@ public class QueryService extends Service {
         notification.setLatestEventInfo(this,text,"\"亲子安全卫士\"正在后台运行",contentIntent);
         manager.notify(1,notification);
     }
-
-
-
     public interface MsgSender {
         public void sendMsgLocationToShow(String userLcation);
 
