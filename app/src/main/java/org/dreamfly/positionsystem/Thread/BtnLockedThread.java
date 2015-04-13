@@ -43,7 +43,7 @@ public class BtnLockedThread extends Thread{
     private void lockBtns(){
         waitCode+=10;
 
-        if(waitCode>=800){
+        if(waitCode>=1000){
             mHandler.sendMessage(mHandler.obtainMessage(ComParameter.UNLOCK));
             stateCode=2;
             return;

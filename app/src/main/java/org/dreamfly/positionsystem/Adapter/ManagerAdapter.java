@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.BaseAdapter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,7 @@ public class ManagerAdapter extends BaseAdapter {
     protected List<User> mRegulatorList;//适配器中应该含有的容器,
     protected DataBase mDataBase;
     protected User regulator;
+    private List<ViewHolder> holderList;
     private Cursor cur;
     private DefineDialog mDefineDialog = null;
     private final static String TABLENAME = "regulatoritems";
@@ -72,22 +74,25 @@ public class ManagerAdapter extends BaseAdapter {
         this.mDataBase = mDataBase;
         this.mHandler = mHandler;
         this.managerActivity = managerActivity;
+        mdata=new DefinedShared(mContext);
+        holderList=new ArrayList();
     }
 
 
-    public class CallHandler extends Handler{
-        private ViewHolder holder;
-        public CallHandler(ViewHolder holder){
-            this.holder=holder;
-        }
+    public class CallHandler extends Handler {
+
         @Override
-        public void handleMessage(Message msg){
-            switch (msg.what){
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
                 case ComParameter.UNLOCK:
-                    lockBtns(holder,true);
+                    for(int pos=0;pos<holderList.size();pos++) {
+                        lockBtns(holderList.get(pos), true);
+                    }
                     break;
                 case ComParameter.LOCK:
-                    lockBtns(holder,false);
+                    for (int pos=0;pos<holderList.size();pos++) {
+                        lockBtns(holderList.get(pos), false);
+                    }
                     break;
             }
         }
@@ -97,7 +102,7 @@ public class ManagerAdapter extends BaseAdapter {
         holder.btnManagerItemPhone.setEnabled(isClick);
     }
     public int getCount() {
-        Log.i("zyl 66", mRegulatorList.size() + "");
+
         return (this.mRegulatorList.size());
 
     }
@@ -138,6 +143,8 @@ public class ManagerAdapter extends BaseAdapter {
             this.setItemInfo(holder, position, mDataBase);
             this.setClickListener(holder, position, mDataBase);
         }
+        holderList.add(holder);
+
         return (contentview);
     }
 
@@ -210,7 +217,6 @@ public class ManagerAdapter extends BaseAdapter {
             mLocationGetThread.start();
             oneRegulator.setLastDateTouch(mInformation.getCurrentTime());
             mDataBase.items_changeValue(TABLENAME, "time", oneRegulator.getLastDateTouch(), pos);
-            mdata = new DefinedShared(mContext);
             mdata.putString("pos", "pos", pos + "");
             mdata.putString("isfirstconnect", "isfirstclick", "1");
             mDefineDialog.dismiss();
@@ -234,7 +240,7 @@ public class ManagerAdapter extends BaseAdapter {
         String requestURL = ComParameter.HOST + "control.action";
         mCallPhoneThread.setRequestPrepare(requestURL, params);
         mCallPhoneThread.start();
-        callHandler=new CallHandler(viewHolder);
+        callHandler=new CallHandler();
         btnLockedThread=new BtnLockedThread(callHandler);
         btnLockedThread.start();
 
@@ -414,6 +420,8 @@ public class ManagerAdapter extends BaseAdapter {
     public void changeBackground(boolean isChanged) {
         if (isChanged) {
             managerActivity.setContentView(R.layout.manager_layout_first);
+            mdata.putString(ComParameter.LOADING_STATE,ComParameter.REQUESTLOCATION_STATE,
+                    ComParameter.STATE_LOADINGDATA);
         }
     }
 

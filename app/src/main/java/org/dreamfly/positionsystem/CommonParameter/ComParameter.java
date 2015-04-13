@@ -43,6 +43,8 @@ public class ComParameter {
 
     public final static String IDENTITY_STATE = "identitystate";
 
+    public final static String REQUESTLOCATION_STATE="requestlocationstate";
+
     public final static String LOADING_STATE_REG = "regfirstconnect";
 
     public final static String CLICKING_STATE = "isfirstclick";
@@ -52,6 +54,10 @@ public class ComParameter {
     public final static String STATE_SECOND = "1";
 
     public final static String STATE_THIRD = "2";
+
+    public final static String STATE_LOADINGDATA="3";
+
+    public final static String STATE_NORMAL="4";
 
     public final static String USER_LOCATION = "userlocation";
 

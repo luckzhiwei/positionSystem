@@ -97,6 +97,7 @@ public class LoginActivity extends Activity {
                 Intent registerIntent = new Intent();
                 registerIntent.setClass(getApplicationContext(), RegistActivity.class
                 );
+                finish();
                 startActivity(registerIntent);
 
 
