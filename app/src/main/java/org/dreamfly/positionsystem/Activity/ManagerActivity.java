@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baidu.location.LocationClient;
 import com.baidu.mapapi.SDKInitializer;
@@ -174,13 +175,17 @@ public class ManagerActivity extends Activity {
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            finish();
-            //释放httpEntity请求空间
-            // this.managerListThread.closeHttp();
-            //确保第一次启动时在请求成功前处于数据加载界面
-            if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
-                    equals(ComParameter.STATE_SECOND)) {
-                mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE, ComParameter.STATE_FIRST);
+            if(mdata.getString(ComParameter.LOADING_STATE,ComParameter.REQUESTLOCATION_STATE).equals(
+                    ComParameter.STATE_NORMAL)) {
+                finish();
+                //确保第一次启动时在请求成功前处于数据加载界面
+                if (mdata.getString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE).
+                        equals(ComParameter.STATE_SECOND)) {
+                    mdata.putString(ComParameter.LOADING_STATE, ComParameter.LOADING_STATE, ComParameter.STATE_FIRST);
+                }
+            }
+            else {
+                ToastUtils.showLongToast(this,"请求尚未结束,请勿提前退出界面");
             }
 
         }
@@ -201,7 +206,8 @@ public class ManagerActivity extends Activity {
             //如果是第一次启动,不在这里加载列表数据(第一次请求的数据从网络获得)
             this.loadList();
         }
-
+        mdata.putString(ComParameter.LOADING_STATE,ComParameter.REQUESTLOCATION_STATE,
+                ComParameter.STATE_NORMAL);
         this.sendSecLoginToServer();
         this.sendIdtoSever();
 

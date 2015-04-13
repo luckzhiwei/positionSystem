@@ -112,6 +112,8 @@ public class PositionActivity extends Activity implements OnGetGeoCoderResultLis
         mcoder = GeoCoder.newInstance();
         mcoder.setOnGetGeoCodeResultListener(this);
         if (dealIntent()) {
+            mdata.putString(ComParameter.LOADING_STATE,ComParameter.REQUESTLOCATION_STATE,
+                    ComParameter.STATE_NORMAL);
             Log.i("zyl", "mapsuccess");
             MapInfo(isFirstLoc);
             codeChanging();
